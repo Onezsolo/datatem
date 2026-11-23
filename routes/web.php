@@ -4,19 +4,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 Route::get('/login', function () {
     return view('login');
-});
+})->name('login');
 
 Route::get('/signup', function () {
     return view('signup');
-});
+})->name('signup');
 
 Route::get('/bundles', function () {
     return view('bundles');
-});
+})->name('bundles');
 
 Route::get('/support', function () {
     $contactEmail = \App\Services\SettingsService::get('contact_email', '');
@@ -27,11 +27,11 @@ Route::get('/support', function () {
         'support_whatsapp_url' => $supportWhatsappUrl ?: null,
         'support_whatsapp_display' => $contactPhone ?: null,
     ]);
-});
+})->name('support');
 
 Route::get('/forgot-password', function () {
     return view('forgot-password');
-});
+})->name('password.request');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -50,17 +50,17 @@ Route::get('/topup', function () {
         'manual_payment_name' => $manualName,
         'manual_topup_enabled' => $manualTopupEnabled,
     ]);
-});
+})->name('topup');
 
 Route::get('/topup/callback', [\App\Http\Controllers\TopUpController::class, 'callback'])->name('topup.callback');
 
 Route::get('/notifications', function () {
     return view('notifications');
-});
+})->name('notifications');
 
 Route::get('/profile', function () {
     return view('profile');
-});
+})->name('profile');
 
 Route::get('/referral', function () {
     return view('referral');
@@ -102,11 +102,11 @@ Route::get('/store/{slug}/callback', [\App\Http\Controllers\StorefrontController
 
 Route::get('/privacy', function () {
     return view('privacy');
-});
+})->name('legal.privacy');
 
 Route::get('/terms', function () {
     return view('terms');
-});
+})->name('legal.terms');
 
 Route::get('/maintenance', function () {
     return view('maintenance');
