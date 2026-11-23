@@ -1,0 +1,21 @@
+{
+    "name": "datatem",
+    "private": true,
+    "type": "module",
+    "engines": {
+        "node": ">=20.19",
+        "npm": ">=10"
+    },
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "devDependencies": {
+        "@fontsource-variable/instrument-sans": "^5.0.0",
+        "@tailwindcss/vite": "^4.0.0",
+        "alpinejs": "^3.14.0",
+        "laravel-vite-plugin": "^3.1.0",
+        "tailwindcss": "^4.0.0",
+        "vite": "^8.0.0"
+    }
+}

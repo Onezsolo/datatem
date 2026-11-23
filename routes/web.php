@@ -112,6 +112,10 @@ Route::get('/maintenance', function () {
     return view('maintenance');
 })->name('maintenance');
 
+if (! app()->environment('production')) {
+    Route::view('/design-system', 'design-system')->name('design-system');
+}
+
 // Admin Routes
 Route::prefix('admin')->group(function () {
     Route::get('/', function () {
