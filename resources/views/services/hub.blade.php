@@ -1,14 +1,11 @@
 <x-layouts.shop title="Services">
     <div class="space-y-6">
-        <div class="flex flex-wrap items-end justify-between gap-3">
-            <div>
-                <h1 class="text-2xl font-extrabold tracking-tight text-brand-navy">Data and digital services</h1>
-                <p class="mt-1 text-sm text-muted">Data, subscriptions and everyday services.</p>
-            </div>
-            <a href="{{ route('services.orders') }}" class="inline-flex min-h-10 items-center rounded-control border border-line bg-surface px-4 text-sm font-bold text-brand-navy hover:bg-surface-muted">Service orders</a>
-        </div>
-
-        @include('partials.guest-purchase-note')
+        <x-ui.page-heading title="Data and digital services" subtitle="Data, subscriptions and everyday services.">
+            <x-slot:actions>
+                <a href="{{ route('services.orders') }}" class="inline-flex min-h-10 items-center rounded-control border border-line bg-surface px-4 text-sm font-bold text-brand-navy hover:bg-surface-muted">Service orders</a>
+            </x-slot:actions>
+        </x-ui.page-heading>
+@include('partials.guest-purchase-note')
 
         @php
             $cards = [

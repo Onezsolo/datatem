@@ -72,3 +72,12 @@ php artisan serve
 `GET /design-system` renders the component preview outside production. Migrated pages must not load external CDNs (`cdn.tailwindcss.com`, `unpkg.com`, `fonts.googleapis.com`); Alpine and fonts are bundled.
 
 Standalone pages `storefront` and `spin-preview` still carry their original CDNs until their phases (3 and 4) migrate them.
+## Service page culture
+
+Every service page follows the same pattern; new pages must reuse these primitives instead of inventing their own:
+
+- **Page heading:** `x-ui.page-heading` — back link to All services, a short title, one-line subtitle, and an actions slot (wallet balance + Top up, or Service orders on the hub).
+- **Selectable lists:** use the `.service-tab` component class for networks, products or services. Each tab is `role="tab"` with `aria-selected`; choosing one replaces the working panel instead of stacking separate forms.
+- **Working panel:** one form/panel at a time, full width on mobile, with practical helper text only where it prevents a mistake.
+- **Copy:** sentence case, one-line subtitles, no uppercase eyebrows, no blog/editorial sections, no FAQ or process essays. Explain an outcome only when it changes what the person does.
+- **Single-service pages** (AFA) use the compact form + fee/refund summary pattern; no list tabs are needed.

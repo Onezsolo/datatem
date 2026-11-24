@@ -718,3 +718,8 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - All service pages now use the compact pattern: back link, short title and one-line description, wallet/top-up actions, no uppercase eyebrows or blog sections.
 
 - Utility bills now list every service as selectable tabs; clicking a service replaces the form panel, with Verify lookup retained per service.
+
+### Service page design culture codified
+
+- Added x-ui.page-heading and .service-tab primitives; all service pages (hub, data, WAEC, utility, subscriptions) now use them. Data networks, WAEC products, utility services and subscriptions switch one panel at a time; AFA keeps the single compact form.
+- Design-system documentation now defines the service-page rules so future templates inherit the same pattern.

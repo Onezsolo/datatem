@@ -121,4 +121,28 @@
     .btn-admin-secondary:hover {
         background: var(--color-surface-muted);
     }
-}
+    .service-tab {
+        display: inline-flex;
+        min-height: 2.75rem;
+        flex-shrink: 0;
+        align-items: center;
+        gap: 0.5rem;
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-control);
+        background: var(--color-surface);
+        padding-inline: 1rem;
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: var(--color-muted);
+        transition: color 120ms ease-in, background 120ms ease-in, border-color 120ms ease-in;
+    }
+
+    .service-tab:hover:not([aria-selected='true']) {
+        color: var(--color-brand-navy);
+    }
+
+    .service-tab[aria-selected='true'] {
+        border-color: var(--color-brand-navy);
+        background: var(--color-brand-navy);
+        color: var(--color-surface);
+    }}

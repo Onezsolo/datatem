@@ -1,23 +1,12 @@
 <x-layouts.shop title="Data bundles">
     <div class="space-y-6">
-        <div>
-            <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-muted hover:text-brand-navy">
-                <x-ui.icon name="chevron-left" :size="16" />
-                All services
-            </a>
-            <div class="mt-3 flex flex-wrap items-end justify-between gap-3">
-                <div>
-                    <h1 class="text-2xl font-extrabold tracking-tight text-brand-navy">Buy data</h1>
-                    <p class="mt-1 text-sm text-muted">Bundles delivered instantly.</p>
-                </div>
-                <div class="flex items-center gap-3 text-sm">
-                    <span class="text-muted">Wallet <span class="font-bold text-brand-navy">GHS {{ number_format($wallet, 2) }}</span></span>
-                    <a href="{{ route('topup') }}" class="font-bold text-brand-navy underline underline-offset-4">Top up</a>
-                </div>
-            </div>
-        </div>
-
-        @include('partials.guest-purchase-note')
+        <x-ui.page-heading title="Buy data" subtitle="Bundles delivered instantly." :back-url="route('services.index')">
+            <x-slot:actions>
+                <span class="text-muted">Wallet <span class="font-bold text-brand-navy">GHS {{ number_format($wallet, 2) }}</span></span>
+                <a href="{{ route('topup') }}" class="font-bold text-brand-navy underline underline-offset-4">Top up</a>
+            </x-slot:actions>
+        </x-ui.page-heading>
+@include('partials.guest-purchase-note')
 
         @if ($items->isEmpty())
             <div class="rounded-card border border-line bg-surface p-8 text-center">
@@ -34,9 +23,8 @@
                             type="button"
                             role="tab"
                             @click="active = @js((string) $network)"
-                            :class="active === @js((string) $network) ? 'bg-brand-navy text-white border-brand-navy' : 'border-line bg-surface text-muted hover:text-brand-navy'"
                             :aria-selected="active === @js((string) $network)"
-                            class="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-control border px-4 text-sm font-bold"
+                            class="service-tab"
                         >
                             {{ $network }}
                             <span class="text-xs font-semibold opacity-70">{{ $networkItems->count() }}</span>
