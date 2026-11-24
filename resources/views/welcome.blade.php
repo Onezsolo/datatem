@@ -132,9 +132,9 @@
         <div class="rounded-card border border-line bg-surface p-6 sm:p-8">
             <div class="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <h2 id="shop-heading" class="text-xl font-extrabold tracking-tight text-brand-navy">Shopping is coming into the same account</h2>
+                    <h2 id="shop-heading" class="text-xl font-extrabold tracking-tight text-brand-navy">Shopping and data in one account</h2>
                     <p class="mt-1 max-w-2xl text-sm leading-relaxed text-muted">
-                        Products, cart and delivery orders will sit beside your data purchases, with one checkout and one order list.
+                        The shop is live: browse products publicly, then sign in to add to cart and pay from your wallet. One account and one order history.
                     </p>
                 </div>
                 <x-ui.button href="{{ url('/shop') }}" variant="secondary">Open shop</x-ui.button>
@@ -142,16 +142,31 @@
         </div>
     </section>
 
-    <section class="bg-brand-yellow">
-        <div class="container-page flex flex-wrap items-center justify-between gap-4 py-8">
-            <div>
-                <h2 class="text-xl font-extrabold text-brand-navy">New here?</h2>
-                <p class="mt-1 text-sm font-semibold text-brand-navy">Create a free account and buy your first bundle in under a minute.</p>
+    @auth
+        <section class="bg-brand-yellow">
+            <div class="container-page flex flex-wrap items-center justify-between gap-4 py-8">
+                <div>
+                    <h2 class="text-xl font-extrabold text-brand-navy">Welcome back</h2>
+                    <p class="mt-1 text-sm font-semibold text-brand-navy">Your dashboard, data orders and shop orders are ready.</p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <x-ui.button href="{{ url('/dashboard') }}" variant="secondary">Dashboard</x-ui.button>
+                    <x-ui.button href="{{ route('orders.shop') }}" variant="outline">Shop orders</x-ui.button>
+                </div>
             </div>
-            <div class="flex flex-wrap gap-3">
-                <x-ui.button href="{{ route('signup') }}" variant="secondary">Create free account</x-ui.button>
-                <x-ui.button href="{{ route('login') }}" variant="outline">Sign in</x-ui.button>
+        </section>
+    @else
+        <section class="bg-brand-yellow">
+            <div class="container-page flex flex-wrap items-center justify-between gap-4 py-8">
+                <div>
+                    <h2 class="text-xl font-extrabold text-brand-navy">New here?</h2>
+                    <p class="mt-1 text-sm font-semibold text-brand-navy">Create a free account and buy your first bundle in under a minute.</p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <x-ui.button href="{{ route('signup') }}" variant="secondary">Create free account</x-ui.button>
+                    <x-ui.button href="{{ route('login') }}" variant="outline">Sign in</x-ui.button>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endauth
 </x-layouts.public>

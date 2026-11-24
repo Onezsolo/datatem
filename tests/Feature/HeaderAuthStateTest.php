@@ -35,4 +35,26 @@ class HeaderAuthStateTest extends TestCase
             ->assertSee('Sign out')
             ->assertDontSee('Sign in');
     }
+    public function test_home_cta_matches_auth_state(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Create free account')
+            ->assertSee('Sign in');
+
+        $user = User::create([
+            'full_name' => 'Home User',
+            'email' => 'home-auth@example.com',
+            'phone' => '0244000062',
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->actingAs($user)
+            ->get('/')
+            ->assertOk()
+            ->assertSee('Welcome back')
+            ->assertSee('Shop orders')
+            ->assertDontSee('Create free account')
+            ->assertDontSee('Sign in');
+    }
 }
