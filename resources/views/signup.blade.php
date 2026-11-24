@@ -1,127 +1,132 @@
-@extends('layouts.app')
-
-@section('content')
-<div class="min-h-[calc(100vh-80px)] flex items-center justify-center p-6 bg-slate-50" x-data="{
-    full_name: '',
-    email: '',
-    phone: '',
-    password: '',
-    password_confirmation: '',
-    ref: new URLSearchParams(window.location.search).get('ref') || '',
-    loading: false,
-    errors: {},
-    async signup() {
-        this.loading = true;
-        this.errors = {};
-        try {
-            const payload = {
-                full_name: this.full_name,
-                email: this.email,
-                phone: this.phone,
-                password: this.password,
-                password_confirmation: this.password_confirmation
-            };
-            if (this.ref) payload.ref = this.ref;
-            const response = await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const data = await response.json();
-            if (response.ok) {
-                this.$store.auth.login(data.user, data.authorization.token);
-                window.location.href = '/dashboard';
-            } else {
-                if (typeof data === 'object' && data !== null && !Array.isArray(data)) {
-                    this.errors = {};
-                    for (const [k, v] of Object.entries(data)) {
-                        this.errors[k] = Array.isArray(v) ? v : [v];
+<x-layouts.public title="Create account">
+    <div
+        class="bg-surface-muted py-10 sm:py-14"
+        x-data="{
+            full_name: '',
+            email: '',
+            phone: '',
+            password: '',
+            password_confirmation: '',
+            ref: new URLSearchParams(window.location.search).get('ref') || '',
+            loading: false,
+            errors: {},
+            async signup() {
+                this.loading = true;
+                this.errors = {};
+                try {
+                    const payload = {
+                        full_name: this.full_name,
+                        email: this.email,
+                        phone: this.phone,
+                        password: this.password,
+                        password_confirmation: this.password_confirmation
+                    };
+                    if (this.ref) payload.ref = this.ref;
+                    const response = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        this.$store.auth.login(data.user, data.authorization.token);
+                        window.location.href = '/dashboard';
+                    } else {
+                        if (typeof data === 'object' && data !== null && !Array.isArray(data)) {
+                            this.errors = {};
+                            for (const [k, v] of Object.entries(data)) {
+                                this.errors[k] = Array.isArray(v) ? v : [v];
+                            }
+                            if (data.error && !this.errors.general) this.errors.general = [data.error];
+                        } else {
+                            this.errors = { general: [data.error || 'Server error. Please try again.'] };
+                        }
                     }
-                    if (data.error && !this.errors.general) this.errors.general = [data.error];
-                } else {
-                    this.errors = { general: [data.error || 'Server error. Please try again.'] };
+                } catch (e) {
+                    console.error('Signup Error:', e);
+                    this.errors = { general: ['Could not connect to server. Please check your connection.'] };
+                } finally {
+                    this.loading = false;
                 }
             }
-        } catch (e) {
-            console.error('Signup Error:', e);
-            this.errors = { general: ['Could not connect to server. Please check your connection.'] };
-        } finally {
-            this.loading = false;
-        }
-    }
-}">
-    <div class="max-w-md w-full">
-        <div class="glass p-10 rounded-[40px] shadow-2xl border border-slate-200/50">
-            <div class="text-center mb-10">
-                <img src="{{ asset('assets/l1.png') }}" alt="R2BMarket" class="h-20 w-auto object-contain mx-auto">
-                <h2 class="mt-6 text-2xl font-black text-slate-900">Join R2BMarket</h2>
-                <p class="mt-2 text-slate-500 font-medium">Start saving on your data bundles today</p>
-            </div>
-            
-            <div x-show="Object.keys(errors).length > 0" class="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-2xl text-sm font-bold">
-                <template x-if="errors.error">
-                    <p x-text="errors.error"></p>
-                </template>
-                <template x-if="!errors.error">
-                    <ul class="list-disc list-inside">
-                        <template x-for="(messages, field) in errors">
-                            <template x-if="Array.isArray(messages)">
-                                <template x-for="message in messages">
-                                    <li x-text="message"></li>
+        }"
+    >
+        <div class="mx-auto w-full max-w-md">
+            <div class="rounded-card border border-line bg-surface p-6 sm:p-8">
+                <div class="flex items-center gap-2.5">
+                    <img src="{{ \App\Support\Brand::logoUrl() }}" alt="" width="48" height="48" class="h-10 w-10 rounded-control bg-surface object-contain p-1">
+                    <span class="leading-none">
+                        <span class="block text-sm font-extrabold tracking-[0.06em] text-brand-navy">{{ \Illuminate\Support\Str::upper(\App\Support\Brand::name()) }}</span>
+                        <span class="mt-1 block text-[0.5rem] font-bold tracking-[0.24em] text-brand-red-strong">DATA &amp; SHOPPING</span>
+                    </span>
+                </div>
+
+                <h1 class="mt-5 text-2xl font-extrabold tracking-tight text-brand-navy">Create your account</h1>
+                <p class="mt-1 text-sm text-muted">Buy data and shop with one account.</p>
+
+                <div x-show="Object.keys(errors).length > 0" x-cloak class="mt-4 rounded-card border border-brand-red-strong bg-surface p-3 text-sm font-semibold text-brand-navy" role="alert">
+                    <template x-if="errors.error">
+                        <p x-text="errors.error"></p>
+                    </template>
+                    <template x-if="!errors.error">
+                        <ul class="list-inside list-disc space-y-0.5">
+                            <template x-for="(messages, field) in errors" :key="field">
+                                <template x-if="Array.isArray(messages)">
+                                    <template x-for="message in messages" :key="message">
+                                        <li x-text="message"></li>
+                                    </template>
                                 </template>
                             </template>
-                        </template>
-                    </ul>
-                </template>
-            </div>
-
-            <form @submit.prevent="signup" class="space-y-5">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Full Name</label>
-                    <input type="text" x-model="full_name" required placeholder="John Doe" class="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all font-medium">
+                        </ul>
+                    </template>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Email Address</label>
-                    <input type="email" x-model="email" required placeholder="name@example.com" class="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all font-medium">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Phone Number</label>
-                    <input type="tel" x-model="phone" required placeholder="024XXXXXXX" class="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all font-medium">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
+                <form @submit.prevent="signup" class="mt-5 space-y-4">
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Password</label>
-                        <input type="password" x-model="password" required placeholder="••••••••" class="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all font-medium">
+                        <label for="full-name" class="block text-sm font-bold text-brand-navy">Full name</label>
+                        <input id="full-name" name="full_name" type="text" x-model="full_name" required autocomplete="name" placeholder="John Doe" class="mt-1 h-11 w-full rounded-control border border-line bg-surface px-3 text-sm text-ink">
                     </div>
+
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Confirm</label>
-                        <input type="password" x-model="password_confirmation" required placeholder="••••••••" class="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all font-medium">
+                        <label for="email" class="block text-sm font-bold text-brand-navy">Email address</label>
+                        <input id="email" name="email" type="email" x-model="email" required autocomplete="email" placeholder="name@example.com" class="mt-1 h-11 w-full rounded-control border border-line bg-surface px-3 text-sm text-ink">
                     </div>
-                </div>
 
-                <div class="flex items-start space-x-2 py-2">
-                    <input type="checkbox" required class="mt-1 w-5 h-5 rounded-lg border-slate-300 text-cyan-600 focus:ring-cyan-500">
-                    <span class="text-sm text-slate-600 font-medium">I agree to the <a href="/terms" class="text-cyan-600 font-bold hover:underline">Terms</a> and <a href="/privacy" class="text-cyan-600 font-bold hover:underline">Privacy Policy</a></span>
-                </div>
+                    <div>
+                        <label for="phone" class="block text-sm font-bold text-brand-navy">Phone number</label>
+                        <input id="phone" name="phone" type="tel" x-model="phone" required autocomplete="tel" placeholder="024XXXXXXX" class="mt-1 h-11 w-full rounded-control border border-line bg-surface px-3 text-sm text-ink">
+                    </div>
 
-                <button type="submit" :disabled="loading" class="w-full bg-cyan-600 text-white font-black py-4 rounded-2xl transition-all hover:bg-cyan-700 active:scale-[0.98] shadow-xl shadow-cyan-500/30 flex items-center justify-center space-x-3 disabled:opacity-50">
-                    <span x-show="!loading">Create Account</span>
-                    <span x-show="loading" class="flex items-center">
-                        <svg class="animate-spin h-5 w-5 text-white mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                        Creating account...
-                    </span>
-                </button>
-            </form>
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <div>
+                            <label for="new-password" class="block text-sm font-bold text-brand-navy">Password</label>
+                            <input id="new-password" name="password" type="password" x-model="password" required autocomplete="new-password" placeholder="Your password" class="mt-1 h-11 w-full rounded-control border border-line bg-surface px-3 text-sm text-ink">
+                        </div>
+                        <div>
+                            <label for="confirm-password" class="block text-sm font-bold text-brand-navy">Confirm</label>
+                            <input id="confirm-password" name="password_confirmation" type="password" x-model="password_confirmation" required autocomplete="new-password" placeholder="Repeat password" class="mt-1 h-11 w-full rounded-control border border-line bg-surface px-3 text-sm text-ink">
+                        </div>
+                    </div>
 
-            <div class="mt-10 text-center">
-                <p class="text-slate-500 font-medium">
-                    Already have an account? 
-                    <a href="/login" class="text-cyan-600 font-black hover:text-cyan-700">Sign in</a>
+                    <div class="flex items-start gap-2">
+                        <input id="terms" type="checkbox" required class="mt-1 h-4 w-4 rounded-control border-line text-brand-navy">
+                        <label for="terms" class="text-sm font-medium text-muted">
+                            I agree to the <a href="{{ route('legal.terms') }}" class="font-bold text-brand-navy underline underline-offset-4">Terms</a>
+                            and <a href="{{ route('legal.privacy') }}" class="font-bold text-brand-navy underline underline-offset-4">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" :disabled="loading" class="inline-flex min-h-11 w-full items-center justify-center rounded-control bg-brand-yellow px-4 text-sm font-bold text-brand-navy hover:bg-brand-yellow-strong disabled:opacity-60">
+                        <span x-show="!loading">Create account</span>
+                        <span x-show="loading" x-cloak>Creating account...</span>
+                    </button>
+                </form>
+
+                <p class="mt-5 text-center text-sm text-muted">
+                    Already have an account?
+                    <a href="{{ route('login') }}" class="font-bold text-brand-navy underline underline-offset-4 hover:text-brand-red-strong">Sign in</a>
                 </p>
             </div>
         </div>
     </div>
-</div>
-@endsection
+</x-layouts.public>
