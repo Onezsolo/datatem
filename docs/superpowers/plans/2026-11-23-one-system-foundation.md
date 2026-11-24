@@ -737,3 +737,5 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Regression tests: unique table creation names, legacy admin code absence, password length, secret non-exposure, removed admin service path.
 
 - Login/signup/session sync now redirect with a one-time welcome flag; member and admin shells open their mobile sidebar immediately and remove the flag from the URL. The blocking dashboard welcome modal was removed so the sidebar is always visible right after login.
+
+- Data bundles: verified sync imports every active bundle returned by the provider (no client-side filtering) and the Buy data page renders all networks as tabs with a live count (N bundles across M networks). Local demo still shows only sample rows until provider credentials are configured and Sync is run.

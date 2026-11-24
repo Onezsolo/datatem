@@ -312,4 +312,39 @@ class PatupaaServicesTest extends TestCase
             ->assertOk()
             ->assertSee('API-ORDER-1');
     }
+
+    public function test_data_page_lists_every_available_bundle_and_network(): void
+    {
+        $this->dataItem();
+
+        $this->dataItem([
+            'remote_id' => '10',
+            'plan_code' => 'MTN-2GB',
+            'name' => 'MTN 2GB',
+            'network' => 'MTN',
+            'data_value' => '2GB',
+        ]);
+        $this->dataItem([
+            'remote_id' => '11',
+            'plan_code' => 'AT-3GB',
+            'name' => 'AirtelTigo 3GB',
+            'network' => 'AirtelTigo',
+            'data_value' => '3GB',
+        ]);
+        $this->dataItem([
+            'remote_id' => '12',
+            'plan_code' => 'TELECEL-7GB',
+            'name' => 'Telecel 7GB',
+            'network' => 'Telecel',
+            'data_value' => '7GB',
+        ]);
+
+        $this->get('/services/data')
+            ->assertOk()
+            ->assertSee('MTN 1GB')
+            ->assertSee('MTN 2GB')
+            ->assertSee('AirtelTigo 3GB')
+            ->assertSee('Telecel 7GB')
+            ->assertSee('4 bundles across 3 networks');
+    }
 }

@@ -1,6 +1,6 @@
 <x-layouts.shop title="Data bundles">
     <div class="space-y-6">
-        <x-ui.page-heading title="Buy data" subtitle="Bundles delivered instantly." :back-url="route('services.index')">
+        <x-ui.page-heading title="Buy data" :subtitle="$items->isEmpty() ? 'Bundles delivered instantly.' : $items->count().' bundles across '. $groups->count().' networks.'" :back-url="route('services.index')">
             <x-slot:actions>
                 <span class="text-muted">Wallet <span class="font-bold text-brand-navy">GHS {{ number_format($wallet, 2) }}</span></span>
                 <a href="{{ route('topup') }}" class="font-bold text-brand-navy underline underline-offset-4">Top up</a>
