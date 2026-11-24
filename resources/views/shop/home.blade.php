@@ -1,4 +1,4 @@
-<x-layouts.shop title="Shop home" description="Shop home essentials, phones, appliances and more from {{ \App\Support\Brand::name() }} with guest checkout.">
+<x-layouts.shop title="Super Mall" description="Shop home essentials, phones, appliances and more from {{ \App\Support\Brand::name() }} with guest checkout.">
     <x-shop.hero-carousel />
 
     <section id="categories" class="container-page py-10" aria-labelledby="categories-title">

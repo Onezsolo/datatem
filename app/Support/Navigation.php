@@ -19,7 +19,7 @@ final class Navigation
                 'url' => $authed ? url('/dashboard') : route('home'),
                 'pattern' => $authed ? 'dashboard' : 'home',
             ],
-            ['label' => 'Shop', 'url' => url('/shop'), 'pattern' => 'shop*'],
+            ['label' => 'Super Mall', 'url' => url('/shop'), 'pattern' => 'shop*'],
             ['label' => 'Bundles', 'route' => 'services.data', 'pattern' => 'services/data'],
             ['label' => 'Stores', 'route' => 'store.landing', 'pattern' => 'store*'],
         ]);
@@ -35,7 +35,7 @@ final class Navigation
                 ['label' => 'Dashboard', 'url' => url('/dashboard'), 'pattern' => 'dashboard', 'icon' => 'home'],
             ]),
             'Services' => array_map(fn (array $item) => self::item($item), [
-                ['label' => 'Shop', 'url' => url('/shop'), 'pattern' => 'shop*', 'icon' => 'bag'],
+                ['label' => 'Super Mall', 'url' => url('/shop'), 'pattern' => 'shop*', 'icon' => 'bag'],
                 ['label' => 'Data bundles', 'route' => 'services.data', 'pattern' => 'services/data', 'icon' => 'phone'],
                 ['label' => 'WAEC PINs', 'route' => 'services.waec', 'pattern' => 'services/waec', 'icon' => 'check'],
                 ['label' => 'Utility bills', 'route' => 'services.utility', 'pattern' => 'services/utility', 'icon' => 'grid'],
@@ -69,8 +69,8 @@ final class Navigation
 
         return [
             ['label' => 'Home', 'url' => $authed ? url('/dashboard') : route('home'), 'active' => $authed ? request()->is('dashboard') : request()->routeIs('home'), 'icon' => 'home'],
-            ['label' => 'Shop', 'url' => url('/shop'), 'active' => request()->is('shop*'), 'icon' => 'bag'],
-            ['label' => 'Bundles', 'url' => route('bundles'), 'active' => request()->routeIs('bundles'), 'icon' => 'phone'],
+            ['label' => 'Super Mall', 'url' => url('/shop'), 'active' => request()->is('shop*'), 'icon' => 'bag'],
+            ['label' => 'Bundles', 'url' => route('services.data'), 'active' => request()->is('services/data'), 'icon' => 'phone'],
             ['label' => 'Account', 'url' => $authed ? route('profile') : url('/dashboard'), 'active' => $authed ? request()->routeIs('profile') : request()->is('dashboard'), 'icon' => 'help'],
         ];
     }

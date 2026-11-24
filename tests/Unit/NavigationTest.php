@@ -50,7 +50,7 @@ class NavigationTest extends TestCase
     {
         $items = Navigation::bottom();
 
-        $this->assertSame(['Home', 'Shop', 'Bundles', 'Account'], array_column($items, 'label'));
+        $this->assertSame(['Home', 'Super Mall', 'Bundles', 'Account'], array_column($items, 'label'));
     }
     public function test_authenticated_home_links_point_to_account(): void
     {

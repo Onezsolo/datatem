@@ -18,7 +18,7 @@
 
                 <div class="mt-7 flex flex-wrap gap-3">
                     <x-ui.button href="{{ route('bundles') }}" size="lg">Browse bundles</x-ui.button>
-                    <x-ui.button href="{{ url('/shop') }}" variant="ghost" size="lg">Visit shop</x-ui.button>
+                    <x-ui.button href="{{ url('/shop') }}" variant="ghost" size="lg">Visit Super Mall</x-ui.button>
                 </div>
 
                 <dl class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -65,7 +65,7 @@
             @foreach ([
                 ['Buy data', 'Pick a bundle for your network', route('bundles'), 'phone'],
                 ['Top up wallet', 'Pay with Paystack or manual transfer', route('topup'), 'cart'],
-                ['Shop products', 'Everyday items delivered to you', url('/shop'), 'bag'],
+                ['Super Mall', 'Everyday items delivered to you', url('/shop'), 'bag'],
             ] as [$label, $description, $href, $icon])
                 <x-ui.card :href="$href" padding="sm" class="h-full hover:bg-surface-muted">
                     <span class="inline-flex h-10 w-10 items-center justify-center rounded-control bg-brand-navy text-brand-yellow">
@@ -136,7 +136,7 @@
                         The shop is live: browse products publicly, then sign in to add to cart and pay from your wallet. One account and one order history.
                     </p>
                 </div>
-                <x-ui.button href="{{ url('/shop') }}" variant="secondary">Open shop</x-ui.button>
+                <x-ui.button href="{{ url('/shop') }}" variant="secondary">Open Super Mall</x-ui.button>
             </div>
         </div>
     </section>
