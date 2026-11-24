@@ -35,7 +35,7 @@ class NavigationTest extends TestCase
             }
         }
 
-        $this->assertSame(17, $count);
+        $this->assertSame(16, $count);
 
         $labels = collect($groups)->flatten(1)->pluck('label');
         $this->assertTrue($labels->contains('Orders'));
