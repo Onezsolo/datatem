@@ -27,9 +27,9 @@
             <div class="p-6 border-b border-line bg-surface-muted/50">
                 <p class="text-sm font-bold text-muted mb-6">Base price = admin price. Set your selling price (must be ≥ base). Your profit = selling price − base.</p>
                 <div class="flex flex-wrap gap-2 p-1.5 bg-surface-muted rounded-card w-fit border border-line">
-                    <button @click="activeNet = 'mtn'" :class="activeNet === 'mtn' ? 'bg-[#FFCC00] text-brand-navy shadow-none' : 'text-muted'" class="px-6 py-2.5 rounded-card text-sm font-bold transition-all">MTN</button>
-                    <button @click="activeNet = 'at'" :class="activeNet === 'at' ? 'bg-[#9333ea] text-white shadow-none' : 'text-muted'" class="px-6 py-2.5 rounded-card text-sm font-bold transition-all">AirtelTigo</button>
-                    <button @click="activeNet = 'telecel'" :class="activeNet === 'telecel' ? 'bg-[#FF0000] text-white shadow-none' : 'text-muted'" class="px-6 py-2.5 rounded-card text-sm font-bold transition-all">Telecel</button>
+                    <button @click="activeNet = 'mtn'" :class="activeNet === 'mtn' ? 'bg-[#F0C232] text-brand-navy shadow-none' : 'text-muted'" class="px-6 py-2.5 rounded-card text-sm font-bold transition-all">MTN</button>
+                    <button @click="activeNet = 'at'" :class="activeNet === 'at' ? 'bg-[#8b5cf6] text-white shadow-none' : 'text-muted'" class="px-6 py-2.5 rounded-card text-sm font-bold transition-all">AirtelTigo</button>
+                    <button @click="activeNet = 'telecel'" :class="activeNet === 'telecel' ? 'bg-[#E0505B] text-white shadow-none' : 'text-muted'" class="px-6 py-2.5 rounded-card text-sm font-bold transition-all">Telecel</button>
                     <button @click="activeNet = 'all'" :class="activeNet === 'all' ? 'bg-surface text-brand-navy shadow-none' : 'text-muted'" class="px-6 py-2.5 rounded-card text-sm font-bold transition-all">All</button>
                 </div>
             </div>

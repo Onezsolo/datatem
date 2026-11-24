@@ -79,9 +79,9 @@
                 <!-- Network tabs: MTN first, then AirtelTigo, Telecel, All -->
                 <div x-show="!loading && packages.length" class="mb-10">
                     <div class="flex flex-wrap justify-center gap-2 p-1.5 bg-surface-muted rounded-[24px] w-fit mx-auto border border-line">
-                        <button @click="activeNet = 'mtn'" :class="activeNet === 'mtn' ? 'bg-[#FFCC00] text-brand-navy shadow-none' : 'text-muted hover:text-ink'" class="px-6 py-3 rounded-card text-sm font-bold transition-all">MTN</button>
-                        <button @click="activeNet = 'at'" :class="activeNet === 'at' ? 'bg-[#9333ea] text-white shadow-none' : 'text-muted hover:text-ink'" class="px-6 py-3 rounded-card text-sm font-bold transition-all">AirtelTigo</button>
-                        <button @click="activeNet = 'telecel'" :class="activeNet === 'telecel' ? 'bg-[#FF0000] text-white shadow-none' : 'text-muted hover:text-ink'" class="px-6 py-3 rounded-card text-sm font-bold transition-all">Telecel</button>
+                        <button @click="activeNet = 'mtn'" :class="activeNet === 'mtn' ? 'bg-[#F0C232] text-brand-navy shadow-none' : 'text-muted hover:text-ink'" class="px-6 py-3 rounded-card text-sm font-bold transition-all">MTN</button>
+                        <button @click="activeNet = 'at'" :class="activeNet === 'at' ? 'bg-[#8b5cf6] text-white shadow-none' : 'text-muted hover:text-ink'" class="px-6 py-3 rounded-card text-sm font-bold transition-all">AirtelTigo</button>
+                        <button @click="activeNet = 'telecel'" :class="activeNet === 'telecel' ? 'bg-[#E0505B] text-white shadow-none' : 'text-muted hover:text-ink'" class="px-6 py-3 rounded-card text-sm font-bold transition-all">Telecel</button>
                         <button @click="activeNet = 'all'" :class="activeNet === 'all' ? 'bg-surface text-brand-navy shadow-none' : 'text-muted hover:text-ink'" class="px-6 py-3 rounded-card text-sm font-bold transition-all">All</button>
                     </div>
                 </div>

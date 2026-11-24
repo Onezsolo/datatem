@@ -8,16 +8,16 @@ Tokens live in `resources/css/tokens.css` and are exported to Tailwind utilities
 
 | Token | Value | Usage |
 |---|---|---|
-| `brand-navy` | `#001534` | Header, primary text, feature surfaces, sidebar |
-| `brand-navy-soft` | `#0B2550` | Secondary hover |
-| `brand-yellow` | `#FFCC00` | Primary actions, header accent border |
-| `brand-yellow-strong` | `#E6B800` | Primary hover |
-| `brand-red` | `#E63946` | Non-text accents only |
-| `brand-red-strong` | `#B0202D` | Text-bearing danger |
-| `brand-red-strong-hover` | `#941B26` | Danger hover |
-| `surface` / `surface-muted` | `#FFFFFF` / `#F4F4F4` | Page and secondary panels |
-| `ink` / `muted` / `line` | `#0B0B0B` / `#5A6270` / `#E2E4E8` | Body text, secondary text, borders |
-| `nav-muted` | `#D7DEEA` | Header navigation links on navy |
+| `brand-navy` | `#0A2038` | Header, primary text, feature surfaces, sidebar |
+| `brand-navy-soft` | `#143A5A` | Secondary hover |
+| `brand-yellow` | `#F0C232` | Primary actions, header accent border |
+| `brand-yellow-strong` | `#D4A81F` | Primary hover |
+| `brand-red` | `#DB4650` | Non-text accents only |
+| `brand-red-strong` | `#A92D38` | Text-bearing danger |
+| `brand-red-strong-hover` | `#8C232D` | Danger hover |
+| `surface` / `surface-muted` | `#FCFBF8` / `#F2F0EB` | Page and secondary panels |
+| `ink` / `muted` / `line` | `#14171A` / `#5C6472` / `#E1DFD8` | Body text, secondary text, borders |
+| `nav-muted` | `#D3DAE6` | Header navigation links on navy |
 
 - Typography: Instrument Sans (bundled by Vite through `@fontsource-variable/instrument-sans`).
 - Radii: controls `0.375rem`, cards `0.75rem`.

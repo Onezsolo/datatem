@@ -119,10 +119,10 @@
 function packageManagement() {
     const networkLogos = JSON.parse(document.querySelector('[data-network-logos]')?.getAttribute('data-network-logos') || '{}');
     const tabClasses = {
-        'MTN': 'bg-[#FFCC00] text-brand-navy shadow-none',
-        'AT': 'bg-[#9333ea] text-white shadow-none',
-        'AirtelTigo': 'bg-[#9333ea] text-white shadow-none',
-        'Telecel': 'bg-[#FF0000] text-white shadow-none',
+        'MTN': 'bg-[#F0C232] text-brand-navy shadow-none',
+        'AT': 'bg-[#8b5cf6] text-white shadow-none',
+        'AirtelTigo': 'bg-[#8b5cf6] text-white shadow-none',
+        'Telecel': 'bg-[#E0505B] text-white shadow-none',
     };
     const cardGradients = {
         'MTN': 'bg-mtn',

@@ -614,3 +614,9 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Sidebar group renamed to `Data earnings` with `Data referral` and `Data reseller` items.
 - Referral and reseller pages state that rewards/tools apply to data bundle purchases only, not shop orders.
 - Shop checkout creates only the shop order, wallet debit and `shop_payments` record; it never credits affiliate balances, reseller earnings or referral commissions. Regression test added (`shop purchase does not create reseller or referral earnings`).
+
+### Auth state and palette contrast
+
+- Header/drawer account state is server-rendered: guests see `Sign in` only; authenticated users see `Account` + `Sign out` and no `Sign in`. Authenticated visitors to `/login` or `/signup` are redirected to their dashboard (admin -> admin console).
+- Logout now calls `POST /logout`, invalidates the JWT, clears the httpOnly `auth_token` cookie and local storage before returning to `/login`.
+- Palette softened to reduce glare while keeping WCAG AA: navy #0A2038, gold #F0C232 (hover #D4A81F), red #DB4650 / #A92D38, surfaces #FCFBF8 / #F2F0EB. Network badge colours muted to match.

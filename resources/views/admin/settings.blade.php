@@ -78,7 +78,7 @@
                                 <label class="block text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-2 ml-2">Primary (base)</label>
                                 <div class="flex items-center gap-3">
                                     <input type="color" x-model="settings.theme_primary_hex" class="w-12 h-12 rounded-card border-2 border-line cursor-pointer shrink-0">
-                                    <input type="text" x-model="settings.theme_primary_hex" placeholder="#9333ea" class="flex-1 px-4 py-3 rounded-card bg-surface border border-line focus:border-brand-navy outline-none font-mono text-sm">
+                                    <input type="text" x-model="settings.theme_primary_hex" placeholder="#8b5cf6" class="flex-1 px-4 py-3 rounded-card bg-surface border border-line focus:border-brand-navy outline-none font-mono text-sm">
                                 </div>
                             </div>
                             <div>
@@ -92,7 +92,7 @@
                                 <label class="block text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-2 ml-2">Gradient end</label>
                                 <div class="flex items-center gap-3">
                                     <input type="color" x-model="settings.theme_gradient_end" class="w-12 h-12 rounded-card border-2 border-line cursor-pointer shrink-0">
-                                    <input type="text" x-model="settings.theme_gradient_end" placeholder="#6b21a8" class="flex-1 px-4 py-3 rounded-card bg-surface border border-line focus:border-brand-navy outline-none font-mono text-sm">
+                                    <input type="text" x-model="settings.theme_gradient_end" placeholder="#6d28d9" class="flex-1 px-4 py-3 rounded-card bg-surface border border-line focus:border-brand-navy outline-none font-mono text-sm">
                                 </div>
                             </div>
                         </div>
@@ -404,9 +404,9 @@ function adminSettingsPage() {
             site_description: 'R2BMarket – Affordable mobile data bundles for MTN, AirtelTigo & Telecel in Ghana.',
             site_logo_url: '',
             site_favicon_url: '',
-            theme_primary_hex: '#9333ea',
+            theme_primary_hex: '#8b5cf6',
             theme_gradient_start: '#a855f7',
-            theme_gradient_end: '#6b21a8',
+            theme_gradient_end: '#6d28d9',
             maintenance_mode: false,
             otp_verification_enabled: true,
             affiliate_system_enabled: true,
@@ -474,9 +474,9 @@ function adminSettingsPage() {
                         site_description: data.site_description ?? 'R2BMarket – Affordable mobile data bundles for MTN, AirtelTigo & Telecel in Ghana.',
                         site_logo_url: data.site_logo_url ?? '',
                         site_favicon_url: data.site_favicon_url ?? '',
-                        theme_primary_hex: data.theme_primary_hex ?? '#9333ea',
+                        theme_primary_hex: data.theme_primary_hex ?? '#8b5cf6',
                         theme_gradient_start: data.theme_gradient_start ?? '#a855f7',
-                        theme_gradient_end: data.theme_gradient_end ?? '#6b21a8',
+                        theme_gradient_end: data.theme_gradient_end ?? '#6d28d9',
                         maintenance_mode: data.maintenance_mode === true || data.maintenance_mode === '1',
                         otp_verification_enabled: data.otp_verification_enabled === true || data.otp_verification_enabled === '1',
                         affiliate_system_enabled: data.affiliate_system_enabled === true || data.affiliate_system_enabled === '1',

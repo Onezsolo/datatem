@@ -52,10 +52,10 @@ class DesignTokensTest extends TestCase
             $this->assertArrayHasKey($token, $this->colors, "Missing design token [{$token}].");
         }
 
-        $this->assertSame('#001534', $this->colors['brand-navy']);
-        $this->assertSame('#ffcc00', $this->colors['brand-yellow']);
-        $this->assertSame('#e63946', $this->colors['brand-red']);
-        $this->assertSame('#b0202d', $this->colors['brand-red-strong']);
+        $this->assertSame('#0a2038', $this->colors['brand-navy']);
+        $this->assertSame('#f0c232', $this->colors['brand-yellow']);
+        $this->assertSame('#db4650', $this->colors['brand-red']);
+        $this->assertSame('#a92d38', $this->colors['brand-red-strong']);
 
         $this->assertStringContainsString('--breakpoint-sm: 40rem;', $this->css);
         $this->assertStringContainsString('--breakpoint-md: 48rem;', $this->css);

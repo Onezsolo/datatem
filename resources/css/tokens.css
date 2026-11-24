@@ -1,20 +1,20 @@
 @theme {
-    /* Brand palette */
-    --color-brand-navy: #001534;
-    --color-brand-navy-soft: #0b2550;
-    --color-brand-yellow: #ffcc00;
-    --color-brand-yellow-strong: #e6b800;
-    --color-brand-red: #e63946;
-    --color-brand-red-strong: #b0202d;
-    --color-brand-red-strong-hover: #941b26;
+    /* Brand palette (softened to reduce glare while staying WCAG AA) */
+    --color-brand-navy: #0A2038;
+    --color-brand-navy-soft: #143A5A;
+    --color-brand-yellow: #F0C232;
+    --color-brand-yellow-strong: #D4A81F;
+    --color-brand-red: #DB4650;
+    --color-brand-red-strong: #A92D38;
+    --color-brand-red-strong-hover: #8C232D;
 
     /* Neutrals */
-    --color-surface: #ffffff;
-    --color-surface-muted: #f4f4f4;
-    --color-ink: #0b0b0b;
-    --color-muted: #5a6270;
-    --color-line: #e2e4e8;
-    --color-nav-muted: #d7deea;
+    --color-surface: #FCFBF8;
+    --color-surface-muted: #F2F0EB;
+    --color-ink: #14171A;
+    --color-muted: #5C6472;
+    --color-line: #E1DFD8;
+    --color-nav-muted: #D3DAE6;
 
     /* Typography */
     --font-sans: 'Instrument Sans Variable', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
@@ -31,20 +31,20 @@
     --breakpoint-2xl: 96rem;
 
     /* Legacy bridge: r2b views use primary-* and former CDN palette names. */
-    --color-primary-50: #eef2f7;
-    --color-primary-100: #dbe3ee;
-    --color-primary-200: #b9c8dd;
-    --color-primary-300: #8ba4c4;
-    --color-primary-400: #5d7fa6;
-    --color-primary-500: #375d88;
-    --color-primary-600: #001534;
-    --color-primary-700: #00112b;
-    --color-primary-800: #000e23;
-    --color-primary-900: #000a1a;
-    --color-mtn: #ffcc00;
-    --color-mtn-dark: #e6b800;
-    --color-airteltigo: #9333ea;
-    --color-airteltigo-dark: #6b21a8;
-    --color-telecel: #ff0000;
-    --color-telecel-dark: #cc0000;
+    --color-primary-50: #edf1f6;
+    --color-primary-100: #d9e1eb;
+    --color-primary-200: #b7c6da;
+    --color-primary-300: #8aa2c2;
+    --color-primary-400: #5c7ca3;
+    --color-primary-500: #365a84;
+    --color-primary-600: #0a2038;
+    --color-primary-700: #081b30;
+    --color-primary-800: #071828;
+    --color-primary-900: #06131f;
+    --color-mtn: #f0c232;
+    --color-mtn-dark: #d4a81f;
+    --color-airteltigo: #8b5cf6;
+    --color-airteltigo-dark: #6d28d9;
+    --color-telecel: #e0505b;
+    --color-telecel-dark: #b23b45;
 }

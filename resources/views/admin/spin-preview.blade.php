@@ -9,10 +9,10 @@
     @endif
     <style>
         :root {
-            --gh-gold: #FFCC00;
-            --gh-red: #E63946;
-            --gh-green: #E6B800;
-            --dark-surface: #001534;
+            --gh-gold: #F0C232;
+            --gh-red: #DB4650;
+            --gh-green: #D4A81F;
+            --dark-surface: #0A2038;
         }
 
         body {
@@ -39,19 +39,19 @@
             background:
                 conic-gradient(
                     rgba(255,255,255,0.5) 0deg 0.5deg,
-                    #FFCC00 0.5deg 51.43deg,
+                    #F0C232 0.5deg 51.43deg,
                     rgba(255,255,255,0.5) 51.43deg 51.93deg,
-                    #E63946 51.93deg 102.86deg,
+                    #DB4650 51.93deg 102.86deg,
                     rgba(255,255,255,0.5) 102.86deg 103.36deg,
-                    #0B2550 103.36deg 154.29deg,
+                    #143A5A 103.36deg 154.29deg,
                     rgba(255,255,255,0.5) 154.29deg 154.79deg,
-                    #FFCC00 154.79deg 205.72deg,
+                    #F0C232 154.79deg 205.72deg,
                     rgba(255,255,255,0.5) 205.72deg 206.22deg,
-                    #E63946 206.22deg 257.14deg,
+                    #DB4650 206.22deg 257.14deg,
                     rgba(255,255,255,0.5) 257.14deg 257.64deg,
-                    #0B2550 257.64deg 308.57deg,
+                    #143A5A 257.64deg 308.57deg,
                     rgba(255,255,255,0.5) 308.57deg 308.97deg,
-                    #FFCC00 308.97deg 360deg
+                    #F0C232 308.97deg 360deg
                 );
             box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
             transition: transform 6s cubic-bezier(0.2, 0, 0.1, 1);
@@ -244,7 +244,7 @@
             var count = 200;
             var defaults = { origin: { y: 0.6 }, zIndex: 9999 };
             function burst() {
-                confetti({ ...defaults, particleCount: count, spread: 100, colors: ['#fcc419', '#fef08a', '#22c55e', '#ef4444', '#ffffff'] });
+                confetti({ ...defaults, particleCount: count, spread: 100, colors: ['#F0C232', '#fef08a', '#22c55e', '#ef4444', '#ffffff'] });
                 confetti({ ...defaults, particleCount: count * 0.4, spread: 60, scalar: 1.2 });
                 confetti({ ...defaults, particleCount: count * 0.25, spread: 140, scalar: 0.8, decay: 0.9 });
                 setTimeout(function() {
