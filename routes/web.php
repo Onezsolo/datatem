@@ -231,7 +231,7 @@ Route::prefix('developer')->name('developer.')->middleware(['jwt.cookie', 'web.a
     Route::get('/products/{product}/preview', [\App\Http\Controllers\DeveloperController::class, 'productPreview'])->name('products.preview');
     Route::post('/products/{product}/package', [\App\Http\Controllers\DeveloperController::class, 'productPackage'])->name('products.package');
     Route::get('/services', function () {
-        return view('admin.services', ['module' => 'providers']);
+        return view('developer.services');
     })->name('services');
 
     Route::get('/packages', [\App\Http\Controllers\DeveloperController::class, 'packages'])->name('packages');
@@ -270,9 +270,7 @@ Route::prefix('admin')->middleware(['jwt.cookie', 'admin.web'])->group(function 
         return view('admin.shop');
     })->name('admin.shop');
 
-    Route::get('/services', function () {
-        return view('admin.services');
-    })->name('admin.services');
+
 
     Route::get('/topups', function () {
         return view('admin.topups');

@@ -43,7 +43,7 @@ class FeatureFlagsTest extends TestCase
         $this->assertFalse(FeatureSettings::enabled('shop'));
         $this->assertNotContains('Super Mall', array_column(Navigation::public(), 'label'));
         $this->get('/shop')->assertNotFound();
-        $this->get('/admin/services')->assertOk();
+        $this->get('/admin/dashboard')->assertOk();
 
         $this->withHeaders($headers)
             ->putJson('/api/admin/settings/features', ['features' => ['shop' => true]])

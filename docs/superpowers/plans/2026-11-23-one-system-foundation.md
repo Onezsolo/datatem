@@ -701,3 +701,8 @@ git commit -m "feat: unify legacy layout with compiled design system"
 
 - The developer Setup link now opens /developer/services (service availability, AFA price, provider sources) inside the developer console; /admin/services is catalog-only for admins (provider sections hidden, provider APIs remain developer-only).
 - Regression test asserts admins cannot open the developer service page and the admin services page never shows provider settings.
+
+### Service management is developer-only; developer cannot manage the business
+
+- Removed /admin/services entirely (404) and its admin navigation entry; service availability, AFA price, provider sources and catalog overrides now live only at /developer/services. All /api/admin/services* endpoints require a developer token.
+- Developers no longer have access to the business admin console (/admin/*) or admin APIs; their console is limited to template products, packages, web templates, licenses, service sources and handover. Tests updated accordingly.

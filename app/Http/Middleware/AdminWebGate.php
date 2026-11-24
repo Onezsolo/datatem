@@ -16,12 +16,8 @@ class AdminWebGate
             return redirect()->guest(route('login', ['redirect' => $request->fullUrl()]));
         }
 
-        if (! in_array($user->role ?? null, ['admin', 'developer'], true)) {
-            abort(403, 'Admin access only.');
-        }
-
-        if ($user->role === 'developer' && \App\Services\HandoverService::isCompleted()) {
-            abort(403, 'Developer access ended after handover.');
+        if (($user->role ?? null) !== 'admin') {
+            abort(403, 'Admin access only. Developers use the developer console.');
         }
 
         return $next($request);

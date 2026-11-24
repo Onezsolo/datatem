@@ -159,7 +159,6 @@ final class Navigation
                 ]),
                 'Setup' => array_map(fn (array $item) => self::item($item), [
                     ['label' => 'Service sources', 'route' => 'developer.services', 'pattern' => 'developer/services', 'icon' => 'grid'],
-                    ['label' => 'Template settings', 'route' => 'admin.settings', 'pattern' => 'admin/settings', 'icon' => 'help'],
                 ]),
             ];
         }
@@ -171,7 +170,6 @@ final class Navigation
             ]),
             'Data' => array_map(fn (array $item) => self::item($item), [
                 ['label' => 'Bundles', 'route' => 'admin.packages', 'pattern' => 'admin/packages', 'icon' => 'phone'],
-                ['label' => 'Services', 'route' => 'admin.services', 'pattern' => 'admin/services', 'icon' => 'grid'],
                 ['label' => 'Data orders', 'route' => 'admin.orders', 'pattern' => 'admin/orders', 'icon' => 'truck'],
                 ['label' => 'Top-ups', 'route' => 'admin.topups', 'pattern' => 'admin/topups', 'icon' => 'cart'],
             ]),

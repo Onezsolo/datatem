@@ -103,16 +103,6 @@ Route::group([
     Route::get('/shop/orders', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'orders']);
     Route::put('/shop/orders/{order}/status', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'updateOrderStatus']);
 
-    // PATUPAA services catalog and availability
-    Route::get('/services', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'index']);
-    Route::put('/services/toggles', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'updateToggles'])->middleware('developer.api');
-    Route::post('/services/sync', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'sync']);
-    Route::post('/services/providers', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'storeProvider'])->middleware('developer.api');
-    Route::put('/services/providers/{provider}', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'updateProvider'])->middleware('developer.api');
-    Route::delete('/services/providers/{provider}', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'destroyProvider'])->middleware('developer.api');
-    Route::post('/services/providers/{provider}/default', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'makeDefaultProvider'])->middleware('developer.api');
-    Route::post('/services/providers/{provider}/sync', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'syncProvider'])->middleware('developer.api');
-    Route::put('/services/catalog/{item}', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'updateItem']);
     Route::get('/topups', [\App\Http\Controllers\AdminController::class, 'getTopups']);    Route::post('/topups/{id}/approve', [\App\Http\Controllers\AdminController::class, 'approveTopup']);
     Route::post('/payments/{reference}/verify-paystack', [\App\Http\Controllers\AdminController::class, 'verifyPaystackPayment']);
     Route::get('/payments', [\App\Http\Controllers\AdminController::class, 'getPayments']);
@@ -141,4 +131,18 @@ Route::group([
     Route::get('/reseller-withdrawals/{id}/detail', [\App\Http\Controllers\AdminController::class, 'getResellerWithdrawalDetail']);
     Route::post('/reseller-withdrawals/{id}/approve', [\App\Http\Controllers\AdminController::class, 'approveResellerWithdrawal']);
     Route::post('/reseller-withdrawals/{id}/reject', [\App\Http\Controllers\AdminController::class, 'rejectResellerWithdrawal']);
+});
+// Developer-only service management APIs
+Route::prefix('admin')->middleware(['auth:api', 'developer.api'])->group(function () {
+    // Developer-only service management APIs
+    // (service availability, AFA pricing, provider sources, catalog overrides)
+    Route::get('/services', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'index']);
+    Route::put('/services/toggles', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'updateToggles']);
+    Route::post('/services/sync', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'sync']);
+    Route::post('/services/providers', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'storeProvider']);
+    Route::put('/services/providers/{provider}', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'updateProvider']);
+    Route::delete('/services/providers/{provider}', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'destroyProvider']);
+    Route::post('/services/providers/{provider}/default', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'makeDefaultProvider']);
+    Route::post('/services/providers/{provider}/sync', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'syncProvider']);
+    Route::put('/services/catalog/{item}', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'updateItem']);
 });

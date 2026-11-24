@@ -15,26 +15,12 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $sessionUser = auth()->user();
-        $apiUser = auth('api')->user();
-
-        if ($sessionUser?->isDeveloper() && \App\Services\HandoverService::isCompleted()) {
-            return $request->expectsJson()
-                ? response()->json(['error' => 'Developer access ended after handover.'], 403)
-                : redirect('/dashboard')->with('error', 'Developer access ended after handover.');
-        }
-
-        if ($apiUser?->isDeveloper() && \App\Services\HandoverService::isCompleted()) {
-            return $request->expectsJson()
-                ? response()->json(['error' => 'Developer access ended after handover.'], 403)
-                : redirect('/dashboard')->with('error', 'Developer access ended after handover.');
-        }
-        if (auth()->check() && in_array(auth()->user()->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_DEVELOPER], true)) {
+        if (auth()->check() && auth()->user()->role === \App\Models\User::ROLE_ADMIN) {
             return $next($request);
         }
 
         // Check for JWT auth as well if it's an API request or uses 'api' guard
-        if (auth('api')->check() && in_array(auth('api')->user()->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_DEVELOPER], true)) {
+        if (auth('api')->check() && auth('api')->user()->role === \App\Models\User::ROLE_ADMIN) {
             return $next($request);
         }
 

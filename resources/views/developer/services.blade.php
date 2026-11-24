@@ -1,4 +1,4 @@
-@php($providerMode = ($module ?? 'catalog') === 'providers')
+@php($providerMode = true)
 <x-layouts.admin :title="$providerMode ? 'Service sources' : 'Services catalog'">
 <div class="min-h-screen bg-surface-muted py-8" x-data="servicesAdmin()" x-init="init()">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -87,8 +87,11 @@
 
         @endif
 
-        @if (! $providerMode)
         <div class="mt-6 overflow-hidden rounded-card border border-line bg-surface">
+            <div class="border-b border-line bg-surface-muted px-4 py-3">
+                <h2 class="text-lg font-extrabold text-brand-navy">Catalog items</h2>
+                <p class="mt-1 text-sm text-muted">Manual availability overrides for synced items. Provider sync sets remote availability.</p>
+            </div>
             <div class="flex flex-wrap items-center gap-3 border-b border-line p-4">
                 <div class="min-w-0 flex-1">
                     <label for="service-search" class="sr-only">Search catalog</label>
@@ -145,7 +148,7 @@
             <p x-show="!loading && items.length === 0" class="p-6 text-sm text-muted">No catalog items yet. Run a provider sync.</p>
         </div>
 
-        @endif
+
 
         <div x-show="providerModal" x-cloak class="fixed inset-0 z-[125] overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="provider-modal-title">
             <div class="fixed inset-0 bg-brand-navy/60" @click="providerModal = false"></div>

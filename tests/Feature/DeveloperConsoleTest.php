@@ -142,12 +142,10 @@ class DeveloperConsoleTest extends TestCase
             ->assertSessionHasErrors('license_key');
     }
 
-    public function test_developer_can_access_the_admin_console(): void
+    public function test_developer_is_blocked_from_the_business_admin_console(): void
     {
         $this->actingAs($this->developer())
             ->get('/admin/dashboard')
-            ->assertOk()
-            ->assertSee('Admin navigation')
-            ->assertSee('Template packages');
+            ->assertForbidden();
     }
 }
