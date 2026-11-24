@@ -10,7 +10,10 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->bind(
+            \App\Services\GitHub\TemplatePusher::class,
+            \App\Services\GitHub\GitTemplatePusher::class
+        );
     }
 
     public function boot(): void

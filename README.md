@@ -101,3 +101,9 @@ php artisan template:dev-account dev@yourdomain.com --password="StrongPassword" 
 - **Developer-only settings:** service provider sources, provider credentials, service switches and the AFA price are restricted to the developer account (admin APIs return 403 and the admin UI hides the sections). Client admins still manage catalog availability, features, design, payments and the rest of the business configuration.
 - **Template packages:** the developer configures this deployment (design, features, service switches, AFA price, provider sources), saves it as a package in `/developer/packages`, and applies it to another deployment with one click. Business data is never packaged.
 - **Handover:** after applying the package and setting an active deployment license, the developer types HANDOVER to complete handover. This permanently disables developer login, `/developer` and developer access to the admin console on that deployment; the client admin continues running the business. Handover cannot be undone from the deployment.
+### Web templates and GitHub delivery
+
+- Add `GITHUB_TOKEN` (repo scope / fine-grained: repository creation + contents write) to `.env`; optional `GITHUB_API_URL` for GitHub Enterprise.
+- Developer → **Web templates** registers template projects from a local git path or a git URL (branch + version).
+- Per template, enter the client GitHub owner, repository, branch, visibility and a note; **Push** creates the repository when missing, clones the source, pushes the branch and records the result with the repository URL. Failed pushes are logged with tokens redacted.
+- Source paths must be git repositories on the server. This console is developer-only and is disabled after handover like the rest of the developer tools.

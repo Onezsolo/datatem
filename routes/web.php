@@ -231,6 +231,10 @@ Route::prefix('developer')->name('developer.')->middleware(['jwt.cookie', 'web.a
     Route::post('/packages/{package}/apply', [\App\Http\Controllers\DeveloperController::class, 'applyPackage'])->name('packages.apply');
     Route::delete('/packages/{package}', [\App\Http\Controllers\DeveloperController::class, 'destroyPackage'])->name('packages.destroy');
     Route::post('/handover', [\App\Http\Controllers\DeveloperController::class, 'handover'])->name('handover');
+    Route::get('/templates', [\App\Http\Controllers\DeveloperTemplateController::class, 'index'])->name('templates');
+    Route::post('/templates', [\App\Http\Controllers\DeveloperTemplateController::class, 'store'])->name('templates.store');
+    Route::post('/templates/{template}/push', [\App\Http\Controllers\DeveloperTemplateController::class, 'push'])->name('templates.push');
+    Route::delete('/templates/{template}', [\App\Http\Controllers\DeveloperTemplateController::class, 'destroy'])->name('templates.destroy');
 });
 // Admin Routes
 Route::prefix('admin')->middleware(['jwt.cookie', 'admin.web'])->group(function () {

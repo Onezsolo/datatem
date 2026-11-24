@@ -672,3 +672,9 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - 	emplate_packages stores encrypted snapshots of the current template setup (design, features, services, AFA price, provider sources). Developer console creates/applies packages without touching business data.
 - Handover requires an active deployment license and typed confirmation; it invalidates the developer session, blocks developer login, /developer and developer admin access via middleware, while the client admin keeps full business access.
 - Tests cover package capture/apply (including provider credential restore), handover gating, post-handover lockout and admin-only developer restrictions.
+
+### Web template registry and GitHub delivery
+
+- web_templates registry (local git path or git URL, branch, version) plus web_template_pushes audit. Developer console page /developer/templates adds/removes templates and pushes a template to a client GitHub repository (owner/repo/branch/private/note).
+- GitHubService creates repositories via the API when missing and builds a token-authenticated remote; GitTemplatePusher clones the source into temp and pushes it, with tokens redacted from failures. Interface-bound pusher allows deterministic tests.
+- Tests cover registry access, token-gated push, repository creation, success/failure records and an end-to-end git push to a bare remote.

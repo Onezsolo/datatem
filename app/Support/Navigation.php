@@ -153,6 +153,7 @@ final class Navigation
                 'Developer' => array_map(fn (array $item) => self::item($item), [
                     ['label' => 'Console', 'route' => 'developer.dashboard', 'pattern' => 'developer', 'icon' => 'home'],
                     ['label' => 'Template packages', 'route' => 'developer.packages', 'pattern' => 'developer/packages', 'icon' => 'grid'],
+                    ['label' => 'Web templates', 'route' => 'developer.templates', 'pattern' => 'developer/templates', 'icon' => 'bag'],
                     ['label' => 'Licenses', 'route' => 'developer.licenses', 'pattern' => 'developer/licenses', 'icon' => 'check'],
                 ]),
                 'Setup' => array_map(fn (array $item) => self::item($item), [

@@ -41,6 +41,11 @@ return [
         'secret_key' => env('PAYSTACK_SECRET_KEY', ''),
     ],
 
+    'github' => [
+        'api_url' => env('GITHUB_API_URL', 'https://api.github.com'),
+        'token' => env('GITHUB_TOKEN', ''),
+    ],
+
     'patupaa' => [
         'base_url' => env('PATUPAA_API_BASE_URL', 'https://patupaa.com/api/v1'),
         'api_key' => env('PATUPAA_API_KEY', ''),
