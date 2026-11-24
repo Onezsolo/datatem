@@ -14,16 +14,22 @@ final class Navigation
     {
         $authed = auth()->check();
 
-        return self::filterItems(array_map(fn (array $item) => self::item($item), [
+        $items = [
             [
                 'label' => 'Home',
                 'url' => $authed ? url('/dashboard') : route('home'),
                 'pattern' => $authed ? 'dashboard' : 'home',
             ],
-            ['label' => 'Super Mall', 'url' => url('/shop'), 'pattern' => 'shop*'],
-            ['label' => 'Bundles', 'route' => 'services.data', 'pattern' => 'services/data'],
-            ['label' => 'Stores', 'route' => 'store.landing', 'pattern' => 'store*'],
-        ]));
+            ['label' => 'About', 'route' => 'about.index', 'pattern' => 'about*'],
+        ];
+
+        if ($authed) {
+            $items[] = ['label' => 'Super Mall', 'url' => url('/shop'), 'pattern' => 'shop*'];
+            $items[] = ['label' => 'Bundles', 'route' => 'services.data', 'pattern' => 'services/data'];
+            $items[] = ['label' => 'Stores', 'route' => 'store.landing', 'pattern' => 'store*'];
+        }
+
+        return self::filterItems(array_map(fn (array $item) => self::item($item), $items));
     }
 
     /**
@@ -56,8 +62,8 @@ final class Navigation
             ]),
             'Profile' => array_map(fn (array $item) => self::item($item), [
                 ['label' => 'Notifications', 'route' => 'notifications', 'pattern' => 'notifications', 'icon' => 'more'],
-                ['label' => 'Profile', 'route' => 'profile', 'pattern' => 'profile', 'icon' => 'help'],
-                ['label' => 'Support', 'route' => 'support', 'pattern' => 'support', 'icon' => 'help'],
+                ['label' => 'Profile', 'route' => 'profile', 'pattern' => 'profile', 'icon' => 'user'],
+                ['label' => 'Support', 'route' => 'support', 'pattern' => 'support', 'icon' => 'support'],
             ]),
         ];
 
@@ -75,17 +81,21 @@ final class Navigation
             ['label' => 'Home', 'url' => $authed ? url('/dashboard') : route('home'), 'active' => $authed ? request()->is('dashboard') : request()->routeIs('home'), 'icon' => 'home'],
         ];
 
-        if (FeatureSettings::enabled('shop')) {
-            $items[] = ['label' => 'Super Mall', 'url' => url('/shop'), 'active' => request()->is('shop*'), 'icon' => 'bag'];
-        }
+        if ($authed) {
+            if (FeatureSettings::enabled('shop')) {
+                $items[] = ['label' => 'Super Mall', 'url' => url('/shop'), 'active' => request()->is('shop*'), 'icon' => 'bag'];
+            }
 
-        if (FeatureSettings::enabled('data')) {
-            $items[] = ['label' => 'Bundles', 'url' => route('services.data'), 'active' => request()->is('services/data'), 'icon' => 'phone'];
-        } elseif (FeatureSettings::enabled('shop')) {
-            $items[] = ['label' => 'Cart', 'url' => route('shop.cart.show'), 'active' => request()->is('shop/cart'), 'icon' => 'cart'];
-        }
+            if (FeatureSettings::enabled('data')) {
+                $items[] = ['label' => 'Bundles', 'url' => route('services.data'), 'active' => request()->is('services/data'), 'icon' => 'phone'];
+            } elseif (FeatureSettings::enabled('shop')) {
+                $items[] = ['label' => 'Cart', 'url' => route('shop.cart.show'), 'active' => request()->is('shop/cart'), 'icon' => 'cart'];
+            }
 
-        $items[] = ['label' => 'Profile', 'url' => $authed ? route('profile') : url('/dashboard'), 'active' => $authed ? request()->routeIs('profile') : request()->is('dashboard'), 'icon' => 'help'];
+            $items[] = ['label' => 'Profile', 'url' => route('profile'), 'active' => request()->routeIs('profile'), 'icon' => 'user'];
+        } else {
+            $items[] = ['label' => 'Sign in', 'url' => route('login'), 'active' => request()->routeIs('login'), 'icon' => 'user'];
+        }
 
         return self::filterItems($items);
     }
@@ -184,7 +194,7 @@ final class Navigation
                 ['label' => 'Announcements', 'route' => 'admin.announcements', 'pattern' => 'admin/announcements', 'icon' => 'more'],
             ]),
             'Support' => array_map(fn (array $item) => self::item($item), [
-                ['label' => 'Support', 'route' => 'admin.support', 'pattern' => 'admin/support', 'icon' => 'help'],
+                ['label' => 'Support', 'route' => 'admin.support', 'pattern' => 'admin/support', 'icon' => 'support'],
                 ['label' => 'Notifications', 'route' => 'admin.notifications', 'pattern' => 'admin/notifications', 'icon' => 'more'],
             ]),
             'Settings' => array_map(fn (array $item) => self::item($item), [

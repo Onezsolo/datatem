@@ -22,6 +22,9 @@ Route::get('/signup', function () {
     return view('signup');
 })->name('signup');
 
+Route::get('/about', [\App\Http\Controllers\AboutController::class, 'index'])->name('about.index');
+Route::get('/about/{slug}', [\App\Http\Controllers\AboutController::class, 'show'])->name('about.show');
+
 Route::post('/auth/session-token', function (Illuminate\Http\Request $request) {
     $user = $request->user();
 
@@ -149,6 +152,67 @@ Route::get('/contact', function () {
     return view('shop.legal.contact');
 })->name('legal.contact');
 
+Route::get('/sitemap.xml', function () {
+    $urls = [
+        ['loc' => route('home'), 'changefreq' => 'weekly', 'priority' => '1.0'],
+        ['loc' => route('about.index'), 'changefreq' => 'weekly', 'priority' => '0.6'],
+        ['loc' => route('legal.privacy'), 'changefreq' => 'yearly', 'priority' => '0.3'],
+        ['loc' => route('legal.terms'), 'changefreq' => 'yearly', 'priority' => '0.3'],
+        ['loc' => route('legal.returns'), 'changefreq' => 'yearly', 'priority' => '0.3'],
+        ['loc' => route('legal.contact'), 'changefreq' => 'yearly', 'priority' => '0.3'],
+    ];
+
+    foreach (config('about.posts', []) as $post) {
+        $urls[] = [
+            'loc' => route('about.show', $post['slug']),
+            'changefreq' => 'monthly',
+            'priority' => '0.5',
+            'lastmod' => \Illuminate\Support\Carbon::parse($post['date'])->toAtomString(),
+        ];
+    }
+
+    $now = now()->toAtomString();
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
+    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
+
+    foreach ($urls as $url) {
+        $xml .= '  <url>';
+        $xml .= '<loc>'.htmlspecialchars($url['loc'], ENT_XML1).'</loc>';
+        $xml .= '<lastmod>'.($url['lastmod'] ?? $now).'</lastmod>';
+        $xml .= '<changefreq>'.$url['changefreq'].'</changefreq>';
+        $xml .= '<priority>'.$url['priority'].'</priority>';
+        $xml .= '</url>'."\n";
+    }
+
+    $xml .= '</urlset>'."\n";
+
+    return response($xml, 200, ['Content-Type' => 'application/xml; charset=UTF-8']);
+})->name('sitemap');
+
+Route::get('/robots.txt', function () {
+    $lines = [
+        'User-agent: *',
+        'Disallow: /admin',
+        'Disallow: /developer',
+        'Disallow: /dashboard',
+        'Disallow: /orders',
+        'Disallow: /topup',
+        'Disallow: /profile',
+        'Disallow: /notifications',
+        'Disallow: /referral',
+        'Disallow: /reseller',
+        'Disallow: /shop',
+        'Disallow: /services',
+        'Disallow: /api',
+        'Disallow: /design-system',
+        'Allow: /',
+        '',
+        'Sitemap: '.url('/sitemap.xml'),
+    ];
+
+    return response(implode("\n", $lines)."\n", 200, ['Content-Type' => 'text/plain; charset=UTF-8']);
+})->name('robots');
+
 Route::get('/maintenance', function () {
     return view('maintenance');
 })->name('maintenance');
@@ -172,11 +236,13 @@ Route::post('/logout', function (Illuminate\Http\Request $request) {
 
 // Shop (guest checkout, physical goods) — wired into the data system.
 Route::prefix('shop')->name('shop.')->middleware(['jwt.cookie', 'feature:shop'])->group(function () {
-    Route::get('/', ShopHomeController::class)->name('index');
-    Route::get('/search', [ShopCatalogController::class, 'search'])->name('search');
-    Route::get('/category/{category:slug}', [ShopCatalogController::class, 'category'])->name('categories.show');
-    Route::get('/product/{product:slug}', [ShopCatalogController::class, 'product'])->name('products.show');
-    Route::view('/more', 'shop.more')->name('more');
+    Route::middleware('web.auth')->group(function () {
+        Route::get('/', ShopHomeController::class)->name('index');
+        Route::get('/search', [ShopCatalogController::class, 'search'])->name('search');
+        Route::get('/category/{category:slug}', [ShopCatalogController::class, 'category'])->name('categories.show');
+        Route::get('/product/{product:slug}', [ShopCatalogController::class, 'product'])->name('products.show');
+        Route::view('/more', 'shop.more')->name('more');
+    });
 
     Route::middleware(['web.auth', 'throttle:30,1'])->group(function () {
         Route::get('/cart', [ShopCartController::class, 'show'])->name('cart.show');
@@ -199,12 +265,12 @@ Route::prefix('shop')->name('shop.')->middleware(['jwt.cookie', 'feature:shop'])
 });
 // PATUPAA services (data, WAEC, utility, subscriptions, AFA) - login required.
 Route::prefix('services')->name('services.')->group(function () {
-    Route::get('/', [ServicesController::class, 'hub'])->name('index');
-    Route::get('/data', [ServicesController::class, 'data'])->middleware('feature:data')->name('data');
-    Route::get('/waec', [ServicesController::class, 'waec'])->middleware('feature:waec')->name('waec');
-    Route::get('/utility', [ServicesController::class, 'utility'])->middleware('feature:utility')->name('utility');
-    Route::get('/subscriptions', [ServicesController::class, 'subscriptions'])->middleware('feature:subscriptions')->name('subscriptions');
-    Route::get('/afa', [ServicesController::class, 'afa'])->middleware('feature:afa')->name('afa');
+    Route::get('/', [ServicesController::class, 'hub'])->middleware('web.auth')->name('index');
+    Route::get('/data', [ServicesController::class, 'data'])->middleware(['feature:data', 'web.auth'])->name('data');
+    Route::get('/waec', [ServicesController::class, 'waec'])->middleware(['feature:waec', 'web.auth'])->name('waec');
+    Route::get('/utility', [ServicesController::class, 'utility'])->middleware(['feature:utility', 'web.auth'])->name('utility');
+    Route::get('/subscriptions', [ServicesController::class, 'subscriptions'])->middleware(['feature:subscriptions', 'web.auth'])->name('subscriptions');
+    Route::get('/afa', [ServicesController::class, 'afa'])->middleware(['feature:afa', 'web.auth'])->name('afa');
 
     Route::middleware(['web.auth', 'throttle:20,1'])->group(function () {
         Route::post('/data/{item}', [ServicesController::class, 'storeData'])->middleware('feature:data')->name('data.store');

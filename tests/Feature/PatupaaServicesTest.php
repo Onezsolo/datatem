@@ -126,12 +126,12 @@ class PatupaaServicesTest extends TestCase
         ], $attributes));
     }
 
-    public function test_services_pages_are_browsable_before_login(): void
+    public function test_services_pages_require_login(): void
     {
         $this->dataItem();
 
-        $this->get('/services')->assertOk()->assertSee('Data and digital services')->assertDontSee('PATUPAA', false);
-        $this->get('/services/data')->assertOk()->assertSee('MTN 1GB')->assertDontSee('PATUPAA', false);
+        $this->get('/services')->assertRedirectContains('/login');
+        $this->get('/services/data')->assertRedirectContains('/login');
     }
 
     public function test_services_hub_renders_available_services(): void
@@ -338,6 +338,8 @@ class PatupaaServicesTest extends TestCase
             'network' => 'Telecel',
             'data_value' => '7GB',
         ]);
+
+        $this->actingAs($this->user);
 
         $this->get('/services/data')
             ->assertOk()

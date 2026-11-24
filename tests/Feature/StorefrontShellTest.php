@@ -16,7 +16,8 @@ class StorefrontShellTest extends TestCase
             ->assertOk()
             ->assertSee('Visit a store')
             ->assertSee('Primary navigation')
-            ->assertSee('Bottom navigation')
+            ->assertDontSee('Bottom navigation')
+            ->assertDontSee('Mobile navigation')
             ->assertDontSee('cdn.tailwindcss.com', false)
             ->assertDontSee('fonts.googleapis.com', false);
     }
@@ -25,8 +26,9 @@ class StorefrontShellTest extends TestCase
     {
         $this->get('/store/demo-store')
             ->assertOk()
-            ->assertSee('Mobile navigation')
-            ->assertSee('Bottom navigation')
+            ->assertSee('Primary navigation')
+            ->assertDontSee('Mobile navigation')
+            ->assertDontSee('Bottom navigation')
             ->assertDontSee('cdn.tailwindcss.com', false)
             ->assertDontSee('unpkg.com', false)
             ->assertDontSee('fonts.googleapis.com', false);

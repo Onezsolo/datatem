@@ -10,7 +10,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ? $title.' - '.\App\Support\Brand::name() : \App\Support\Brand::name() }}</title>
-    <link rel="icon" type="image/png" href="{{ \App\Support\Brand::faviconUrl() }}">
+    <meta name="description" content="Your member account for data bundles, shopping, wallet and order tracking.">
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="theme-color" content="#0A2038">
+    <link rel="icon" type="image/svg+xml" href="{{ \App\Support\Brand::faviconUrl() }}">
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif

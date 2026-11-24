@@ -49,7 +49,7 @@
             </a>
 
             <a href="{{ route('profile') }}" class="hidden min-h-10 items-center gap-2 rounded-control border border-line px-3 text-sm font-semibold text-brand-navy hover:bg-surface-muted sm:inline-flex" x-data x-cloak>
-                <x-ui.icon name="help" :size="16" />
+                <x-ui.icon name="user" :size="16" />
                 <span class="max-w-[10rem] truncate" x-text="$store.auth.user.full_name || 'Account'"></span>
             </a>
 

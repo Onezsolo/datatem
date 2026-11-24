@@ -33,29 +33,34 @@ class ShopStorefrontTest extends TestCase
         ]);
     }
 
-    public function test_shop_home_lists_seeded_catalogue_publicly(): void
+    public function test_shop_home_lists_seeded_catalogue_when_signed_in(): void
     {
+        $this->actingAs($this->shopper());
+
         $this->get('/shop')
             ->assertOk()
             ->assertSee('Shop by category')
             ->assertSee('Samsung Galaxy A56')
-            ->assertSee('Primary navigation')
-            ->assertDontSee('Member navigation');
+            ->assertSee('Member navigation')
+            ->assertDontSee('Primary navigation');
     }
 
-    public function test_product_page_renders_publicly(): void
+    public function test_product_page_renders_for_signed_in_users(): void
     {
+        $this->actingAs($this->shopper());
+
         $this->get('/shop/product/samsung-galaxy-a56')
             ->assertOk()
             ->assertSee('Samsung Galaxy A56')
-            ->assertSee('Sign in to buy')
-            ->assertDontSee('Add to cart', false);
+            ->assertSee('Add to cart')
+            ->assertDontSee('Sign in to buy');
     }
 
-    public function test_guest_can_browse_but_cannot_cart_or_checkout(): void
+    public function test_guests_are_redirected_from_shop_pages(): void
     {
-        $this->get('/shop')->assertOk();
-        $this->get('/shop/product/samsung-galaxy-a56')->assertOk();
+        $this->get('/shop')->assertRedirectContains('/login');
+        $this->get('/shop/product/samsung-galaxy-a56')->assertRedirectContains('/login');
+        $this->get('/shop/more')->assertRedirectContains('/login');
 
         $product = Product::query()->where('slug', 'samsung-galaxy-a56')->firstOrFail();
 
@@ -163,9 +168,13 @@ class ShopStorefrontTest extends TestCase
             ->assertRedirect(route('orders.shop'));
     }
 
-    public function test_more_page_renders_publicly(): void
+    public function test_more_page_requires_login(): void
     {
-        $this->get('/shop/more')->assertOk();
+        $this->get('/shop/more')->assertRedirectContains('/login');
+
+        $this->actingAs($this->shopper())
+            ->get('/shop/more')
+            ->assertOk();
     }
 
     public function test_shop_purchase_does_not_create_reseller_or_referral_earnings(): void
@@ -216,6 +225,8 @@ class ShopStorefrontTest extends TestCase
 
     public function test_product_page_shows_the_primary_photo(): void
     {
+        $this->actingAs($this->shopper());
+
         \Illuminate\Support\Facades\Storage::fake('public');
 
         $product = Product::query()->where('slug', 'samsung-galaxy-a56')->firstOrFail();

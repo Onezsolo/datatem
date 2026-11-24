@@ -739,3 +739,29 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Login/signup/session sync now redirect with a one-time welcome flag; member and admin shells open their mobile sidebar immediately and remove the flag from the URL. The blocking dashboard welcome modal was removed so the sidebar is always visible right after login.
 
 - Data bundles: verified sync imports every active bundle returned by the provider (no client-side filtering) and the Buy data page renders all networks as tabs with a live count (N bundles across M networks). Local demo still shows only sample rows until provider credentials are configured and Sync is run.
+
+### Catalog access is login-only
+
+- Restored the hardened login gate: `/shop` (home, search, category, product, more) and all `/services` pages (hub, data, WAEC, utility, subscriptions, AFA) require a signed-in session and redirect guests to `/login` with the intended path. The public home, login, signup, password reset, legal and maintenance pages remain public.
+- Tests updated to assert guest redirects and signed-in catalogue rendering (ShopStorefrontTest, PatupaaServicesTest, ProviderSourceTest); FeatureFlagsTest still returns 404 for disabled services before auth.
+
+### Guest surfaces hide login-only features
+
+- Logged-out public pages now expose only Home plus Sign in / Create account: the header and drawer navigation, the footer Shop column, the bottom navigation, and the home hero feature CTAs plus data, network, quick-action, how-it-works and Super Mall sections are hidden until sign-in. Signed-in users keep the full navigation and home features.
+- `Navigation::public()` and `Navigation::bottom()` are auth-aware; the public footer shows an Account column for guests; tests updated in NavigationTest, PageSmokeTest, DesignSystemTest and FeatureFlagsTest.
+
+### Public landing CTA and standard SEO
+
+- Guest header now carries a visible Get started CTA and the home hero orders Create free account before Sign in.
+- Public layout ships standard SEO: descriptive title/description, canonical, robots, theme-color, Open Graph and Twitter cards, Organization/WebSite/WebPage JSON-LD, SVG favicon, and a branded 1200x630 `assets/og-default.png`.
+- `/sitemap.xml` lists only public pages; `/robots.txt` blocks member, admin, developer, shop, services and API paths and declares the sitemap. Login, signup, forgot-password and maintenance are noindex; member/admin shells are noindex,nofollow.
+
+### Public pages use the standard marketing shell
+
+- Removed the mobile side drawer and app bottom navigation from public pages; the public shell is header + content + footer only. Member, admin and storefront app shells keep their own sidebars and bottom navigation.
+- The guest header now shows Get started on every screen and the authenticated Account link is visible on mobile; desktop nav and footer links are unchanged.
+
+### Small company information section
+
+- Added a public company information section at `/about` with three pages under `config/about.php` and `resources/views/about/posts`. The index and each page use the standard public shell, include canonical/OG metadata and Article + BreadcrumbList JSON-LD.
+- About is linked from the public header navigation, the footer Information column and a "Company information and updates" strip on the home page; `/sitemap.xml` includes the About index and every page. No admin editor is included yet.

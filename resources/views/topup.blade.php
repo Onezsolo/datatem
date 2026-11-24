@@ -33,9 +33,9 @@
                     </div>
                     <div class="relative">
                         <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted font-semibold">GHS</span>
-                        <input type="number" x-model="amount" min="5" step="0.01" placeholder="Min 5" class="w-full pl-12 pr-4 py-3 rounded-card bg-surface-muted border border-line focus:outline-none focus:border-brand-navy text-brand-navy font-semibold">
-                        <p class="mt-1.5 text-xs text-muted">Minimum GHS 5.00</p>
+                        <input type="number" x-model="amount" min="5" step="0.01" placeholder="Min 5" class="w-full pl-14 pr-4 py-3 rounded-card bg-surface-muted border border-line focus:outline-none focus:border-brand-navy text-brand-navy font-semibold">
                     </div>
+                    <p class="mt-1.5 text-xs text-muted">Minimum GHS 5.00</p>
                 </div>
 
                 <!-- Payment method -->
@@ -100,24 +100,10 @@
                 <div x-show="method === 'automated'" class="mb-8 p-5 bg-surface-muted rounded-card border border-line">
                     <p class="text-xs font-semibold text-muted uppercase tracking-wider mb-3">Summary</p>
                     <div class="flex justify-between text-sm text-muted mb-1"><span>Amount to wallet</span><span x-text="'GHS ' + (parseFloat(amount) || 0).toFixed(2)"></span></div>
-                    <div class="flex justify-between text-sm text-muted mb-1"><span>Fee (3%)</span><span x-text="'GHS ' + (((parseFloat(amount) || 0) * 0.03).toFixed(2))"></span></div>
+                    <div class="flex justify-between text-sm text-muted mb-1"><span>Fee (4%)</span><span x-text="'GHS ' + (((parseFloat(amount) || 0) * 0.04).toFixed(2))"></span></div>
                     <div class="flex justify-between font-bold text-brand-navy pt-3 mt-2 border-t border-line">
                         <span>Total to pay</span>
-                        <span class="text-brand-navy" x-text="'GHS ' + (((parseFloat(amount) || 0) * 1.03).toFixed(2))"></span>
-                    </div>
-                    <div class="mt-5 pt-4 border-t border-line">
-                        <label class="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Paystack reference</label>
-                        <div class="flex gap-2">
-                            <input type="text" x-model="lastReference" placeholder="e.g. TUP-XXXXXXXXXXXX"
-                                   class="flex-1 px-4 py-3 rounded-card bg-surface border border-line focus:outline-none focus:border-brand-navy text-brand-navy font-medium placeholder-gray-400">
-                            <button @click="checkPaystackStatus()"
-                                    :disabled="checkingStatus || !lastReference.trim()"
-                                    class="px-4 py-3 rounded-card bg-brand-navy text-white font-semibold hover:bg-brand-navy-soft disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
-                                <span x-show="!checkingStatus">Check status</span>
-                                <span x-show="checkingStatus">Checking...</span>
-                            </button>
-                        </div>
-                        <p class="mt-2 text-xs text-muted">You can verify and credit your wallet yourself if Paystack callback is delayed.</p>
+                        <span class="text-brand-navy" x-text="'GHS ' + (((parseFloat(amount) || 0) * 1.04).toFixed(2))"></span>
                     </div>
                 </div>
 
@@ -147,11 +133,9 @@ function topupPage() {
         method: 'automated',
         amount: 5,
         loading: false,
-        checkingStatus: false,
         successMsg: '',
         errorMsg: '',
         manualReference: '',
-        lastReference: '',
         manualDetails: { number: @json($manual_payment_number ?? '0241234567'), name: @json($manual_payment_name ?? 'Datatem Official') },
         init() {
             const params = new URLSearchParams(window.location.search);
@@ -166,8 +150,6 @@ function topupPage() {
                 this.errorMsg = decodeURIComponent(error).replace(/\+/g, ' ');
                 history.replaceState({}, '', window.location.pathname);
             }
-            const storedReference = localStorage.getItem('last_topup_reference') || '';
-            if (storedReference) this.lastReference = storedReference;
         },
         async startPaystack() {
             if (!this.$store.auth.token) {
@@ -199,10 +181,6 @@ function topupPage() {
                     return;
                 }
                 if (data.authorization_url) {
-                    if (data.reference) {
-                        this.lastReference = data.reference;
-                        localStorage.setItem('last_topup_reference', data.reference);
-                    }
                     window.location.href = data.authorization_url;
                     return;
                 }
@@ -212,44 +190,6 @@ function topupPage() {
                 this.errorMsg = 'Network error. Please try again.';
             } finally {
                 this.loading = false;
-            }
-        },
-        async checkPaystackStatus() {
-            if (!this.$store.auth.token) {
-                window.location.href = '/login';
-                return;
-            }
-            const reference = (this.lastReference || '').trim();
-            if (!reference) {
-                this.errorMsg = 'Enter a Paystack reference first.';
-                return;
-            }
-            this.checkingStatus = true;
-            this.errorMsg = '';
-            this.successMsg = '';
-            try {
-                const response = await fetch(`/api/auth/topup/${encodeURIComponent(reference)}/verify-paystack`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer ' + this.$store.auth.token,
-                        'Accept': 'application/json'
-                    }
-                });
-                const data = await response.json().catch(() => ({}));
-                if (!response.ok || !data.success) {
-                    this.errorMsg = data.message || data.error || 'Could not verify payment status yet.';
-                    return;
-                }
-                const amount = parseFloat(data.amount || 0);
-                this.successMsg = amount > 0
-                    ? `Payment confirmed. Your wallet has been credited with GHS ${amount.toFixed(2)}.`
-                    : (data.message || 'Payment confirmed and wallet credited.');
-                localStorage.removeItem('last_topup_reference');
-            } catch (e) {
-                console.error(e);
-                this.errorMsg = 'Network error while checking status. Please try again.';
-            } finally {
-                this.checkingStatus = false;
             }
         },
         submitManual() {

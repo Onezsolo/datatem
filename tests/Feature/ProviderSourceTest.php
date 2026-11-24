@@ -189,8 +189,6 @@ class ProviderSourceTest extends TestCase
             'admin_enabled' => true,
         ]);
 
-        $this->get('/services/data')->assertOk()->assertDontSee('MTN 2GB');
-
         $user = User::create([
             'full_name' => 'Source Buyer',
             'email' => 'source-buyer-2@example.com',
@@ -198,6 +196,11 @@ class ProviderSourceTest extends TestCase
             'balance' => 100,
             'password' => bcrypt('password'),
         ]);
+
+        $this->actingAs($user)
+            ->get('/services/data')
+            ->assertOk()
+            ->assertDontSee('MTN 2GB');
 
         $this->actingAs($user)
             ->post('/services/data/'.$item->id, ['beneficiary' => '0244000202'])

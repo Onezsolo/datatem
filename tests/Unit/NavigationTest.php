@@ -12,11 +12,31 @@ class NavigationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_public_navigation_resolves(): void
+    public function test_public_navigation_is_home_only_for_guests(): void
     {
         $items = Navigation::public();
 
-        $this->assertCount(4, $items);
+        $this->assertSame(['Home', 'About'], array_column($items, 'label'));
+
+        foreach ($items as $item) {
+            $this->assertNotSame('', $item['label']);
+            $this->assertNotSame('#', $item['url'], "Missing URL for {$item['label']}.");
+            $this->assertStringStartsWith('http', $item['url']);
+        }
+    }
+
+    public function test_public_navigation_shows_feature_links_when_signed_in(): void
+    {
+        $this->actingAs(User::create([
+            'full_name' => 'Public Nav User',
+            'email' => 'public-nav@example.com',
+            'phone' => '0244000091',
+            'password' => bcrypt('password'),
+        ]));
+
+        $items = Navigation::public();
+
+        $this->assertSame(['Home', 'About', 'Super Mall', 'Bundles', 'Stores'], array_column($items, 'label'));
 
         foreach ($items as $item) {
             $this->assertNotSame('', $item['label']);
@@ -47,11 +67,21 @@ class NavigationTest extends TestCase
         $this->assertTrue($labels->contains('Shop orders'));
     }
 
-    public function test_bottom_navigation_has_four_items(): void
+    public function test_guest_bottom_navigation_shows_home_and_sign_in(): void
     {
-        $items = Navigation::bottom();
+        $this->assertSame(['Home', 'Sign in'], array_column(Navigation::bottom(), 'label'));
+    }
 
-        $this->assertSame(['Home', 'Super Mall', 'Bundles', 'Profile'], array_column($items, 'label'));
+    public function test_member_bottom_navigation_has_four_items(): void
+    {
+        $this->actingAs(User::create([
+            'full_name' => 'Bottom Nav User',
+            'email' => 'bottom-nav@example.com',
+            'phone' => '0244000092',
+            'password' => bcrypt('password'),
+        ]));
+
+        $this->assertSame(['Home', 'Super Mall', 'Bundles', 'Profile'], array_column(Navigation::bottom(), 'label'));
     }
     public function test_authenticated_home_links_point_to_account(): void
     {
@@ -76,14 +106,22 @@ class NavigationTest extends TestCase
     {
         $public = Navigation::public();
         $this->assertSame(route('home'), $public[0]['url']);
+        $this->assertSame(route('about.index'), $public[1]['url']);
 
         $bottom = Navigation::bottom();
         $this->assertSame(route('home'), $bottom[0]['url']);
-        $this->assertSame(url('/dashboard'), $bottom[3]['url']);
+        $this->assertSame(route('login'), $bottom[1]['url']);
     }
 
     public function test_mall_only_mode_puts_shop_features_in_navigation(): void
     {
+        $this->actingAs(User::create([
+            'full_name' => 'Mall Nav User',
+            'email' => 'mall-nav@example.com',
+            'phone' => '0244000093',
+            'password' => bcrypt('password'),
+        ]));
+
         FeatureSettings::set(array_merge(
             array_fill_keys(array_keys(FeatureSettings::definitions()), false),
             ['shop' => true, 'shop_orders' => true, 'wallet' => true]

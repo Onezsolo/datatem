@@ -5,7 +5,7 @@
 @endphp
 
 <nav class="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface lg:hidden" aria-label="Bottom navigation">
-    <ul class="grid grid-cols-4">
+    <ul class="grid" style="grid-template-columns: repeat({{ max(count($items), 1) }}, minmax(0, 1fr));">
         @foreach ($items as $item)
             <li>
                 <a

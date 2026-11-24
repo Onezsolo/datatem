@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataPackage;
+use App\Models\Payment;
 use App\Models\Purchase;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -90,16 +91,40 @@ class UserController extends Controller
                     'amount' => 'GH₵ ' . number_numeric($topup->amount),
                     'raw_amount' => $topup->amount,
                     'status' => ucfirst($topup->status),
+                    'can_verify' => false,
+                    'reference' => $topup->id,
                 ];
             });
+        }
+
+        $pendingPayments = collect();
+        if ($type === 'all' || $type === 'topup') {
+            $pendingPayments = Payment::where('user_id', $userId)
+                ->where('status', 'pending')
+                ->orderByDesc('created_at')
+                ->get()
+                ->map(function (Payment $payment) {
+                    return [
+                        'id' => '#PAY-' . $payment->id,
+                        'type' => 'topup',
+                        'description' => 'Wallet Topup via Paystack',
+                        'date' => $payment->created_at->format('M d, Y'),
+                        'full_date' => $payment->created_at->toDateTimeString(),
+                        'amount' => 'GH₵ ' . number_numeric($payment->amount),
+                        'raw_amount' => $payment->amount,
+                        'status' => 'Pending (Paystack)',
+                        'can_verify' => true,
+                        'reference' => $payment->reference ?: $payment->id,
+                    ];
+                });
         }
 
         // Merge (if all) and sort, then paginate
         $all = $type === 'data'
             ? $orders->sortByDesc('full_date')->values()
             : ($type === 'topup'
-                ? $topups->sortByDesc('full_date')->values()
-                : $orders->concat($topups)->sortByDesc('full_date')->values());
+                ? $topups->concat($pendingPayments)->sortByDesc('full_date')->values()
+                : $orders->concat($topups)->concat($pendingPayments)->sortByDesc('full_date')->values());
         $total = $all->count();
         $lastPage = (int) max(1, ceil($total / $perPage));
         $page = min($page, $lastPage);

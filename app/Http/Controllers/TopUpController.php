@@ -9,6 +9,7 @@ use App\Services\NotifyService;
 use App\Services\PaystackService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -23,26 +24,57 @@ class TopUpController extends Controller
      */
     private function completeVerifiedPayment(Payment $payment): array
     {
-        $user = $payment->user;
-        if (! $user) {
-            return ['ok' => false, 'message' => 'User not found.'];
+        $result = DB::transaction(function () use ($payment) {
+            $lockedPayment = Payment::whereKey($payment->id)->lockForUpdate()->first();
+            if (! $lockedPayment) {
+                return ['ok' => false, 'message' => 'Payment not found.'];
+            }
+
+            if ($lockedPayment->status !== 'pending') {
+                return [
+                    'ok' => true,
+                    'already_processed' => true,
+                    'amount' => (float) $lockedPayment->amount,
+                ];
+            }
+
+            $user = User::whereKey($lockedPayment->user_id)->lockForUpdate()->first();
+            if (! $user) {
+                return ['ok' => false, 'message' => 'User not found.'];
+            }
+
+            $amount = (float) $lockedPayment->amount;
+
+            $lockedPayment->status = 'completed';
+            $lockedPayment->save();
+
+            $user->balance = (float) $user->balance + $amount;
+            $user->save();
+
+            $topup = Topup::create([
+                'id' => 'TUP-' . strtoupper(Str::random(12)),
+                'user_id' => $user->id,
+                'amount' => $amount,
+                'method' => 'paystack',
+                'status' => 'approved',
+            ]);
+
+            return [
+                'ok' => true,
+                'already_processed' => false,
+                'amount' => $amount,
+                'user' => $user,
+                'topup' => $topup,
+            ];
+        });
+
+        if (! ($result['ok'] ?? false) || ($result['already_processed'] ?? false)) {
+            return $result;
         }
 
-        $amount = (float) $payment->amount;
-
-        $payment->status = 'completed';
-        $payment->save();
-
-        $user->balance = (float) $user->balance + $amount;
-        $user->save();
-
-        $topup = Topup::create([
-            'id' => 'TUP-' . strtoupper(Str::random(12)),
-            'user_id' => $user->id,
-            'amount' => $amount,
-            'method' => 'paystack',
-            'status' => 'approved',
-        ]);
+        $user = $result['user'];
+        $topup = $result['topup'];
+        $amount = (float) $result['amount'];
 
         NotifyService::notifyUserTopupCompleted($user, $topup);
         NotifyService::admins(
@@ -132,7 +164,7 @@ class TopUpController extends Controller
         }
 
         if ($payment->status !== 'pending') {
-            return redirect('/topup?success=1&already_credited=1');
+            return redirect('/orders?tab=topup&topup=success&already_credited=1&amount=' . (float) $payment->amount);
         }
 
         $paystack = new PaystackService();
@@ -162,8 +194,11 @@ class TopUpController extends Controller
         if (! ($result['ok'] ?? false)) {
             return redirect('/topup?error=' . urlencode($result['message'] ?? 'Could not process payment.'));
         }
+        if (! empty($result['already_processed'])) {
+            return redirect('/orders?tab=topup&topup=success&already_credited=1&amount=' . ($result['amount'] ?? 0));
+        }
 
-        return redirect('/topup?success=1&amount=' . ($result['amount'] ?? 0));
+        return redirect('/orders?tab=topup&topup=success&amount=' . ($result['amount'] ?? 0));
     }
 
     /**
@@ -231,6 +266,15 @@ class TopUpController extends Controller
         $result = $this->completeVerifiedPayment($payment);
         if (! ($result['ok'] ?? false)) {
             return response()->json(['success' => false, 'message' => $result['message'] ?? 'Could not process payment.'], 400);
+        }
+        if (! empty($result['already_processed'])) {
+            return response()->json([
+                'success' => true,
+                'verified' => true,
+                'status' => 'completed',
+                'message' => 'Payment already processed.',
+                'amount' => $result['amount'],
+            ]);
         }
 
         return response()->json([

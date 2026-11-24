@@ -19,6 +19,8 @@
             </button>
         </header>
 
+        <div x-show="topupSuccessMsg" x-transition class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-card font-semibold text-sm" x-text="topupSuccessMsg"></div>
+
         <!-- Filter tabs -->
         <div class="flex flex-wrap gap-2 mb-6">
             <button @click="setTab('all')" 
@@ -43,7 +45,7 @@
                             <th class="px-5 py-4 text-xs font-semibold text-muted uppercase tracking-wider">Date</th>
                             <th class="px-5 py-4 text-xs font-semibold text-muted uppercase tracking-wider">Amount</th>
                             <th class="px-5 py-4 text-xs font-semibold text-muted uppercase tracking-wider">Status</th>
-                            <th class="px-5 py-4 text-xs font-semibold text-muted uppercase tracking-wider w-14"></th>
+                            <th class="px-5 py-4 text-xs font-semibold text-muted uppercase tracking-wider w-44"></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-line">
@@ -80,14 +82,22 @@
                                 <td class="px-5 py-4">
                                     <span :class="{
                                         'bg-emerald-100 text-emerald-700': transaction.status === 'Completed',
-                                        'bg-amber-100 text-amber-700': transaction.status === 'Pending',
+                                        'bg-amber-100 text-amber-700': (transaction.status || '').startsWith('Pending'),
                                         'bg-red-100 text-red-700': transaction.status === 'Failed'
                                     }" class="inline-block px-3 py-1.5 rounded-lg text-xs font-semibold uppercase" x-text="transaction.status"></span>
                                 </td>
                                 <td class="px-5 py-4 text-right">
-                                    <button @click="openReceipt(transaction)" class="p-2 rounded-lg text-muted hover:text-brand-navy hover:bg-surface-muted transition-colors">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                    </button>
+                                    <div class="flex items-center justify-end gap-2">
+                                        <template x-if="transaction.can_verify && transaction.reference">
+                                            <button @click="checkTopupStatus(transaction)" :disabled="verifyingId === transaction.reference" class="px-3 py-2 rounded-lg bg-brand-navy text-white text-xs font-semibold hover:bg-brand-navy-soft disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+                                                <span x-show="verifyingId !== transaction.reference">Check status</span>
+                                                <span x-show="verifyingId === transaction.reference">Checking...</span>
+                                            </button>
+                                        </template>
+                                        <button @click="openReceipt(transaction)" class="p-2 rounded-lg text-muted hover:text-brand-navy hover:bg-surface-muted transition-colors">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         </template>
@@ -174,7 +184,7 @@
                         <span class="text-xs font-semibold text-muted uppercase tracking-wider">Status</span>
                         <span :class="{
                             'text-emerald-600': selectedReceipt?.status === 'Completed',
-                            'text-amber-600': selectedReceipt?.status === 'Pending',
+                            'text-amber-600': (selectedReceipt?.status || '').startsWith('Pending'),
                             'text-red-600': selectedReceipt?.status === 'Failed'
                         }" class="font-semibold" x-text="selectedReceipt?.status"></span>
                     </div>
@@ -265,8 +275,10 @@ function transactionHistory() {
         activeTab: 'all',
         pagination: { current_page: 1, last_page: 1, total: 0, per_page: 20 },
         loading: true,
+        topupSuccessMsg: '',
         receiptOpen: false,
         selectedReceipt: null,
+        verifyingId: null,
         transactions: [],
         inviteEarnPopupOpen: false,
 
@@ -293,8 +305,21 @@ function transactionHistory() {
                 window.location.href='/login';
                 return;
             }
-            await this.fetchTransactions();
             const params = new URLSearchParams(window.location.search);
+            const tab = params.get('tab');
+            if (tab === 'topup' || tab === 'data') {
+                this.activeTab = tab;
+            }
+            if (params.get('topup') === 'success') {
+                const amount = parseFloat(params.get('amount') || 0);
+                this.topupSuccessMsg = amount > 0
+                    ? `Payment successful. Your wallet has been credited with GHS ${amount.toFixed(2)}.`
+                    : 'Payment successful. Your wallet has been credited.';
+                const url = new URL(window.location.href);
+                ['topup', 'amount', 'already_credited'].forEach(key => url.searchParams.delete(key));
+                window.history.replaceState({}, '', url.pathname + (url.search || ''));
+            }
+            await this.fetchTransactions();
             if (params.has('success') && this.$store.auth.user && this.$store.auth.user.affiliate_system_enabled) {
                 this.inviteEarnPopupOpen = true;
             }
@@ -328,6 +353,40 @@ function transactionHistory() {
                 console.error('Failed to fetch transactions:', e);
             } finally {
                 this.loading = false;
+            }
+        },
+        async checkTopupStatus(transaction) {
+            const reference = (transaction.reference || '').trim();
+            if (!reference) {
+                window.showAlert ? window.showAlert('Missing Paystack reference.', 'Error', 'error') : alert('Missing Paystack reference.');
+                return;
+            }
+            this.verifyingId = reference;
+            try {
+                const response = await fetch(`/api/auth/topup/${encodeURIComponent(reference)}/verify-paystack`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + this.$store.auth.token,
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await response.json().catch(() => ({}));
+                if (response.ok && data.success) {
+                    await this.fetchTransactions();
+                    if (this.$store.auth && typeof this.$store.auth.refreshUser === 'function') {
+                        this.$store.auth.refreshUser();
+                    }
+                    const message = data.message || 'Payment verified and wallet credited.';
+                    window.showAlert ? window.showAlert(message, 'Success', 'success') : alert(message);
+                } else {
+                    const message = data.message || data.error || 'Verification failed. Payment may not be successful on Paystack yet.';
+                    window.showAlert ? window.showAlert(message, 'Verification failed', 'error') : alert(message);
+                }
+            } catch (e) {
+                console.error(e);
+                window.showAlert ? window.showAlert('Failed to verify payment with Paystack.', 'Error', 'error') : alert('Failed to verify payment with Paystack.');
+            } finally {
+                this.verifyingId = null;
             }
         },
         goToPage(page) {

@@ -28,18 +28,22 @@ class DesignSystemTest extends TestCase
         $response->assertDontSee('fonts.googleapis.com', false);
     }
 
-    public function test_public_shell_renders_navigation_footer_and_bottom_nav(): void
+    public function test_public_shell_renders_standard_header_footer_and_nav(): void
     {
         $html = $this->blade('<x-layouts.public>Body content</x-layouts.public>');
 
         $html->assertSee('Skip to main content')
             ->assertSee('id="main-content"', false)
-            ->assertSee('Bottom navigation')
-            ->assertSee('Mobile navigation')
-            ->assertSee('Open navigation menu')
-            ->assertSee('Bundles')
-            ->assertSee('Reseller stores')
+            ->assertSee('Primary navigation')
+            ->assertSee('Sign in')
+            ->assertSee('Get started')
+            ->assertSee('Create account')
             ->assertSee('Body content')
+            ->assertDontSee('Bottom navigation')
+            ->assertDontSee('Mobile navigation')
+            ->assertDontSee('Open navigation menu')
+            ->assertDontSee('Bundles')
+            ->assertDontSee('Reseller stores')
             ->assertDontSee('cdn.tailwindcss.com', false)
             ->assertDontSee('unpkg.com', false);
     }

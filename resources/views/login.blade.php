@@ -1,4 +1,4 @@
-<x-layouts.public title="Log in">
+<x-layouts.public title="Log in" robots="noindex,follow">
     @include('partials.auth-sync')
     <div
         class="bg-surface-muted py-10 sm:py-14"

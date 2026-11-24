@@ -15,6 +15,7 @@ class HeaderAuthStateTest extends TestCase
         $html = $this->blade('<x-layouts.public>Body</x-layouts.public>');
 
         $html->assertSee('Sign in')
+            ->assertSee('Get started')
             ->assertDontSee('Sign out');
     }
 

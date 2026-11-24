@@ -1,40 +1,68 @@
-<x-layouts.public title="Data and shopping in Ghana" description="Buy mobile data bundles for MTN, AirtelTigo and Telecel, and shop everyday products with delivery across Ghana.">
+@php
+    $authed = auth()->check();
+@endphp
+
+<x-layouts.public
+    title="Data bundles and online shopping in Ghana"
+    description="Buy mobile data bundles for MTN, AirtelTigo and Telecel, shop everyday products and pay from your wallet. Instant delivery across Ghana."
+    :canonical="url('/')"
+>
     <section class="bg-brand-navy text-white">
-        <div class="container-page grid gap-10 py-12 sm:py-16 lg:grid-cols-[1.15fr_1fr] lg:items-center">
-            <div>
-                @if (\App\Services\FeatureSettings::enabled('data'))
+        <div class="container-page grid gap-10 py-12 sm:py-16 {{ $authed ? 'lg:grid-cols-[1.15fr_1fr] lg:items-center' : '' }}">
+            <div class="{{ $authed ? '' : 'max-w-3xl' }}">
+                @auth
+                    @if (\App\Services\FeatureSettings::enabled('data'))
+                        <p class="inline-flex items-center gap-2 rounded-control border border-white/25 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-brand-yellow">
+                            <span class="inline-block h-2 w-2 rounded-control bg-brand-yellow" aria-hidden="true"></span>
+                            MTN &middot; AirtelTigo &middot; Telecel
+                        </p>
+                    @endif
+
+                    <h1 class="mt-5 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
+                        @if (\App\Services\FeatureSettings::enabled('data'))
+                            Data in seconds.
+                            <span class="block text-brand-yellow">Shopping made simple.</span>
+                        @else
+                            Everything you need.
+                            <span class="block text-brand-yellow">Delivered across Ghana.</span>
+                        @endif
+                    </h1>
+
+                    <p class="mt-4 max-w-xl text-base leading-relaxed text-nav-muted">
+                        @if (\App\Services\FeatureSettings::enabled('data'))
+                            Buy mobile data bundles and everyday products in one place. Top up your wallet, pay from it and track every order.
+                        @else
+                            Browse the Super Mall, add to cart and pay from your wallet. One account and one order history.
+                        @endif
+                    </p>
+
+                    <div class="mt-7 flex flex-wrap gap-3">
+                        @if (\App\Services\FeatureSettings::enabled('data'))
+                            <x-ui.button href="{{ route('services.data') }}" size="lg">Browse bundles</x-ui.button>
+                        @endif
+                        @if (\App\Services\FeatureSettings::enabled('shop'))
+                            <x-ui.button href="{{ url('/shop') }}" variant="{{ \App\Services\FeatureSettings::enabled('data') ? 'ghost' : 'primary' }}" size="lg">Visit Super Mall</x-ui.button>
+                        @endif
+                    </div>
+                @else
                     <p class="inline-flex items-center gap-2 rounded-control border border-white/25 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-brand-yellow">
                         <span class="inline-block h-2 w-2 rounded-control bg-brand-yellow" aria-hidden="true"></span>
-                        MTN &middot; AirtelTigo &middot; Telecel
+                        Your account
                     </p>
-                @endif
 
-                <h1 class="mt-5 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
-                    @if (\App\Services\FeatureSettings::enabled('data'))
-                        Data in seconds.
-                        <span class="block text-brand-yellow">Shopping made simple.</span>
-                    @else
-                        Everything you need.
-                        <span class="block text-brand-yellow">Delivered across Ghana.</span>
-                    @endif
-                </h1>
+                    <h1 class="mt-5 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
+                        Sign in to continue.
+                    </h1>
 
-                <p class="mt-4 max-w-xl text-base leading-relaxed text-nav-muted">
-                    @if (\App\Services\FeatureSettings::enabled('data'))
-                        Buy mobile data bundles and everyday products in one place. Top up your wallet, pay from it and track every order.
-                    @else
-                        Browse the Super Mall, add to cart and pay from your wallet. One account and one order history.
-                    @endif
-                </p>
+                    <p class="mt-4 max-w-xl text-base leading-relaxed text-nav-muted">
+                        Access your wallet, buy data bundles, shop everyday products and track every order in one place.
+                    </p>
 
-                <div class="mt-7 flex flex-wrap gap-3">
-                    @if (\App\Services\FeatureSettings::enabled('data'))
-                        <x-ui.button href="{{ route('services.data') }}" size="lg">Browse bundles</x-ui.button>
-                    @endif
-                    @if (\App\Services\FeatureSettings::enabled('shop'))
-                        <x-ui.button href="{{ url('/shop') }}" variant="{{ \App\Services\FeatureSettings::enabled('data') ? 'ghost' : 'primary' }}" size="lg">Visit Super Mall</x-ui.button>
-                    @endif
-                </div>
+                    <div class="mt-7 flex flex-wrap gap-3">
+                        <x-ui.button href="{{ route('signup') }}" size="lg">Create free account</x-ui.button>
+                        <x-ui.button href="{{ route('login') }}" variant="ghost" size="lg">Sign in</x-ui.button>
+                    </div>
+                @endauth
 
                 <dl class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
                     @foreach ([['Instant', 'Delivery'], ['40%', 'Average savings'], ['100%', 'Guaranteed'], ['24/7', 'Support']] as [$value, $label])
@@ -46,7 +74,7 @@
                 </dl>
             </div>
 
-            @if (\App\Services\FeatureSettings::enabled('data'))
+            @if ($authed && \App\Services\FeatureSettings::enabled('data'))
             <x-ui.card variant="feature" padding="lg" class="text-white">
                 <h2 class="text-lg font-extrabold">Buy data now</h2>
                 <p class="mt-1 text-sm text-nav-muted">Choose your network and get your bundle instantly.</p>
@@ -76,6 +104,7 @@
         </div>
     </section>
 
+    @auth
     <section class="container-page py-10 sm:py-12" aria-labelledby="quick-actions-heading">
         <h2 id="quick-actions-heading" class="text-xl font-extrabold tracking-tight text-brand-navy">Start here</h2>
         <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -113,8 +142,9 @@
             </ol>
         </div>
     </section>
+    @endauth
 
-    @if (\App\Services\FeatureSettings::enabled('data'))
+    @if ($authed && \App\Services\FeatureSettings::enabled('data'))
     <section class="container-page py-10 sm:py-12" aria-labelledby="networks-heading">
         <div class="flex flex-wrap items-end justify-between gap-3">
             <div>
@@ -147,14 +177,14 @@
 
     @endif
 
-    @if (\App\Services\FeatureSettings::enabled('shop'))
+    @if ($authed && \App\Services\FeatureSettings::enabled('shop'))
     <section class="container-page pb-12" aria-labelledby="shop-heading">
         <div class="rounded-card border border-line bg-surface p-6 sm:p-8">
             <div class="flex flex-wrap items-center justify-between gap-4">
                 <div>
                     <h2 id="shop-heading" class="text-xl font-extrabold tracking-tight text-brand-navy">Shopping and data in one account</h2>
                     <p class="mt-1 max-w-2xl text-sm leading-relaxed text-muted">
-                        The shop is live: browse products publicly, then sign in to add to cart and pay from your wallet. One account and one order history.
+                        The shop is live: sign in to browse products, add to cart and pay from your wallet. One account and one order history.
                     </p>
                 </div>
                 <x-ui.button href="{{ url('/shop') }}" variant="secondary">Open Super Mall</x-ui.button>
@@ -162,6 +192,34 @@
         </div>
     </section>
     @endif
+
+    <section class="border-t border-line bg-surface-muted" aria-labelledby="about-heading">
+        <div class="container-page py-10 sm:py-12">
+            <div class="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow-strong">About</p>
+                    <h2 id="about-heading" class="mt-2 text-2xl font-extrabold text-brand-navy sm:text-3xl">Company information and updates.</h2>
+                    <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">A short look at who we are, how orders work and how payments are handled.</p>
+                </div>
+                <a href="{{ route('about.index') }}" class="text-sm font-bold text-brand-navy underline decoration-brand-yellow decoration-2 underline-offset-4">Read more</a>
+            </div>
+
+            <div class="mt-6 grid gap-4 sm:grid-cols-3">
+                @foreach (collect(config('about.posts', []))->sortByDesc('date')->take(3) as $post)
+                    <article class="flex flex-col rounded-card border border-line bg-surface p-5">
+                        <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow-strong">{{ $post['category'] }}</p>
+                        <h3 class="mt-2 text-lg font-extrabold leading-snug text-brand-navy">
+                            <a href="{{ route('about.show', $post['slug']) }}">{{ $post['title'] }}</a>
+                        </h3>
+                        <p class="mt-2 flex-1 text-sm leading-relaxed text-muted">{{ $post['excerpt'] }}</p>
+                        <p class="mt-4 text-xs text-muted">
+                            {{ \Illuminate\Support\Carbon::parse($post['date'])->format('j M Y') }} &middot; {{ $post['reading_time'] }} min read
+                        </p>
+                    </article>
+                @endforeach
+            </div>
+        </div>
+    </section>
 
     @auth
         <section class="bg-brand-yellow">
@@ -181,7 +239,7 @@
             <div class="container-page flex flex-wrap items-center justify-between gap-4 py-8">
                 <div>
                     <h2 class="text-xl font-extrabold text-brand-navy">New here?</h2>
-                    <p class="mt-1 text-sm font-semibold text-brand-navy">Create a free account and buy your first bundle in under a minute.</p>
+                    <p class="mt-1 text-sm font-semibold text-brand-navy">Create a free account and access your dashboard in under a minute.</p>
                 </div>
                 <div class="flex flex-wrap gap-3">
                     <x-ui.button href="{{ route('signup') }}" variant="secondary">Create free account</x-ui.button>

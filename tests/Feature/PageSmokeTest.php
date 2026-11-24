@@ -2,11 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 class PageSmokeTest extends TestCase
 {
+    use RefreshDatabase;
     public function test_home_route_name_exists(): void
     {
         $this->assertSame('/', route('home', absolute: false));
@@ -27,7 +30,8 @@ class PageSmokeTest extends TestCase
             $response->assertOk()
                 ->assertSee('Skip to main content')
                 ->assertSee('id="main-content"', false)
-                ->assertSee('Bottom navigation')
+                ->assertSee('Primary navigation')
+                ->assertDontSee('Bottom navigation')
                 ->assertDontSee('cdn.tailwindcss.com', false)
                 ->assertDontSee('unpkg.com', false)
                 ->assertDontSee('fonts.googleapis.com', false);
@@ -55,11 +59,29 @@ class PageSmokeTest extends TestCase
         $this->get('/bundles')->assertRedirect(route('services.data'));
     }
 
-    public function test_home_page_links_to_data_and_shop(): void
+    public function test_guest_home_hides_member_feature_links(): void
     {
         $this->get('/')
             ->assertOk()
-            ->assertSee('Buy data')
+            ->assertSee('Sign in')
+            ->assertSee('Create free account')
+            ->assertSee('Get started')
+            ->assertDontSee('href="'.route('services.data').'"', false)
+            ->assertDontSee('href="'.url('/shop').'"', false)
+            ->assertDontSee('Super Mall');
+    }
+
+    public function test_signed_in_home_links_to_data_and_shop(): void
+    {
+        $this->actingAs(User::create([
+            'full_name' => 'Home Link User',
+            'email' => 'home-links@example.com',
+            'phone' => '0244000070',
+            'password' => bcrypt('password'),
+        ]));
+
+        $this->get('/')
+            ->assertOk()
             ->assertSee('href="'.route('services.data').'"', false)
             ->assertSee('href="'.url('/shop').'"', false);
     }

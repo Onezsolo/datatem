@@ -44,7 +44,8 @@ class ShellWrappingTest extends TestCase
 
             $response->assertOk()
                 ->assertSee('Primary navigation')
-                ->assertSee('Bottom navigation')
+                ->assertDontSee('Bottom navigation')
+                ->assertDontSee('Mobile navigation')
                 ->assertDontSee('cdn.tailwindcss.com', false)
                 ->assertDontSee('fonts.googleapis.com', false);
         }

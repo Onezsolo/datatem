@@ -33,6 +33,8 @@ class FeatureFlagsTest extends TestCase
     {
         $headers = ['Authorization' => 'Bearer '.$this->adminToken()];
 
+        $this->actingAs(User::query()->where('email', 'feature-admin@example.com')->firstOrFail());
+
         $this->assertTrue(FeatureSettings::enabled('shop'));
 
         $this->withHeaders($headers)
@@ -100,14 +102,15 @@ class FeatureFlagsTest extends TestCase
             'password' => bcrypt('password'),
         ]);
 
+        $this->actingAs($user);
+
         $this->get('/')
             ->assertOk()
             ->assertSee('Everything you need')
             ->assertSee('Visit Super Mall')
             ->assertDontSee('Browse bundles');
 
-        $this->actingAs($user)
-            ->get('/dashboard')
+        $this->get('/dashboard')
             ->assertRedirect(route('shop.index'));
     }
 }

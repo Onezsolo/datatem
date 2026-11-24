@@ -88,6 +88,17 @@
             <path d="M9.5 9.5a2.5 2.5 0 1 1 4.2 1.9c-.8.7-1.7 1.2-1.7 2.6"></path>
             <path d="M12 17h.01"></path>
             @break
+        @case('user')
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M4 21a8 8 0 0 1 16 0"></path>
+            @break
+        @case('support')
+            <path d="M4 14v-2a8 8 0 0 1 16 0v2"></path>
+            <rect x="3" y="14" width="4" height="6" rx="1"></rect>
+            <rect x="17" y="14" width="4" height="6" rx="1"></rect>
+            <path d="M19 20v1a2 2 0 0 1-2 2h-4"></path>
+            <path d="M13 22.5h.01"></path>
+            @break
         @case('logout')
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
             <path d="M16 17l5-5-5-5"></path>

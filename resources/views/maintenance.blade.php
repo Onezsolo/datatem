@@ -1,4 +1,4 @@
-<x-layouts.public title="Maintenance">
+<x-layouts.public title="Maintenance" robots="noindex,nofollow">
 <div class="min-h-screen flex items-center justify-center bg-slate-50 px-4">
     <div class="max-w-2xl w-full text-center">
         <!-- Animated Background Decor -->

@@ -1,4 +1,4 @@
-<x-layouts.public title="Forgot password">
+<x-layouts.public title="Forgot password" robots="noindex,follow">
 <div class="min-h-[calc(100vh-80px)] flex items-center justify-center p-6 bg-slate-50" x-data="{
     email: '',
     loading: false,

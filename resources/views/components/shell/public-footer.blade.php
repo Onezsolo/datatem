@@ -23,6 +23,7 @@
                 </div>
             </div>
 
+            @auth
             <div>
                 <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Shop</p>
                 <ul class="mt-2 space-y-1.5 text-sm text-nav-muted">
@@ -40,10 +41,20 @@
                     @endif
                 </ul>
             </div>
+            @else
+            <div>
+                <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Account</p>
+                <ul class="mt-2 space-y-1.5 text-sm text-nav-muted">
+                    <li><a class="hover:text-white" href="{{ route('login') }}">Sign in</a></li>
+                    <li><a class="hover:text-white" href="{{ route('signup') }}">Create account</a></li>
+                </ul>
+            </div>
+            @endauth
 
             <div>
                 <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Information</p>
                 <ul class="mt-2 space-y-1.5 text-sm">
+                    <li><a class="text-nav-muted hover:text-white" href="{{ route('about.index') }}">About</a></li>
                     <li><a class="text-nav-muted hover:text-white" href="{{ route('legal.privacy') }}">Privacy</a></li>
                     <li><a class="text-nav-muted hover:text-white" href="{{ route('legal.terms') }}">Terms of sale</a></li>
                     @if ($supportEmail !== '')
