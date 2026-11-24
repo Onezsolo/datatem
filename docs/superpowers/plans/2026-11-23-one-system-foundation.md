@@ -622,3 +622,5 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Palette softened to reduce glare while keeping WCAG AA: navy #0A2038, gold #F0C232 (hover #D4A81F), red #DB4650 / #A92D38, surfaces #FCFBF8 / #F2F0EB. Network badge colours muted to match.
 
 - Fixed home page auth mismatch: the New here? Create free account / Sign in banner now renders only for guests; authenticated users see Welcome back with Dashboard and Shop orders. Updated the stale Shopping is coming copy to reflect the live shop.
+
+- Sidebar trigger moved to the far left of the public header (before the brand), matching member/admin topbars; brand wordmark collapses to the logo on very small screens so the row stays on one line.

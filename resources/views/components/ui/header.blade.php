@@ -14,9 +14,20 @@
 
 <header class="sticky top-0 z-50 border-b-[3px] border-brand-yellow bg-brand-navy text-white" role="banner" x-data="{ mobileNavOpen: false }">
     <div class="container-page flex flex-wrap items-center gap-x-3 gap-y-2 py-2.5 lg:flex-nowrap">
+        <button
+            type="button"
+            class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-control bg-white/10 text-white hover:bg-white/20 focus-visible:outline-brand-yellow lg:hidden"
+            aria-label="Open navigation menu"
+            aria-controls="mobile-public-nav"
+            :aria-expanded="mobileNavOpen"
+            @click="mobileNavOpen = true"
+        >
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+
         <a href="{{ $homeUrl }}" class="flex shrink-0 items-center gap-2.5 rounded-control focus-visible:outline-brand-yellow" aria-label="{{ $brand }} home">
             <img src="{{ \App\Support\Brand::logoUrl() }}" alt="" width="48" height="48" class="h-9 w-9 rounded-control bg-surface object-contain p-1 sm:h-10 sm:w-10">
-            <span class="leading-none">
+            <span class="hidden leading-none sm:block">
                 <span class="block text-base font-extrabold tracking-[0.06em] text-white">{{ \Illuminate\Support\Str::upper($brand) }}</span>
                 <span class="mt-1 block text-[0.5625rem] font-bold tracking-[0.26em] text-brand-yellow sm:text-[0.625rem]">DATA &amp; SHOPPING</span>
             </span>
@@ -42,16 +53,6 @@
         </nav>
 
         <div class="ms-auto flex items-center gap-2">
-            <button
-                type="button"
-                class="inline-flex h-11 w-11 items-center justify-center rounded-control bg-white/10 text-white hover:bg-white/20 focus-visible:outline-brand-yellow lg:hidden"
-                aria-label="Open navigation menu"
-                aria-controls="mobile-public-nav"
-                :aria-expanded="mobileNavOpen"
-                @click="mobileNavOpen = true"
-            >
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16"/></svg>
-            </button>
             @if ($searchAction)
                 <a href="{{ $searchAction }}" class="inline-flex h-11 w-11 items-center justify-center rounded-control bg-white/10 text-white hover:bg-white/20 focus-visible:outline-brand-yellow sm:hidden" aria-label="Search products">
                     <x-ui.icon name="search" :size="18" />
