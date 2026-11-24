@@ -1,4 +1,5 @@
 <x-layouts.public title="Log in">
+    @include('partials.auth-sync')
     <div
         class="bg-surface-muted py-10 sm:py-14"
         x-data="{

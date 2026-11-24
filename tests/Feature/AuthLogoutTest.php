@@ -20,12 +20,29 @@ class AuthLogoutTest extends TestCase
         ]);
     }
 
-    public function test_authenticated_user_is_redirected_away_from_login_and_signup(): void
+    public function test_authenticated_login_and_signup_pages_render_without_server_loop(): void
     {
         $this->actingAs($this->user());
 
-        $this->get('/login')->assertRedirect('/dashboard');
-        $this->get('/signup')->assertRedirect('/dashboard');
+        $this->get('/login')->assertOk();
+        $this->get('/signup')->assertOk();
+    }
+
+    public function test_authenticated_session_can_mint_a_client_token(): void
+    {
+        $user = $this->user();
+
+        $this->actingAs($user);
+
+        $response = $this->postJson('/auth/session-token')->assertOk();
+
+        $this->assertNotEmpty($response->json('access_token'));
+        $this->assertSame($user->email, $response->json('user.email'));
+    }
+
+    public function test_session_token_endpoint_requires_login(): void
+    {
+        $this->post('/auth/session-token')->assertRedirectContains('/login');
     }
 
     public function test_logout_clears_the_auth_cookie_and_invalidates_the_token(): void

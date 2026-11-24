@@ -14,20 +14,27 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/login', function () {
-    if (auth()->check()) {
-        return redirect()->intended(auth()->user()->role === 'admin' ? '/admin/dashboard' : '/dashboard');
-    }
-
     return view('login');
 })->name('login');
 
 Route::get('/signup', function () {
-    if (auth()->check()) {
-        return redirect()->intended(auth()->user()->role === 'admin' ? '/admin/dashboard' : '/dashboard');
-    }
-
     return view('signup');
 })->name('signup');
+
+Route::post('/auth/session-token', function (Illuminate\Http\Request $request) {
+    $user = $request->user();
+
+    if ($user === null) {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    $token = auth('api')->login($user);
+
+    return response()->json([
+        'access_token' => $token,
+        'user' => $user,
+    ])->withCookie(cookie('auth_token', $token, 60 * 24, '/', null, $request->isSecure(), true, false, 'lax'));
+})->middleware(['jwt.cookie', 'web.auth'])->name('auth.session-token');
 
 Route::get('/bundles', function () {
     return view('bundles');

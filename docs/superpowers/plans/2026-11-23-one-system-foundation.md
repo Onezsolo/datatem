@@ -626,3 +626,5 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Sidebar trigger moved to the far left of the public header (before the brand), matching member/admin topbars; brand wordmark collapses to the logo on very small screens so the row stays on one line.
 
 - Home stays public outside login: authenticated users can view the landing page (no redirect); the CTA switches to Welcome back with Dashboard (admin-aware) and Shop. Login/signup still land on the dashboard after signing in.
+
+- Fixed the refresh loop: /login and /signup no longer server-redirect authenticated visitors (dashboard's client guard sent them back, causing ping-pong). Authenticated login/signup pages now self-heal via POST /auth/session-token (new endpoint using the r2b cookie session), store the JWT in localStorage and redirect once; if minting fails the page stays put instead of looping.
