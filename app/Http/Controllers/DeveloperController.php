@@ -14,6 +14,7 @@ use App\Services\TemplatePackageService;
 use App\Services\TemplateProductService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class DeveloperController extends Controller
@@ -31,6 +32,7 @@ class DeveloperController extends Controller
             'featuresTotal' => count(FeatureSettings::definitions()),
             'deployment' => $status,
             'recentLicenses' => TemplateLicense::query()->latest('id')->limit(5)->get(),
+            'productTiers' => TemplateProductService::tiers(),
             'handover' => HandoverService::details(),
             'packagesCount' => TemplatePackage::query()->count(),
             'appliedPackage' => TemplatePackageService::applied(),
@@ -42,6 +44,8 @@ class DeveloperController extends Controller
     {
         return view('developer.licenses', [
             'licenses' => TemplateLicense::query()->latest('id')->paginate(25),
+            'products' => TemplateProductService::variants(),
+            'tiers' => TemplateProductService::tiers(),
             'issuedKey' => session('issued_license_key'),
             'issuedClient' => session('issued_license_client'),
         ]);
@@ -54,9 +58,26 @@ class DeveloperController extends Controller
             'client_email' => ['nullable', 'email', 'max:160'],
             'domain' => ['nullable', 'string', 'max:190'],
             'agreement_reference' => ['nullable', 'string', 'max:120'],
+            'product_key' => ['nullable', 'string', Rule::in(array_keys(TemplateProductService::variants()))],
+            'license_tier' => ['nullable', 'string', Rule::in(array_keys(TemplateProductService::tiers()))],
             'expires_at' => ['nullable', 'date', 'after:today'],
             'notes' => ['nullable', 'string', 'max:2000'],
         ]);
+
+        if (! empty($data['product_key'])) {
+            $tiers = TemplateProductService::tiersFor($data['product_key']);
+            $tierKey = (string) ($data['license_tier'] ?? '');
+            $tier = $tiers[$tierKey] ?? null;
+
+            if ($tier === null) {
+                return back()->withInput()->withErrors(['license_tier' => 'Choose a license tier for the selected template.']);
+            }
+
+            $data['license_tier'] = $tierKey;
+            $data['price'] = (float) $tier['price'];
+            $data['deployments_allowed'] = $tier['deployments'];
+            $data['support_ends_at'] = now()->addDays((int) $tier['support_days']);
+        }
 
         $result = $licenses->issue($data, $request->user());
 

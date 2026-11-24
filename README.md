@@ -120,3 +120,11 @@ Developer → **Template products** ships five individual template setups, each 
 | Data only | Data, service orders, data orders, wallet, notifications, support | Data bundles | Graphite & Ember |
 
 Each product has its **own console path** (/developer/products/{product}) and a **preview path** (/developer/products/{product}/preview). Opening, previewing or creating a package from a product never changes the current deployment. Create a client package from the product, then apply that package on the client's deployment. Custom combinations can also be captured as template packages.
+### Template catalog structure (provider-style)
+
+The developer catalog follows the structure used by established template providers (Envato-style licenses, Creative Tim/SaaSykit product pages):
+
+- **Product page:** category, version badge, tagline, highlights, live preview, documentation link (`TEMPLATE_DOCS_URL`), feature matrix, what's included, support/update policy, changelog and the product's individual paths.
+- **License tiers:** each product has **Standard** (1 deployment, 180 days support, no resale) and **Extended** (unlimited deployments under agreement, 365 days support, resale/client billing allowed) pricing in `config/template_products.php`.
+- **Licensing:** issuing from a product/tier stores product key, tier, price, deployments allowed and support end date on the license; admins cannot access the developer catalog or license tools.
+- **Delivery:** "Create client package" snapshots the product into Template packages for applying on client deployments, followed by deployment license and handover.

@@ -13,6 +13,11 @@ class TemplateLicense extends Model
     protected $fillable = [
         'license_key_hash',
         'key_prefix',
+        'product_key',
+        'license_tier',
+        'price',
+        'deployments_allowed',
+        'support_ends_at',
         'client_name',
         'client_email',
         'domain',
@@ -33,6 +38,9 @@ class TemplateLicense extends Model
         return [
             'issued_at' => 'datetime',
             'expires_at' => 'datetime',
+            'support_ends_at' => 'datetime',
+            'price' => 'decimal:2',
+            'deployments_allowed' => 'integer',
         ];
     }
 

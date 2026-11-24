@@ -24,6 +24,11 @@ final class TemplateLicenseService
         $license = TemplateLicense::create([
             'license_key_hash' => TemplateLicense::hashKey($key),
             'key_prefix' => TemplateLicense::prefixForKey($key),
+            'product_key' => $data['product_key'] ?? null,
+            'license_tier' => $data['license_tier'] ?? null,
+            'price' => $data['price'] ?? null,
+            'deployments_allowed' => $data['deployments_allowed'] ?? null,
+            'support_ends_at' => $data['support_ends_at'] ?? null,
             'client_name' => (string) $data['client_name'],
             'client_email' => $data['client_email'] ?? null,
             'domain' => $data['domain'] ?? null,

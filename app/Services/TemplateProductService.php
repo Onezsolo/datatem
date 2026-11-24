@@ -83,4 +83,61 @@ final class TemplateProductService
 
         return $labels;
     }
+
+    public static function currency(): string
+    {
+        return (string) config('template_products.currency', 'GHS');
+    }
+
+    public static function docsUrl(): string
+    {
+        return (string) config('template_products.docs_url', '');
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public static function tiers(): array
+    {
+        return (array) config('template_products.tiers', []);
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public static function tiersFor(string $product): array
+    {
+        $variant = self::variant($product);
+
+        if ($variant === null) {
+            return [];
+        }
+
+        $prices = (array) ($variant['license_prices'] ?? []);
+        $tiers = [];
+
+        foreach (self::tiers() as $key => $tier) {
+            $tiers[$key] = array_merge($tier, [
+                'key' => $key,
+                'price' => (float) ($prices[$key] ?? 0),
+            ]);
+        }
+
+        return $tiers;
+    }
+
+    public static function licensePrice(string $product, string $tier): ?float
+    {
+        $tiers = self::tiersFor($product);
+
+        return isset($tiers[$tier]) ? (float) $tiers[$tier]['price'] : null;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public static function includes(): array
+    {
+        return (array) config('template_products.includes', []);
+    }
 }

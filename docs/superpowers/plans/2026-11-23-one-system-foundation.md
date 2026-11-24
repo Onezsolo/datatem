@@ -690,3 +690,9 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Applying a product directly to the current deployment was removed: each template product now has its own console path (/developer/products/{key}) and an independent preview path (/developer/products/{key}/preview) with the product's theme and module setup.
 - Creating a client package from a product snapshots its features/services/design plus current provider sources into 	emplate_packages without touching this deployment; packages are applied on client installations before licensing/handover.
 - Developer products, dashboard, tests updated; global settings restored after local experimentation.
+
+### Provider-style template catalog and licensing
+
+- Modeled after standard template marketplaces: category/version, highlights, live preview, docs link, feature matrix, includes, support/update policy, changelog and per-product paths.
+- Standard and Extended license tiers per product with prices, deployment limits, resale rights and support windows; issuing a license records product/tier/price/deployments/support end.
+- Tests cover catalog structure, tier pricing and license field persistence; local migration applied.

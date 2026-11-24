@@ -118,4 +118,56 @@ class TemplateProductsTest extends TestCase
         $this->actingAs($admin)->get('/developer/products/mall-only/preview')->assertForbidden();
         $this->actingAs($admin)->post('/developer/products/mall-only/package')->assertForbidden();
     }
+    public function test_product_detail_uses_a_provider_style_catalog_structure(): void
+    {
+        $this->actingAs($this->developer())
+            ->get('/developer/products/mall-only')
+            ->assertOk()
+            ->assertSee('License pricing')
+            ->assertSee('Standard license')
+            ->assertSee('Extended license')
+            ->assertSee('GHS 2,500.00')
+            ->assertSee('180 days support')
+            ->assertSee('Feature matrix')
+            ->assertSee("What's included", false)
+            ->assertSee('Changelog')
+            ->assertSee('Live preview')
+            ->assertSee('E-commerce');
+    }
+
+    public function test_license_issued_from_a_product_tier_stores_price_and_support_terms(): void
+    {
+        $this->actingAs($this->developer())
+            ->post('/developer/licenses', [
+                'client_name' => 'Mall Client',
+                'client_email' => 'client@example.com',
+                'domain' => 'mall.example.com',
+                'agreement_reference' => 'AGR-MALL-1',
+                'product_key' => 'mall-only',
+                'license_tier' => 'standard',
+            ])
+            ->assertRedirect(route('developer.licenses'));
+
+        $license = \App\Models\TemplateLicense::query()->firstOrFail();
+
+        $this->assertSame('mall-only', $license->product_key);
+        $this->assertSame('standard', $license->license_tier);
+        $this->assertSame('2500.00', (string) $license->price);
+        $this->assertSame(1, $license->deployments_allowed);
+        $this->assertNotNull($license->support_ends_at);
+        $this->assertTrue($license->support_ends_at->isFuture());
+    }
+
+    public function test_product_license_requires_a_valid_tier(): void
+    {
+        $this->actingAs($this->developer())
+            ->post('/developer/licenses', [
+                'client_name' => 'Mall Client',
+                'product_key' => 'mall-only',
+                'license_tier' => 'enterprise',
+            ])
+            ->assertSessionHasErrors('license_tier');
+
+        $this->assertSame(0, \App\Models\TemplateLicense::query()->count());
+    }
 }

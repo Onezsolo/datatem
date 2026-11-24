@@ -16,8 +16,12 @@
         <div class="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
             @foreach ($variants as $key => $variant)
                 <div class="flex h-full flex-col rounded-card border border-line bg-surface p-5">
-                    <p class="text-lg font-extrabold text-brand-navy">{{ $variant['name'] }}</p>
+                    <div class="flex items-start justify-between gap-2">
+                        <p class="text-lg font-extrabold text-brand-navy">{{ $variant['name'] }}</p>
+                        <x-ui.badge variant="neutral" size="sm">{{ $variant['category'] ?? 'Template' }}</x-ui.badge>
+                    </div>
                     <p class="mt-1 text-sm text-muted">{{ $variant['description'] }}</p>
+                    <p class="mt-2 text-xs font-bold text-brand-navy">From {{ \App\Services\TemplateProductService::currency() }} {{ number_format((float) (\App\Services\TemplateProductService::tiersFor($key)['standard']['price'] ?? 0), 2) }} <span class="font-normal text-muted">· v{{ $variant['version'] ?? '1.0.0' }}</span></p>
 
                     <dl class="mt-4 space-y-2 text-xs">
                         <div>

@@ -41,6 +41,26 @@
                         <input id="domain" name="domain" type="text" placeholder="client.example.com" value="{{ old('domain') }}" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm">
                     </div>
                     <div>
+                        <label for="product_key" class="block text-sm font-bold text-brand-navy">Template product</label>
+                        <select id="product_key" name="product_key" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm">
+                            <option value="">General license</option>
+                            @foreach ($products as $productKey => $product)
+                                <option value="{{ $productKey }}" @selected(old('product_key', request('product')) === $productKey)>{{ $product['name'] }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label for="license_tier" class="block text-sm font-bold text-brand-navy">License tier</label>
+                        <select id="license_tier" name="license_tier" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm">
+                            <option value="">Select tier</option>
+                            @foreach ($tiers as $tierKey => $tier)
+                                <option value="{{ $tierKey }}" @selected(old('license_tier', request('tier')) === $tierKey)>{{ $tier['label'] }}</option>
+                            @endforeach
+                        </select>
+                        <p class="mt-1 text-xs text-muted">Price is set from the product's tier pricing automatically.</p>
+                        @error('license_tier')<p class="mt-1 text-xs font-semibold text-brand-red-strong">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
                         <label for="agreement_reference" class="block text-sm font-bold text-brand-navy">Agreement reference</label>
                         <input id="agreement_reference" name="agreement_reference" type="text" value="{{ old('agreement_reference') }}" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm">
                     </div>
@@ -65,7 +85,9 @@
                             <tr>
                                 <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Key</th>
                                 <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Client</th>
+                                <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Product / tier</th>
                                 <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Domain</th>
+                                <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Price</th>
                                 <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Agreement</th>
                                 <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Status</th>
                                 <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Expires</th>
@@ -80,7 +102,14 @@
                                         <p class="font-bold text-brand-navy">{{ $license->client_name }}</p>
                                         <p class="text-xs text-muted">{{ $license->client_email }}</p>
                                     </td>
+                                    <td class="px-4 py-3 text-muted">
+                                        {{ $products[$license->product_key]['name'] ?? 'General' }}
+                                        @if ($license->license_tier)
+                                            <span class="block text-xs text-muted">{{ $tiers[$license->license_tier]['label'] ?? $license->license_tier }}</span>
+                                        @endif
+                                    </td>
                                     <td class="px-4 py-3 text-muted">{{ $license->domain ?: 'Any' }}</td>
+                                    <td class="px-4 py-3 font-semibold text-brand-navy">{{ $license->price ? \App\Services\TemplateProductService::currency().' '.number_format((float) $license->price, 2) : '—' }}</td>
                                     <td class="px-4 py-3 text-muted">{{ $license->agreement_reference ?: '—' }}</td>
                                     <td class="px-4 py-3 font-semibold text-brand-navy">{{ $license->statusLabel() }}</td>
                                     <td class="px-4 py-3 text-muted">{{ $license->expires_at?->format('d M Y') ?: 'No expiry' }}</td>
@@ -99,7 +128,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr><td colspan="7" class="px-4 py-8 text-center text-sm text-muted">No licenses yet. Issue the first one.</td></tr>
+                                <tr><td colspan="10" class="px-4 py-8 text-center text-sm text-muted">No licenses yet. Issue the first one.</td></tr>
                             @endforelse
                         </tbody>
                     </table>

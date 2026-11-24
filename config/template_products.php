@@ -1,11 +1,42 @@
 <?php
 
 return [
+    'currency' => 'GHS',
+    'docs_url' => env('TEMPLATE_DOCS_URL', ''),
+
+    'tiers' => [
+        'standard' => [
+            'label' => 'Standard license',
+            'support_days' => 180,
+            'deployments' => 1,
+            'resale_allowed' => false,
+        ],
+        'extended' => [
+            'label' => 'Extended license',
+            'support_days' => 365,
+            'deployments' => null,
+            'resale_allowed' => true,
+        ],
+    ],
+
+    'includes' => [
+        'Laravel 11 application with admin console',
+        'Design system with five theme presets',
+        'Wallet, Paystack top-ups and duplicate-safe checkout',
+        'Provider API catalog sync for data and digital services',
+        'Super Mall module with delivery zones and order tracking',
+        'Developer licensing, template packages and handover tools',
+    ],
+
     'products' => [
         'data-subscription-mall' => [
             'name' => 'Data + Subscriptions + Mall',
+            'category' => 'All-in-one',
             'description' => 'All-in-one: data bundles, subscriptions and the Super Mall with one wallet.',
             'theme' => 'navy-gold',
+            'version' => '1.0.0',
+            'highlights' => ['Three revenue lines in one account', 'One wallet and checkout', 'Full admin, licensing and handover tooling'],
+            'license_prices' => ['standard' => 3500, 'extended' => 9000],
             'features' => [
                 'shop' => true,
                 'shop_orders' => true,
@@ -30,11 +61,18 @@ return [
                 'afa' => false,
             ],
             'afa_price' => 0,
+            'changelog' => [
+                ['version' => '1.0.0', 'date' => '2026-11-24', 'notes' => 'Initial release: data, subscriptions and Super Mall.'],
+            ],
         ],
         'data-subscription' => [
             'name' => 'Data + Subscriptions',
+            'category' => 'Digital services',
             'description' => 'Data bundles and subscriptions without the shop.',
             'theme' => 'emerald-brass',
+            'version' => '1.0.0',
+            'highlights' => ['Data bundles and digital subscriptions', 'Wallet checkout with provider sync', 'Focused admin without shop operations'],
+            'license_prices' => ['standard' => 2800, 'extended' => 7500],
             'features' => [
                 'shop' => false,
                 'shop_orders' => false,
@@ -59,11 +97,18 @@ return [
                 'afa' => false,
             ],
             'afa_price' => 0,
+            'changelog' => [
+                ['version' => '1.0.0', 'date' => '2026-11-24', 'notes' => 'Initial release: data bundles and subscriptions.'],
+            ],
         ],
         'mall-only' => [
             'name' => 'Mall only',
+            'category' => 'E-commerce',
             'description' => 'Super Mall shopping with wallet checkout only.',
             'theme' => 'ocean-steel',
+            'version' => '1.0.0',
+            'highlights' => ['Super Mall catalog, cart and checkout', 'Wallet payments and delivery zones', 'Shop-only admin navigation'],
+            'license_prices' => ['standard' => 2500, 'extended' => 6500],
             'features' => [
                 'shop' => true,
                 'shop_orders' => true,
@@ -88,11 +133,18 @@ return [
                 'afa' => false,
             ],
             'afa_price' => 0,
+            'changelog' => [
+                ['version' => '1.0.0', 'date' => '2026-11-24', 'notes' => 'Initial release: Super Mall with wallet checkout.'],
+            ],
         ],
         'subscription-only' => [
             'name' => 'Subscriptions only',
+            'category' => 'Digital services',
             'description' => 'Gift cards and shared subscriptions with wallet checkout.',
             'theme' => 'plum-rose',
+            'version' => '1.0.0',
+            'highlights' => ['Gift cards and shared subscriptions', 'Wallet checkout and order history', 'Minimal service-focused admin'],
+            'license_prices' => ['standard' => 2000, 'extended' => 5500],
             'features' => [
                 'shop' => false,
                 'shop_orders' => false,
@@ -117,11 +169,18 @@ return [
                 'afa' => false,
             ],
             'afa_price' => 0,
+            'changelog' => [
+                ['version' => '1.0.0', 'date' => '2026-11-24', 'notes' => 'Initial release: digital subscriptions only.'],
+            ],
         ],
         'data-only' => [
             'name' => 'Data only',
+            'category' => 'Data resale',
             'description' => 'Data bundles with wallet, data orders and support.',
             'theme' => 'graphite-ember',
+            'version' => '1.0.0',
+            'highlights' => ['Network-grouped data catalogue', 'Wallet and provider-backed orders', 'Lean data-only admin'],
+            'license_prices' => ['standard' => 1800, 'extended' => 4800],
             'features' => [
                 'shop' => false,
                 'shop_orders' => false,
@@ -146,6 +205,9 @@ return [
                 'afa' => false,
             ],
             'afa_price' => 0,
+            'changelog' => [
+                ['version' => '1.0.0', 'date' => '2026-11-24', 'notes' => 'Initial release: data bundles only.'],
+            ],
         ],
     ],
 ];
