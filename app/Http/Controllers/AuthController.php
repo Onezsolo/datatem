@@ -95,7 +95,7 @@ class AuthController extends Controller
                     'token' => $token,
                     'type' => 'bearer',
                 ]
-            ], 201);
+            ], 201)->withCookie($this->tokenCookie($token));
         } catch (\Exception $e) {
             \Log::error('Registration Error: ' . $e->getMessage());
             return response()->json(['error' => 'Registration failed: ' . $e->getMessage()], 500);
@@ -141,7 +141,7 @@ class AuthController extends Controller
     {
         auth('api')->logout();
 
-        return response()->json(['message' => 'User successfully signed out']);
+        return response()->json(['message' => 'User successfully signed out'])->withoutCookie('auth_token');
     }
 
     /**
@@ -223,6 +223,11 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 60,
             'user' => $userPayload,
-        ]);
+        ])->withCookie($this->tokenCookie($token));
+    }
+
+    private function tokenCookie(string $token): \Symfony\Component\HttpFoundation\Cookie
+    {
+        return cookie('auth_token', $token, 60 * 24, '/', null, request()->isSecure(), true, false, 'lax');
     }
 }

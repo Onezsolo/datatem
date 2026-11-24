@@ -30,7 +30,11 @@
                     const data = await response.json();
                     if (response.ok) {
                         this.$store.auth.login(data.user, data.authorization.token);
-                        window.location.href = '/dashboard';
+                        const redirectParam = new URLSearchParams(window.location.search).get('redirect');
+                        const target = redirectParam && redirectParam.startsWith('/') && !redirectParam.startsWith('//')
+                            ? redirectParam
+                            : '/dashboard';
+                        window.location.href = target;
                     } else {
                         if (typeof data === 'object' && data !== null && !Array.isArray(data)) {
                             this.errors = {};

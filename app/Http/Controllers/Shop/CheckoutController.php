@@ -17,6 +17,10 @@ class CheckoutController
 {
     public function show(Request $request, CartService $carts): View|RedirectResponse
     {
+        if ($request->user() === null) {
+            return redirect()->guest(route('login', ['redirect' => $request->fullUrl()]));
+        }
+
         $cart = $carts->current($request);
 
         if ($cart === null || $cart->items()->doesntExist()) {
@@ -39,13 +43,20 @@ class CheckoutController
 
     public function store(CheckoutRequest $request, CartService $carts, CheckoutService $checkout): RedirectResponse
     {
+        if ($request->user() === null) {
+            return redirect()->guest(route('login', ['redirect' => url()->previous()]));
+        }
+
         $cart = $carts->current($request);
 
         if ($cart === null) {
             throw ValidationException::withMessages(['cart' => 'Your cart is empty.']);
         }
 
-        $order = $checkout->placeOrder($cart, $request->validated());
+        $data = $request->validated();
+        $data['user_id'] = $request->user()->id;
+
+        $order = $checkout->placeOrder($cart, $data);
 
         $request->session()->forget(CartService::SESSION_KEY);
 

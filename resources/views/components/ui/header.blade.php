@@ -60,6 +60,21 @@
                 </form>
             @endif
 
+            <a
+                href="{{ url('/dashboard') }}"
+                x-data
+                x-show="$store.auth.token"
+                x-cloak
+                class="hidden min-h-11 items-center rounded-control px-2.5 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white sm:inline-flex"
+            >Account</a>
+            <a
+                href="{{ route('login') }}"
+                x-data
+                x-show="!$store.auth.token"
+                x-cloak
+                class="hidden min-h-11 items-center rounded-control px-2.5 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white sm:inline-flex"
+            >Sign in</a>
+
             @if ($cartUrl)
                 <a
                     href="{{ $cartUrl }}"

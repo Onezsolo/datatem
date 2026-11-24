@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use App\Shop\Models\Order;
 use App\Shop\Models\Product;
 use Database\Seeders\ShopCatalogSeeder;
@@ -47,6 +48,17 @@ class ShopStorefrontTest extends TestCase
         $this->get('/shop/cart')
             ->assertOk()
             ->assertSee('Samsung Galaxy A56');
+
+        $this->get('/shop/checkout')->assertRedirectContains('/login');
+
+        $user = User::create([
+            'full_name' => 'Ama Mensah',
+            'email' => 'ama-shop@example.com',
+            'phone' => '0244000000',
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->actingAs($user);
 
         $this->get('/shop/checkout')->assertOk();
 

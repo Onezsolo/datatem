@@ -18,19 +18,20 @@ class MemberOrderController
         $email = trim((string) ($user->email ?? ''));
 
         $orders = Order::query()
-            ->when($phone !== '' || $email !== '', function ($query) use ($phone, $email) {
-                $query->where(function ($query) use ($phone, $email) {
-                    if ($phone !== '') {
-                        $query->where('customer_phone', $phone);
-                    }
+            ->where(function ($query) use ($user, $phone, $email) {
+                $query->where('user_id', $user->id);
 
-                    if ($email !== '') {
-                        $method = $phone !== '' ? 'orWhere' : 'where';
-                        $query->{$method}('customer_email', $email);
-                    }
-                });
-            }, function ($query) {
-                $query->whereRaw('1 = 0');
+                if ($phone !== '') {
+                    $query->orWhere(function ($query) use ($phone) {
+                        $query->whereNull('user_id')->where('customer_phone', $phone);
+                    });
+                }
+
+                if ($email !== '') {
+                    $query->orWhere(function ($query) use ($email) {
+                        $query->whereNull('user_id')->where('customer_email', $email);
+                    });
+                }
             })
             ->latest('created_at')
             ->limit(50)

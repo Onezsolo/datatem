@@ -37,6 +37,7 @@ class Cart extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'token',
         'session_id',
         'ip_address',

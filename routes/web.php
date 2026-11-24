@@ -50,7 +50,7 @@ Route::get('/orders', function () {
 
 Route::get('/orders/shop', function () {
     return view('shop-orders');
-})->name('orders.shop');
+})->middleware('jwt.cookie')->name('orders.shop');
 
 Route::get('/topup', function () {
     $manualNumber = \App\Services\SettingsService::get('manual_payment_mobile_money', '0241234567');
@@ -136,7 +136,7 @@ if (! app()->environment('production')) {
 }
 
 // Shop (guest checkout, physical goods) — wired into the data system.
-Route::prefix('shop')->name('shop.')->group(function () {
+Route::prefix('shop')->name('shop.')->middleware('jwt.cookie')->group(function () {
     Route::get('/', ShopHomeController::class)->name('index');
     Route::get('/search', [ShopCatalogController::class, 'search'])->name('search');
     Route::get('/category/{category:slug}', [ShopCatalogController::class, 'category'])->name('categories.show');

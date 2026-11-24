@@ -19,6 +19,25 @@ class CartService
 
     public function current(Request $request, bool $create = false): ?Cart
     {
+        $userId = $request->user()?->id;
+
+        if ($userId !== null) {
+            $cart = Cart::query()
+                ->where('user_id', $userId)
+                ->where(function (Builder $query): void {
+                    $query->whereNull('expires_at')
+                        ->orWhere('expires_at', '>', now());
+                })
+                ->latest('id')
+                ->first();
+
+            if ($cart instanceof Cart) {
+                $this->remember($request, $cart);
+
+                return $cart;
+            }
+        }
+
         $token = $request->hasSession() ? $request->session()->get(self::SESSION_KEY) : null;
         $token = is_string($token) && $token !== '' ? $token : $request->header('X-Cart-Token');
         $token = is_string($token) && $token !== '' ? $token : null;
@@ -33,6 +52,10 @@ class CartService
                 ->first();
 
             if ($cart instanceof Cart) {
+                if ($userId !== null && $cart->user_id === null) {
+                    $cart->update(['user_id' => $userId]);
+                }
+
                 $this->remember($request, $cart);
 
                 return $cart;
@@ -44,6 +67,7 @@ class CartService
         }
 
         $cart = Cart::create([
+            'user_id' => $userId,
             'session_id' => $request->hasSession() ? $request->session()->getId() : null,
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),

@@ -90,6 +90,7 @@ class CheckoutService
             $total = round($subtotal + $deliveryFee + $serviceCharge, 2);
 
             $order = Order::create([
+                'user_id' => $data['user_id'] ?? null,
                 'customer_name' => (string) $data['customer_name'],
                 'customer_phone' => $this->normalisePhone((string) $data['customer_phone']),
                 'customer_email' => $data['customer_email'] ?? null,

@@ -1,7 +1,7 @@
 <x-layouts.public title="Checkout">
     <div class="container-page py-8">
-        <h1 class="text-3xl font-extrabold tracking-tight text-brand-navy">Guest checkout</h1>
-        <p class="mt-2 max-w-2xl text-sm text-muted">Enter your delivery details. No account is created; use your order number and phone number to track the order.</p>
+        <h1 class="text-3xl font-extrabold tracking-tight text-brand-navy">Checkout</h1>
+        <p class="mt-2 max-w-2xl text-sm text-muted">Delivery details for your account. This order will appear in your Shop orders list.</p>
 
         @if ($errors->any())
             <div class="mt-4 rounded-card border border-brand-red-strong bg-surface p-4" role="alert">
@@ -30,15 +30,15 @@
                 <div class="mt-4 grid gap-4 sm:grid-cols-2">
                     <div class="sm:col-span-2">
                         <label for="customer_name" class="block text-xs font-bold uppercase tracking-wide text-muted">Full name</label>
-                        <input id="customer_name" name="customer_name" type="text" value="{{ old('customer_name') }}" required class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
+                        <input id="customer_name" name="customer_name" type="text" value="{{ old('customer_name', auth()->user()?->full_name) }}" required class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
                     </div>
                     <div>
                         <label for="customer_phone" class="block text-xs font-bold uppercase tracking-wide text-muted">Phone</label>
-                        <input id="customer_phone" name="customer_phone" type="tel" value="{{ old('customer_phone') }}" required placeholder="0244000000" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
+                        <input id="customer_phone" name="customer_phone" type="tel" value="{{ old('customer_phone', auth()->user()?->phone) }}" required placeholder="0244000000" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
                     </div>
                     <div>
                         <label for="customer_email" class="block text-xs font-bold uppercase tracking-wide text-muted">Email (optional)</label>
-                        <input id="customer_email" name="customer_email" type="email" value="{{ old('customer_email') }}" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
+                        <input id="customer_email" name="customer_email" type="email" value="{{ old('customer_email', auth()->user()?->email) }}" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
                     </div>
                     <div class="sm:col-span-2">
                         <label for="delivery_address" class="block text-xs font-bold uppercase tracking-wide text-muted">Delivery address</label>

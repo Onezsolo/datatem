@@ -19,7 +19,11 @@
                     const data = await response.json();
                     if (response.ok) {
                         this.$store.auth.login(data.user, data.access_token, this.keep_me_signed_in);
-                        window.location.href = data.user.role === 'admin' ? '/admin/dashboard' : '/dashboard';
+                        const redirectParam = new URLSearchParams(window.location.search).get('redirect');
+                        const target = redirectParam && redirectParam.startsWith('/') && !redirectParam.startsWith('//')
+                            ? redirectParam
+                            : (data.user.role === 'admin' ? '/admin/dashboard' : '/dashboard');
+                        window.location.href = target;
                     } else {
                         this.error = data.error || 'Invalid credentials';
                     }

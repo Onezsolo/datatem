@@ -28,7 +28,7 @@ class JwtFromCookie
             $request->headers->set('Authorization', 'Bearer ' . $token);
 
             try {
-                $user = Auth::guard('jwt')->authenticate();
+                $user = Auth::guard('api')->authenticate();
                 if ($user) {
                     Auth::setUser($user);
                 }
