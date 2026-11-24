@@ -27,11 +27,11 @@
         </a>
 
         <header class="mb-8">
-            <p class="text-muted text-sm font-semibold uppercase tracking-wider mb-1">Reseller</p>
+            <p class="text-muted text-sm font-semibold uppercase tracking-wider mb-1">Reseller - data bundles only</p>
             <template x-if="request && request.status === 'approved'">
                 <div>
                     <h1 class="text-2xl md:text-3xl font-bold text-brand-navy">Your reseller store</h1>
-                    <p class="mt-1 text-muted font-medium">Manage your store, prices, and sales.</p>
+                    <p class="mt-1 text-muted font-medium">Manage your store, prices and data bundle sales. Shop orders are not part of reseller tools.</p>
                 </div>
             </template>
             <template x-if="!request || request.status !== 'approved'">

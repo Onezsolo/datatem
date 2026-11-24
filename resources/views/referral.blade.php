@@ -10,9 +10,9 @@
         </a>
 
         <header class="mb-8">
-            <p class="text-muted text-sm font-semibold uppercase tracking-wider mb-1">Referral</p>
+            <p class="text-muted text-sm font-semibold uppercase tracking-wider mb-1">Referral - data bundles only</p>
             <h1 class="text-2xl md:text-3xl font-bold text-brand-navy">Invite & Earn</h1>
-            <p class="mt-1 text-muted font-medium">Share your link. Earn when referred users sign up and buy data.</p>
+            <p class="mt-1 text-muted font-medium">Share your link. Rewards apply to data bundle purchases only, not shop orders.</p>
         </header>
 
         <template x-if="loading && !affiliate && !error">

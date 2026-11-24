@@ -36,9 +36,9 @@ final class Navigation
                 ['label' => 'Shop orders', 'route' => 'orders.shop', 'pattern' => 'orders/shop', 'icon' => 'bag'],
                 ['label' => 'Wallet', 'route' => 'topup', 'pattern' => 'topup*', 'icon' => 'cart'],
             ]),
-            'Earnings' => array_map(fn (array $item) => self::item($item), [
-                ['label' => 'Referral', 'route' => 'referral', 'pattern' => 'referral', 'icon' => 'check'],
-                ['label' => 'Reseller', 'route' => 'reseller', 'pattern' => 'reseller*', 'icon' => 'grid'],
+            'Data earnings' => array_map(fn (array $item) => self::item($item), [
+                ['label' => 'Data referral', 'route' => 'referral', 'pattern' => 'referral', 'icon' => 'check'],
+                ['label' => 'Data reseller', 'route' => 'reseller', 'pattern' => 'reseller*', 'icon' => 'grid'],
             ]),
             'Account' => array_map(fn (array $item) => self::item($item), [
                 ['label' => 'Notifications', 'route' => 'notifications', 'pattern' => 'notifications', 'icon' => 'more'],

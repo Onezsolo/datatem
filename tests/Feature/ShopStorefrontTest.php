@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Affiliate;
 use App\Models\User;
 use App\Shop\Models\Order;
 use App\Shop\Models\Payment;
@@ -157,5 +158,51 @@ class ShopStorefrontTest extends TestCase
     {
         $this->get('/shop/track')->assertOk()->assertSee('Track an order');
         $this->get('/shop/more')->assertOk();
+    }
+
+    public function test_shop_purchase_does_not_create_reseller_or_referral_earnings(): void
+    {
+        $referrer = User::create([
+            'full_name' => 'Referrer',
+            'email' => 'referrer@example.com',
+            'phone' => '0244000050',
+            'password' => bcrypt('password'),
+        ]);
+
+        $affiliate = Affiliate::create([
+            'user_id' => $referrer->id,
+            'referral_code' => 'REFTEST1',
+            'status' => 'approved',
+            'commission_rate' => 5,
+            'balance' => 10,
+            'total_earned' => 20,
+        ]);
+
+        $user = $this->shopper(8000.0);
+        $user->forceFill([
+            'reseller_earnings_balance' => 12.5,
+            'referred_by_affiliate_id' => $affiliate->id,
+        ])->save();
+
+        $this->actingAs($user);
+
+        $product = Product::query()->where('slug', 'samsung-galaxy-a56')->firstOrFail();
+
+        $this->post('/shop/cart/items', ['product_id' => $product->id, 'quantity' => 1])->assertRedirect();
+
+        $this->post('/shop/checkout', [
+            'customer_name' => 'Ama Mensah',
+            'customer_phone' => '0244000000',
+            'delivery_address' => '12 Independence Avenue',
+            'delivery_city' => 'Accra',
+            'delivery_zone' => 'accra',
+        ])->assertRedirect();
+
+        $order = Order::query()->latest('id')->firstOrFail();
+
+        $this->assertSame('paid', $order->payment_status);
+        $this->assertSame('12.50', (string) $user->fresh()->reseller_earnings_balance);
+        $this->assertSame('10.00', (string) $affiliate->fresh()->balance);
+        $this->assertSame('20.00', (string) $affiliate->fresh()->total_earned);
     }
 }

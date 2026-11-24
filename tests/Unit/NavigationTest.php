@@ -24,7 +24,7 @@ class NavigationTest extends TestCase
     {
         $groups = Navigation::member();
 
-        $this->assertSame(['Overview', 'Orders', 'Earnings', 'Account'], array_keys($groups));
+        $this->assertSame(['Overview', 'Orders', 'Data earnings', 'Account'], array_keys($groups));
 
         $count = 0;
 

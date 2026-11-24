@@ -608,3 +608,9 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Shop catalogue is public again: `/shop`, category, product, search, more and track render for guests in the public shell (header/footer/bottom nav), like data bundles.
 - Purchase actions stay gated: cart add/view, checkout, wallet payment and shop orders require login (`web.auth`), and product pages show "Sign in to buy" for guests.
 - Adaptive shell `x-layouts.shop`: guests get the public shell, logged-in users get the shared member sidebar, so both systems keep the same sidebar once signed in.
+
+### Referral and reseller are data-only
+
+- Sidebar group renamed to `Data earnings` with `Data referral` and `Data reseller` items.
+- Referral and reseller pages state that rewards/tools apply to data bundle purchases only, not shop orders.
+- Shop checkout creates only the shop order, wallet debit and `shop_payments` record; it never credits affiliate balances, reseller earnings or referral commissions. Regression test added (`shop purchase does not create reseller or referral earnings`).
