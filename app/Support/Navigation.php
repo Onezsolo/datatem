@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Services\FeatureSettings;
 use Illuminate\Support\Facades\Route;
 
 final class Navigation
@@ -13,7 +14,7 @@ final class Navigation
     {
         $authed = auth()->check();
 
-        return array_map(fn (array $item) => self::item($item), [
+        return self::filterItems(array_map(fn (array $item) => self::item($item), [
             [
                 'label' => 'Home',
                 'url' => $authed ? url('/dashboard') : route('home'),
@@ -22,7 +23,7 @@ final class Navigation
             ['label' => 'Super Mall', 'url' => url('/shop'), 'pattern' => 'shop*'],
             ['label' => 'Bundles', 'route' => 'services.data', 'pattern' => 'services/data'],
             ['label' => 'Stores', 'route' => 'store.landing', 'pattern' => 'store*'],
-        ]);
+        ]));
     }
 
     /**
@@ -30,7 +31,7 @@ final class Navigation
      */
     public static function member(): array
     {
-        return [
+        $groups = [
             'Overview' => array_map(fn (array $item) => self::item($item), [
                 ['label' => 'Dashboard', 'url' => url('/dashboard'), 'pattern' => 'dashboard', 'icon' => 'home'],
             ]),
@@ -58,6 +59,8 @@ final class Navigation
                 ['label' => 'Support', 'route' => 'support', 'pattern' => 'support', 'icon' => 'help'],
             ]),
         ];
+
+        return self::filterGroups($groups);
     }
 
     /**
@@ -67,12 +70,64 @@ final class Navigation
     {
         $authed = auth()->check();
 
-        return [
+        return self::filterItems([
             ['label' => 'Home', 'url' => $authed ? url('/dashboard') : route('home'), 'active' => $authed ? request()->is('dashboard') : request()->routeIs('home'), 'icon' => 'home'],
             ['label' => 'Super Mall', 'url' => url('/shop'), 'active' => request()->is('shop*'), 'icon' => 'bag'],
             ['label' => 'Bundles', 'url' => route('services.data'), 'active' => request()->is('services/data'), 'icon' => 'phone'],
             ['label' => 'Profile', 'url' => $authed ? route('profile') : url('/dashboard'), 'active' => $authed ? request()->routeIs('profile') : request()->is('dashboard'), 'icon' => 'help'],
-        ];
+        ]);
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $items
+     * @return array<int, array<string, mixed>>
+     */
+    private static function filterItems(array $items): array
+    {
+        return array_values(array_filter($items, fn (array $item) => self::labelEnabled((string) ($item['label'] ?? ''))));
+    }
+
+    /**
+     * @param  array<string, array<int, array<string, mixed>>>  $groups
+     * @return array<string, array<int, array<string, mixed>>>
+     */
+    private static function filterGroups(array $groups): array
+    {
+        $filtered = [];
+
+        foreach ($groups as $name => $items) {
+            $items = self::filterItems($items);
+
+            if ($items !== []) {
+                $filtered[$name] = $items;
+            }
+        }
+
+        return $filtered;
+    }
+
+    private static function labelEnabled(string $label): bool
+    {
+        $feature = [
+            'Super Mall' => 'shop',
+            'Bundles' => 'data',
+            'Stores' => 'reseller',
+            'Support' => 'support',
+            'Data bundles' => 'data',
+            'WAEC PINs' => 'waec',
+            'Utility bills' => 'utility',
+            'Subscriptions' => 'subscriptions',
+            'AFA registration' => 'afa',
+            'Orders' => 'orders',
+            'Shop orders' => 'shop_orders',
+            'Wallet' => 'wallet',
+            'Service orders' => 'service_orders',
+            'Data referral' => 'referral',
+            'Data reseller' => 'reseller',
+            'Notifications' => 'notifications',
+        ][$label] ?? null;
+
+        return $feature === null || FeatureSettings::enabled($feature);
     }
 
     /**

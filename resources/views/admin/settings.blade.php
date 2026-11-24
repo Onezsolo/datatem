@@ -26,6 +26,48 @@
         </div>
 
         <div x-show="!settingsLoading" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="admin-card p-6 border border-line md:col-span-2" x-data="appearanceSettings()" x-init="init()">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-xl font-black text-brand-navy">Features</h2>
+                        <p class="mt-1 text-sm text-muted">Turn modules on or off. Hidden modules disappear from navigation and return 404 until re-enabled.</p>
+                    </div>
+                    <button type="button" @click="saveFeatures()" :disabled="savingFeatures" class="btn-admin-primary px-4 py-2 text-sm disabled:opacity-50" x-text="savingFeatures ? 'Saving...' : 'Save features'"></button>
+                </div>
+                <p x-show="featureMessage" x-text="featureMessage" class="mt-2 text-sm font-semibold text-brand-navy"></p>
+                <div class="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                    <template x-for="(label, key) in definitions" :key="key">
+                        <label class="flex min-h-10 items-center gap-2 rounded-control border border-line bg-surface-muted px-3 text-sm font-semibold text-brand-navy">
+                            <input type="checkbox" x-model="features[key]" class="h-4 w-4 rounded-control border-line">
+                            <span x-text="label"></span>
+                        </label>
+                    </template>
+                </div>
+            </div>
+
+            <div class="admin-card p-6 border border-line md:col-span-2" x-data="appearanceSettings()" x-init="init()">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-xl font-black text-brand-navy">System design</h2>
+                        <p class="mt-1 text-sm text-muted">Choose one of five palettes. Colours apply across storefront, member area and admin.</p>
+                    </div>
+                    <button type="button" @click="saveTheme()" :disabled="savingTheme" class="btn-admin-primary px-4 py-2 text-sm disabled:opacity-50" x-text="savingTheme ? 'Saving...' : 'Apply design'"></button>
+                </div>
+                <p x-show="themeMessage" x-text="themeMessage" class="mt-2 text-sm font-semibold text-brand-navy"></p>
+                <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                    <template x-for="preset in presets" :key="preset.key">
+                        <button type="button" @click="theme = preset.key" class="rounded-card border p-3 text-left" :class="theme === preset.key ? 'border-brand-navy bg-surface-muted' : 'border-line bg-surface'">
+                            <span class="flex h-8 overflow-hidden rounded-control">
+                                <span class="flex-1" :style="{ backgroundColor: preset.colors['brand-navy'] }"></span>
+                                <span class="flex-1" :style="{ backgroundColor: preset.colors['brand-yellow'] }"></span>
+                                <span class="flex-1" :style="{ backgroundColor: preset.colors['brand-red'] }"></span>
+                            </span>
+                            <span class="mt-2 block text-xs font-bold text-brand-navy" x-text="preset.label"></span>
+                        </button>
+                    </template>
+                </div>
+            </div>
+
             <!-- Branding: Logo, Favicon, Site Name, Description -->
             <div class="admin-card p-8 border border-line/50 shadow-none md:col-span-2">
                 <div class="flex items-center space-x-4 mb-8">
@@ -684,6 +726,88 @@ function adminSettingsPage() {
                 this.testEmailMessage = 'Network error. Try again.';
             } finally {
                 this.testEmailSending = false;
+            }
+        }
+    };
+}
+</script>
+
+<script>
+function appearanceSettings() {
+    return {
+        features: {},
+        definitions: {},
+        presets: [],
+        theme: '',
+        savingFeatures: false,
+        savingTheme: false,
+        featureMessage: '',
+        themeMessage: '',
+
+        get headers() {
+            return {
+                'Authorization': 'Bearer ' + this.$store.auth.token,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            };
+        },
+
+        async api(url, options = {}) {
+            const response = await fetch(url, { headers: this.headers, ...options });
+            if (response.status === 401) {
+                this.$store.auth.logout();
+                throw new Error('Session expired.');
+            }
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                const first = data.errors ? Object.values(data.errors).flat()[0] : null;
+                throw new Error(first || data.message || 'Request failed.');
+            }
+            return data;
+        },
+
+        async init() {
+            try {
+                const data = await this.api('/api/admin/settings/appearance');
+                this.features = data.features || {};
+                this.definitions = data.definitions || {};
+                this.presets = data.presets || [];
+                this.theme = data.theme || '';
+            } catch (error) {
+                window.showAlert(error.message);
+            }
+        },
+
+        async saveFeatures() {
+            this.savingFeatures = true;
+            this.featureMessage = '';
+            try {
+                const data = await this.api('/api/admin/settings/features', {
+                    method: 'PUT',
+                    body: JSON.stringify({ features: this.features })
+                });
+                this.features = data.features || this.features;
+                this.featureMessage = 'Features saved. Navigation updates on the next page load.';
+            } catch (error) {
+                window.showAlert(error.message);
+            } finally {
+                this.savingFeatures = false;
+            }
+        },
+
+        async saveTheme() {
+            this.savingTheme = true;
+            this.themeMessage = '';
+            try {
+                await this.api('/api/admin/settings/theme', {
+                    method: 'PUT',
+                    body: JSON.stringify({ theme: this.theme })
+                });
+                window.location.reload();
+            } catch (error) {
+                window.showAlert(error.message);
+            } finally {
+                this.savingTheme = false;
             }
         }
     };

@@ -14,6 +14,7 @@
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
+    @include('partials.theme-style')
 </head>
 <body class="min-h-full bg-surface-muted pb-16 text-ink lg:pb-0">
     <a class="skip-link" href="#main-content">Skip to main content</a>

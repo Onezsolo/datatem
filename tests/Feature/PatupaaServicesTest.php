@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\PatupaaCatalogItem;
 use App\Models\ServiceOrder;
+use App\Models\ServiceProvider;
 use App\Models\User;
 use App\Services\Patupaa\PatupaaSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,6 +17,8 @@ class PatupaaServicesTest extends TestCase
 
     private User $user;
 
+    private ServiceProvider $provider;
+
     private bool $failOrders = false;
 
     protected function setUp(): void
@@ -26,6 +29,18 @@ class PatupaaServicesTest extends TestCase
             'services.patupaa.base_url' => 'https://patupaa.test/api/v1',
             'services.patupaa.api_key' => 'pk_test',
             'services.patupaa.api_secret' => 'sk_test',
+        ]);
+
+        $this->provider = ServiceProvider::create([
+            'name' => 'Test source',
+            'driver' => 'patupaa',
+            'base_url' => 'https://patupaa.test/api/v1',
+            'api_key' => 'pk_test',
+            'api_secret' => 'sk_test',
+            'services' => ['data_bundle', 'digital', 'waec', 'utility', 'afa'],
+            'is_active' => true,
+            'is_default' => true,
+            'sort_order' => 0,
         ]);
 
         $this->user = User::create([
@@ -98,6 +113,7 @@ class PatupaaServicesTest extends TestCase
     private function dataItem(array $attributes = []): PatupaaCatalogItem
     {
         return PatupaaCatalogItem::create(array_merge([
+            'provider_id' => $this->provider->id,
             'remote_type' => 'data_bundle',
             'remote_id' => '1',
             'plan_code' => 'MTN-1GB',
@@ -208,15 +224,18 @@ class PatupaaServicesTest extends TestCase
     public function test_waec_utility_and_subscription_orders_use_correct_payloads(): void
     {
         $waec = PatupaaCatalogItem::create([
+            'provider_id' => $this->provider->id,
             'remote_type' => 'waec', 'remote_id' => '30', 'name' => 'WAEC Checker', 'price' => 20,
             'remote_enabled' => true, 'admin_enabled' => true,
         ]);
         $utility = PatupaaCatalogItem::create([
+            'provider_id' => $this->provider->id,
             'remote_type' => 'utility', 'remote_id' => 'ecg', 'name' => 'ECG Prepaid', 'price' => 0,
             'meta' => ['fee' => '2.00', 'min_amount' => '5.00', 'max_amount' => '1000.00'],
             'remote_enabled' => true, 'admin_enabled' => true,
         ]);
         $digital = PatupaaCatalogItem::create([
+            'provider_id' => $this->provider->id,
             'remote_type' => 'digital', 'remote_id' => '10', 'name' => 'Netflix Gift Card', 'price' => 50,
             'meta' => ['gift_card' => ['region_code' => 'US', 'region_name' => 'United States']],
             'remote_enabled' => true, 'admin_enabled' => true,

@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['remote_type', 'remote_id']);
-            $table->index(['remote_type', 'remote_enabled', 'admin_enabled']);
+            $table->index(['remote_type', 'remote_enabled', 'admin_enabled'], 'patupaa_items_availability_idx');
         });
 
         Schema::create('service_orders', function (Blueprint $table) {

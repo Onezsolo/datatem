@@ -15,6 +15,7 @@ class ServiceOrder extends Model
         'idempotency_key',
         'remote_type',
         'catalog_item_id',
+        'provider_id',
         'plan_code',
         'beneficiary',
         'customer_name',

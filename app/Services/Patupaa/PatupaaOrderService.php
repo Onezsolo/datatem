@@ -6,6 +6,7 @@ namespace App\Services\Patupaa;
 
 use App\Models\PatupaaCatalogItem;
 use App\Models\ServiceOrder;
+use App\Models\ServiceProvider;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -46,13 +47,21 @@ final class PatupaaOrderService
             }
         }
 
-        if (! $this->client->configured()) {
+        $provider = $item->provider;
+
+        if ($provider === null || ! $provider->is_active || ! $provider->supports($item->remote_type)) {
+            throw ValidationException::withMessages(['service' => 'This service is currently unavailable.']);
+        }
+
+        $client = $this->client->forProvider($provider);
+
+        if (! $client->configured()) {
             throw new PatupaaException('PROVIDER_NOT_CONFIGURED', 'Service provider is not configured.');
         }
 
         $reference = 'SVC-'.Str::upper(Str::random(10));
 
-        $order = DB::transaction(function () use ($user, $item, $payload, $amount, $reference, $idempotencyKey): ServiceOrder {
+        $order = DB::transaction(function () use ($user, $item, $payload, $amount, $reference, $idempotencyKey, $provider): ServiceOrder {
             $locked = User::query()->lockForUpdate()->findOrFail($user->id);
             $balance = (float) $locked->balance;
 
@@ -70,6 +79,7 @@ final class PatupaaOrderService
                 'idempotency_key' => $idempotencyKey !== '' ? $idempotencyKey : null,
                 'remote_type' => $item->remote_type,
                 'catalog_item_id' => $item->id,
+                'provider_id' => $provider->id,
                 'plan_code' => $item->plan_code,
                 'beneficiary' => $payload['beneficiary'] ?? null,
                 'customer_name' => $payload['customer_name'] ?? null,
@@ -83,7 +93,7 @@ final class PatupaaOrderService
         });
 
         try {
-            $remote = $this->client->post('/orders', $payload, $idempotencyKey !== '' ? $idempotencyKey : $reference);
+            $remote = $client->post('/orders', $payload, $idempotencyKey !== '' ? $idempotencyKey : $reference);
 
             $order->update([
                 'remote_reference' => $remote['reference'] ?? null,
@@ -102,7 +112,7 @@ final class PatupaaOrderService
     /**
      * @param  array<string, mixed>  $payload
      */
-    public function purchaseAfa(User $user, array $payload, float $amount, string $idempotencyKey = ''): ServiceOrder
+    public function purchaseAfa(User $user, ServiceProvider $provider, array $payload, float $amount, string $idempotencyKey = ''): ServiceOrder
     {
         if (! PatupaaSettings::enabled('afa')) {
             throw ValidationException::withMessages(['service' => 'AFA registration is currently unavailable.']);
@@ -112,13 +122,19 @@ final class PatupaaOrderService
             throw ValidationException::withMessages(['service' => 'AFA registration price is not configured.']);
         }
 
-        if (! $this->client->configured()) {
+        if (! $provider->is_active || ! $provider->supports('afa')) {
+            throw ValidationException::withMessages(['service' => 'AFA registration is currently unavailable.']);
+        }
+
+        $client = $this->client->forProvider($provider);
+
+        if (! $client->configured()) {
             throw new PatupaaException('PROVIDER_NOT_CONFIGURED', 'Service provider is not configured.');
         }
 
         $reference = 'AFA-'.Str::upper(Str::random(10));
 
-        $order = DB::transaction(function () use ($user, $payload, $amount, $reference, $idempotencyKey): ServiceOrder {
+        $order = DB::transaction(function () use ($user, $payload, $amount, $reference, $idempotencyKey, $provider): ServiceOrder {
             $locked = User::query()->lockForUpdate()->findOrFail($user->id);
             $balance = (float) $locked->balance;
 
@@ -135,6 +151,7 @@ final class PatupaaOrderService
                 'reference' => $reference,
                 'idempotency_key' => $idempotencyKey !== '' ? $idempotencyKey : null,
                 'remote_type' => 'afa',
+                'provider_id' => $provider->id,
                 'plan_code' => null,
                 'beneficiary' => $payload['phone'] ?? null,
                 'customer_name' => $payload['full_name'] ?? null,
@@ -148,7 +165,7 @@ final class PatupaaOrderService
         });
 
         try {
-            $remote = $this->client->post('/afa', $payload, $idempotencyKey !== '' ? $idempotencyKey : $reference);
+            $remote = $client->post('/afa', $payload, $idempotencyKey !== '' ? $idempotencyKey : $reference);
 
             $order->update([
                 'remote_reference' => $remote['registration_reference'] ?? $remote['order_reference'] ?? null,

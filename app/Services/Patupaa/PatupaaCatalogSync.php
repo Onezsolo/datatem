@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Patupaa;
 
 use App\Models\PatupaaCatalogItem;
+use App\Models\ServiceProvider;
 
 final class PatupaaCatalogSync
 {
@@ -15,9 +16,12 @@ final class PatupaaCatalogSync
     /**
      * @return array<string, array{synced: int, disabled: int}>
      */
-    public function sync(): array
+    public function sync(?ServiceProvider $provider = null): array
     {
-        if (! $this->client->configured()) {
+        $provider ??= ServiceProvider::ensureDefault();
+        $client = $this->client->forProvider($provider);
+
+        if (! $client->configured()) {
             throw new PatupaaException('PROVIDER_NOT_CONFIGURED', 'Service provider is not configured.');
         }
 
@@ -32,9 +36,17 @@ final class PatupaaCatalogSync
             array $attributes = [],
             array $meta = [],
             bool $remoteEnabled = true,
-        ) use (&$seen, &$summary): void {
+        ) use (&$seen, &$summary, $provider): void {
+            if (! $provider->supports($type)) {
+                return;
+            }
+
             PatupaaCatalogItem::updateOrCreate(
-                ['remote_type' => $type, 'remote_id' => $remoteId],
+                [
+                    'provider_id' => $provider->id,
+                    'remote_type' => $type,
+                    'remote_id' => $remoteId,
+                ],
                 array_merge([
                     'plan_code' => $attributes['plan_code'] ?? null,
                     'name' => $name,
@@ -53,32 +65,38 @@ final class PatupaaCatalogSync
             $summary[$type]['synced']++;
         };
 
-        foreach ($this->client->get('/data-bundles') as $bundle) {
-            if (! is_array($bundle) || ! isset($bundle['id'])) {
-                continue;
-            }
+        if ($provider->supports(PatupaaCatalogItem::TYPE_DATA)) {
+            foreach ($client->get('/data-bundles') as $bundle) {
+                if (! is_array($bundle) || ! isset($bundle['id'])) {
+                    continue;
+                }
 
-            $upsert(
-                PatupaaCatalogItem::TYPE_DATA,
-                (string) $bundle['id'],
-                (string) ($bundle['name'] ?? 'Data bundle'),
-                (float) ($bundle['api_price'] ?? $bundle['price'] ?? 0),
-                [
-                    'plan_code' => $bundle['plan_code'] ?? $bundle['code'] ?? null,
-                    'network' => $bundle['network'] ?? null,
-                    'data_value' => $bundle['data_value'] ?? null,
-                    'validity' => $bundle['validity'] ?? null,
-                ],
-                [
-                    'code' => $bundle['code'] ?? null,
-                    'api_price_source' => $bundle['api_price_source'] ?? null,
-                    'list_price' => $bundle['price'] ?? null,
-                ]
-            );
+                $upsert(
+                    PatupaaCatalogItem::TYPE_DATA,
+                    (string) $bundle['id'],
+                    (string) ($bundle['name'] ?? 'Data bundle'),
+                    (float) ($bundle['api_price'] ?? $bundle['price'] ?? 0),
+                    [
+                        'plan_code' => $bundle['plan_code'] ?? $bundle['code'] ?? null,
+                        'network' => $bundle['network'] ?? null,
+                        'data_value' => $bundle['data_value'] ?? null,
+                        'validity' => $bundle['validity'] ?? null,
+                    ],
+                    [
+                        'code' => $bundle['code'] ?? null,
+                        'api_price_source' => $bundle['api_price_source'] ?? null,
+                        'list_price' => $bundle['price'] ?? null,
+                    ]
+                );
+            }
         }
 
         foreach (['airtime', 'digital'] as $productType) {
-            foreach ($this->client->get('/products', ['type' => $productType]) as $product) {
+            if (! $provider->supports($productType)) {
+                continue;
+            }
+
+            foreach ($client->get('/products', ['type' => $productType]) as $product) {
                 if (! is_array($product) || ! isset($product['id'])) {
                     continue;
                 }
@@ -100,51 +118,57 @@ final class PatupaaCatalogSync
             }
         }
 
-        foreach ($this->client->get('/waec-products') as $waec) {
-            if (! is_array($waec) || ! isset($waec['id'])) {
-                continue;
+        if ($provider->supports(PatupaaCatalogItem::TYPE_WAEC)) {
+            foreach ($client->get('/waec-products') as $waec) {
+                if (! is_array($waec) || ! isset($waec['id'])) {
+                    continue;
+                }
+
+                $available = (int) ($waec['available'] ?? 1);
+
+                $upsert(
+                    PatupaaCatalogItem::TYPE_WAEC,
+                    (string) $waec['id'],
+                    (string) ($waec['name'] ?? 'WAEC PIN'),
+                    (float) ($waec['api_price'] ?? $waec['price'] ?? 0),
+                    [],
+                    ['available' => $available],
+                    $available > 0
+                );
             }
-
-            $available = (int) ($waec['available'] ?? 1);
-
-            $upsert(
-                PatupaaCatalogItem::TYPE_WAEC,
-                (string) $waec['id'],
-                (string) ($waec['name'] ?? 'WAEC PIN'),
-                (float) ($waec['api_price'] ?? $waec['price'] ?? 0),
-                [],
-                ['available' => $available],
-                $available > 0
-            );
         }
 
-        foreach ($this->client->get('/utility-services') as $service) {
-            if (! is_array($service) || ! isset($service['key'])) {
-                continue;
-            }
+        if ($provider->supports(PatupaaCatalogItem::TYPE_UTILITY)) {
+            foreach ($client->get('/utility-services') as $service) {
+                if (! is_array($service) || ! isset($service['key'])) {
+                    continue;
+                }
 
-            $upsert(
-                PatupaaCatalogItem::TYPE_UTILITY,
-                (string) $service['key'],
-                (string) ($service['name'] ?? $service['key']),
-                (float) ($service['fee'] ?? 0),
-                [],
-                [
-                    'description' => $service['description'] ?? null,
-                    'customer_label' => $service['customer_label'] ?? null,
-                    'fee' => $service['fee'] ?? null,
-                    'min_amount' => $service['min_amount'] ?? null,
-                    'max_amount' => $service['max_amount'] ?? null,
-                ]
-            );
+                $upsert(
+                    PatupaaCatalogItem::TYPE_UTILITY,
+                    (string) $service['key'],
+                    (string) ($service['name'] ?? $service['key']),
+                    (float) ($service['fee'] ?? 0),
+                    [],
+                    [
+                        'description' => $service['description'] ?? null,
+                        'customer_label' => $service['customer_label'] ?? null,
+                        'fee' => $service['fee'] ?? null,
+                        'min_amount' => $service['min_amount'] ?? null,
+                        'max_amount' => $service['max_amount'] ?? null,
+                    ]
+                );
+            }
         }
 
         foreach (array_keys(PatupaaSettings::TYPES) as $type) {
-            if ($type === 'afa') {
+            if ($type === 'afa' || ! $provider->supports($type)) {
                 continue;
             }
 
-            $query = PatupaaCatalogItem::query()->where('remote_type', $type);
+            $query = PatupaaCatalogItem::query()
+                ->where('provider_id', $provider->id)
+                ->where('remote_type', $type);
             $ids = $seen[$type] ?? [];
 
             if ($ids !== []) {
@@ -154,6 +178,11 @@ final class PatupaaCatalogSync
             $summary[$type] ??= ['synced' => 0, 'disabled' => 0];
             $summary[$type]['disabled'] = (int) $query->update(['remote_enabled' => false]);
         }
+
+        $provider->update([
+            'last_synced_at' => now(),
+            'last_sync_error' => null,
+        ]);
 
         return $summary;
     }

@@ -648,3 +648,8 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Secrets/seeders: .env.example now ships production-safe defaults (APP_ENV/DEBUG/timezone/session secure+encrypt); admin is seeded from SEED_ADMIN_* outside local; demo user/catalog only in local/testing or with SEED_DEMO_CATALOG=true. Hardcoded demo credentials removed from the seeder.
 - Consistency: legacy /bundles redirects to the provider-backed data page and all public links point there; brand fallback derives from APP_NAME only; timezone Africa/Accra.
 - Ops: /up health endpoint, README production checklist, config/route/view cache verified, providers registered via ootstrap/providers.php. Regression tests cover headers, health and timezone.
+
+### Multi-source providers, feature toggles and five designs
+
+- service_providers table with encrypted credentials, per-source services, default selection and last-sync status; catalog items and service orders carry provider_id; sync/order routing/lookup use the item's own source. Admin /admin/services manages sources (add/edit/delete/default/sync) with masked keys; default bootstrapped from env.
+- Admin /admin/settings gained Features switches (module hide + 404 enforcement, nav filtering) and System design with five presets (CSS variable injection, WCAG AA tested). Feature/theme settings APIs under /api/admin/settings/*. Regressions: provider CRUD/sync/order routing/inactive source; feature toggle nav+routes; five presets contrast.

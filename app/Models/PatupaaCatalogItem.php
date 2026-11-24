@@ -20,6 +20,7 @@ class PatupaaCatalogItem extends Model
     public const TYPE_UTILITY = 'utility';
 
     protected $fillable = [
+        'provider_id',
         'remote_type',
         'remote_id',
         'plan_code',
@@ -53,6 +54,24 @@ class PatupaaCatalogItem extends Model
     public function scopeOfType(Builder $query, string $type): Builder
     {
         return $query->where('remote_type', $type);
+    }
+
+    public function scopeFromActiveProvider(Builder $query, string $type): Builder
+    {
+        $ids = ServiceProvider::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get()
+            ->filter(fn (ServiceProvider $provider) => $provider->supports($type))
+            ->pluck('id')
+            ->all();
+
+        return $query->whereIn('provider_id', $ids);
+    }
+
+    public function provider(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(ServiceProvider::class, 'provider_id');
     }
 
     public function isAvailable(): bool

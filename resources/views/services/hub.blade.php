@@ -35,7 +35,7 @@
                 </x-ui.card>
             @endforeach
 
-            @php($afaAvailable = ($toggles['afa'] ?? false) && $afaPrice > 0)
+            @php($afaAvailable = ($toggles['afa'] ?? false) && $afaPrice > 0 && $afaProviderExists)
             <x-ui.card :href="$afaAvailable ? route('services.afa') : null" padding="md" class="h-full {{ $afaAvailable ? 'hover:bg-surface-muted' : 'opacity-60' }}">
                 <div class="flex items-start justify-between gap-3">
                     <span class="inline-flex h-10 w-10 items-center justify-center rounded-control bg-brand-navy text-brand-yellow">

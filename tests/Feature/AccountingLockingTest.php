@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\PatupaaCatalogItem;
 use App\Models\ServiceOrder;
+use App\Models\ServiceProvider;
 use App\Models\Topup;
 use App\Models\User;
 use App\Shop\Models\Order;
@@ -79,7 +80,19 @@ class AccountingLockingTest extends TestCase
         $user = $this->member(1000);
         $this->actingAs($user);
 
+        $provider = ServiceProvider::create([
+            'name' => 'Lock Source',
+            'driver' => 'patupaa',
+            'base_url' => 'https://patupaa.test/api/v1',
+            'api_key' => 'pk_test',
+            'api_secret' => 'sk_test',
+            'services' => ['data_bundle', 'digital', 'waec', 'utility', 'afa'],
+            'is_active' => true,
+            'is_default' => true,
+        ]);
+
         $item = PatupaaCatalogItem::create([
+            'provider_id' => $provider->id,
             'remote_type' => 'data_bundle',
             'remote_id' => '1',
             'plan_code' => 'MTN-1GB',

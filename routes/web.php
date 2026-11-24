@@ -50,7 +50,7 @@ Route::get('/support', function () {
         'support_whatsapp_url' => $supportWhatsappUrl ?: null,
         'support_whatsapp_display' => $contactPhone ?: null,
     ]);
-})->middleware('web.auth')->name('support');
+})->middleware(['web.auth', 'feature:support'])->name('support');
 
 Route::get('/forgot-password', function () {
     return view('forgot-password');
@@ -62,11 +62,11 @@ Route::get('/dashboard', function () {
 
 Route::get('/orders', function () {
     return view('orders');
-})->middleware('web.auth')->name('orders.index');
+})->middleware(['web.auth', 'feature:orders'])->name('orders.index');
 
 Route::get('/orders/shop', function () {
     return view('shop-orders');
-})->middleware(['jwt.cookie', 'web.auth'])->name('orders.shop');
+})->middleware(['jwt.cookie', 'web.auth', 'feature:shop_orders'])->name('orders.shop');
 
 Route::get('/topup', function () {
     $manualNumber = \App\Services\SettingsService::get('manual_payment_mobile_money', '0241234567');
@@ -77,13 +77,13 @@ Route::get('/topup', function () {
         'manual_payment_name' => $manualName,
         'manual_topup_enabled' => $manualTopupEnabled,
     ]);
-})->middleware('web.auth')->name('topup');
+})->middleware(['web.auth', 'feature:wallet'])->name('topup');
 
 Route::get('/topup/callback', [\App\Http\Controllers\TopUpController::class, 'callback'])->name('topup.callback');
 
 Route::get('/notifications', function () {
     return view('notifications');
-})->middleware('web.auth')->name('notifications');
+})->middleware(['web.auth', 'feature:notifications'])->name('notifications');
 
 Route::get('/profile', function () {
     return view('profile', [
@@ -93,19 +93,19 @@ Route::get('/profile', function () {
 
 Route::get('/referral', function () {
     return view('referral');
-})->middleware('web.auth')->name('referral');
+})->middleware(['web.auth', 'feature:referral'])->name('referral');
 
 Route::get('/reseller', function () {
     return view('reseller');
-})->middleware('web.auth')->name('reseller');
+})->middleware(['web.auth', 'feature:reseller'])->name('reseller');
 
 Route::get('/reseller/prices', function () {
     return view('reseller-prices');
-})->middleware('web.auth')->name('reseller.prices');
+})->middleware(['web.auth', 'feature:reseller'])->name('reseller.prices');
 
 Route::get('/reseller/withdrawals', function () {
     return view('reseller-withdrawals');
-})->middleware('web.auth')->name('reseller.withdrawals');
+})->middleware(['web.auth', 'feature:reseller'])->name('reseller.withdrawals');
 
 Route::get('/store', function () {
     return view('store-landing');
@@ -167,7 +167,7 @@ Route::post('/logout', function (Illuminate\Http\Request $request) {
 })->name('logout');
 
 // Shop (guest checkout, physical goods) — wired into the data system.
-Route::prefix('shop')->name('shop.')->middleware('jwt.cookie')->group(function () {
+Route::prefix('shop')->name('shop.')->middleware(['jwt.cookie', 'feature:shop'])->group(function () {
     Route::get('/', ShopHomeController::class)->name('index');
     Route::get('/search', [ShopCatalogController::class, 'search'])->name('search');
     Route::get('/category/{category:slug}', [ShopCatalogController::class, 'category'])->name('categories.show');
@@ -196,21 +196,21 @@ Route::prefix('shop')->name('shop.')->middleware('jwt.cookie')->group(function (
 // PATUPAA services (data, WAEC, utility, subscriptions, AFA) - login required.
 Route::prefix('services')->name('services.')->group(function () {
     Route::get('/', [ServicesController::class, 'hub'])->name('index');
-    Route::get('/data', [ServicesController::class, 'data'])->name('data');
-    Route::get('/waec', [ServicesController::class, 'waec'])->name('waec');
-    Route::get('/utility', [ServicesController::class, 'utility'])->name('utility');
-    Route::get('/subscriptions', [ServicesController::class, 'subscriptions'])->name('subscriptions');
-    Route::get('/afa', [ServicesController::class, 'afa'])->name('afa');
+    Route::get('/data', [ServicesController::class, 'data'])->middleware('feature:data')->name('data');
+    Route::get('/waec', [ServicesController::class, 'waec'])->middleware('feature:waec')->name('waec');
+    Route::get('/utility', [ServicesController::class, 'utility'])->middleware('feature:utility')->name('utility');
+    Route::get('/subscriptions', [ServicesController::class, 'subscriptions'])->middleware('feature:subscriptions')->name('subscriptions');
+    Route::get('/afa', [ServicesController::class, 'afa'])->middleware('feature:afa')->name('afa');
 
     Route::middleware(['web.auth', 'throttle:20,1'])->group(function () {
-        Route::post('/data/{item}', [ServicesController::class, 'storeData'])->name('data.store');
-        Route::post('/waec/{item}', [ServicesController::class, 'storeWaec'])->name('waec.store');
-        Route::post('/utility/lookup', [ServicesController::class, 'lookupUtility'])->name('utility.lookup');
-        Route::post('/utility/{item}', [ServicesController::class, 'storeUtility'])->name('utility.store');
-        Route::post('/subscriptions/{item}', [ServicesController::class, 'storeSubscriptions'])->name('subscriptions.store');
-        Route::post('/afa', [ServicesController::class, 'storeAfa'])->name('afa.store');
-        Route::get('/orders', [ServicesController::class, 'orders'])->name('orders');
-        Route::get('/orders/{reference}', [ServicesController::class, 'orderShow'])->name('orders.show');
+        Route::post('/data/{item}', [ServicesController::class, 'storeData'])->middleware('feature:data')->name('data.store');
+        Route::post('/waec/{item}', [ServicesController::class, 'storeWaec'])->middleware('feature:waec')->name('waec.store');
+        Route::post('/utility/lookup', [ServicesController::class, 'lookupUtility'])->middleware('feature:utility')->name('utility.lookup');
+        Route::post('/utility/{item}', [ServicesController::class, 'storeUtility'])->middleware('feature:utility')->name('utility.store');
+        Route::post('/subscriptions/{item}', [ServicesController::class, 'storeSubscriptions'])->middleware('feature:subscriptions')->name('subscriptions.store');
+        Route::post('/afa', [ServicesController::class, 'storeAfa'])->middleware('feature:afa')->name('afa.store');
+        Route::get('/orders', [ServicesController::class, 'orders'])->middleware('feature:service_orders')->name('orders');
+        Route::get('/orders/{reference}', [ServicesController::class, 'orderShow'])->middleware('feature:service_orders')->name('orders.show');
     });
 });
 

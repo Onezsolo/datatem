@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Http;
 
 final class PatupaaClient
 {
+    private ?\App\Models\ServiceProvider $provider = null;
+
+    public static function forProvider(\App\Models\ServiceProvider $provider): self
+    {
+        $client = new self();
+        $client->provider = $provider;
+
+        return $client;
+    }
+
     public function configured(): bool
     {
         return $this->apiKey() !== '' && $this->apiSecret() !== '';
@@ -41,7 +51,7 @@ final class PatupaaClient
 
     private function request(): PendingRequest
     {
-        $request = Http::baseUrl(rtrim((string) config('services.patupaa.base_url'), '/'))
+        $request = Http::baseUrl(rtrim($this->baseUrl(), '/'))
             ->acceptJson()
             ->asJson()
             ->timeout((int) config('services.patupaa.timeout', 25))
@@ -58,13 +68,18 @@ final class PatupaaClient
         });
     }
 
+    private function baseUrl(): string
+    {
+        return $this->provider?->base_url ?: (string) config('services.patupaa.base_url');
+    }
+
     private function apiKey(): string
     {
-        return trim((string) config('services.patupaa.api_key'));
+        return trim((string) ($this->provider?->api_key ?: config('services.patupaa.api_key')));
     }
 
     private function apiSecret(): string
     {
-        return trim((string) config('services.patupaa.api_secret'));
+        return trim((string) ($this->provider?->api_secret ?: config('services.patupaa.api_secret')));
     }
 }

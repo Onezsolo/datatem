@@ -79,3 +79,9 @@ php artisan view:cache
 - Provider catalog availability is mirrored: items missing at the provider are disabled locally; admins can additionally force any item/service off in `/admin/services`.
 - Service purchases debit the wallet first and auto-refund on provider failure; finance totals (data + shop + services) live in `/admin/statistics`.
 - The legacy `/bundles` URL redirects to the provider-backed data page.
+## Features, design and service sources
+
+- **Features:** Admin → Settings → Features toggles modules (Super Mall, data, WAEC, utility, subscriptions, AFA, orders, wallet, referral, reseller, support, notifications). Disabled modules vanish from public/member navigation and return 404 until re-enabled; the admin console stays available.
+- **System design:** Admin → Settings → System design offers five WCAG-checked palettes (Navy & Gold, Emerald & Brass, Graphite & Ember, Ocean & Steel, Plum & Rose). The selection is stored in settings and applied through CSS variables on every layout.
+- **Service sources:** Admin → Services → Provider sources lets you add/edit/delete compatible API sources, choose which services each source serves, pick the default, and sync each source independently. Credentials are encrypted at rest and keys are masked in the UI. The default source is bootstrapped from `PATUPAA_API_*`; `php artisan db:seed --class=ServiceProviderSeeder` attaches legacy catalog rows to it.
+- **Accounting safety:** Catalog items and orders record their source; purchases debit the wallet and call only the item’s source; duplicate submits are blocked by idempotency keys and locks.

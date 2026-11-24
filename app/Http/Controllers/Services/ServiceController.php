@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Services;
 use App\Http\Controllers\Controller;
 use App\Models\PatupaaCatalogItem;
 use App\Models\ServiceOrder;
+use App\Models\ServiceProvider;
 use App\Services\Patupaa\PatupaaClient;
 use App\Services\Patupaa\PatupaaException;
 use App\Services\Patupaa\PatupaaOrderService;
@@ -23,19 +24,32 @@ class ServiceController extends Controller
 {
     public function hub(): View
     {
-        $counts = PatupaaCatalogItem::query()
-            ->available()
-            ->selectRaw('remote_type, count(*) as total')
-            ->groupBy('remote_type')
-            ->pluck('total', 'remote_type');
+        $counts = [];
+
+        foreach (array_keys(PatupaaSettings::TYPES) as $type) {
+            if ($type === 'afa') {
+                continue;
+            }
+
+            $counts[$type] = PatupaaCatalogItem::query()
+                ->available()
+                ->ofType($type)
+                ->fromActiveProvider($type)
+                ->count();
+        }
+
+        $afaProviderExists = ServiceProvider::query()
+            ->where('is_active', true)
+            ->get()
+            ->contains(fn (ServiceProvider $provider) => $provider->supports('afa'));
 
         return view('services.hub', [
             'counts' => $counts,
             'toggles' => PatupaaSettings::toggles(),
             'afaPrice' => PatupaaSettings::afaPrice(),
+            'afaProviderExists' => $afaProviderExists,
         ]);
     }
-
     public function data(): View
     {
         $items = $this->items(PatupaaCatalogItem::TYPE_DATA);
@@ -74,11 +88,11 @@ class ServiceController extends Controller
 
     public function afa(): View
     {
-        if (! PatupaaSettings::enabled('afa') || PatupaaSettings::afaPrice() <= 0) {
-            return view('services.afa', ['available' => false, 'price' => PatupaaSettings::afaPrice()]);
-        }
+        $available = PatupaaSettings::enabled('afa')
+            && PatupaaSettings::afaPrice() > 0
+            && $this->afaProvider() !== null;
 
-        return view('services.afa', ['available' => true, 'price' => PatupaaSettings::afaPrice()]);
+        return view('services.afa', ['available' => $available, 'price' => PatupaaSettings::afaPrice()]);
     }
 
     public function storeData(Request $request, PatupaaCatalogItem $item, PatupaaOrderService $orders): RedirectResponse
@@ -182,6 +196,12 @@ class ServiceController extends Controller
             return redirect()->route('services.index')->with('warning', 'AFA registration is currently unavailable.');
         }
 
+        $provider = $this->afaProvider();
+
+        if ($provider === null) {
+            return redirect()->route('services.index')->with('warning', 'AFA registration is currently unavailable.');
+        }
+
         $data = $request->validate([
             'full_name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'regex:/^(?:\+233|0)[235]\d{8}$/'],
@@ -196,7 +216,7 @@ class ServiceController extends Controller
             'town' => $data['town'],
         ];
 
-        return $this->place(fn (string $token) => $orders->purchaseAfa($request->user(), $payload, PatupaaSettings::afaPrice(), $token));
+        return $this->place(fn (string $token) => $orders->purchaseAfa($request->user(), $provider, $payload, PatupaaSettings::afaPrice(), $token));
     }
 
     public function lookupUtility(Request $request, PatupaaClient $client): JsonResponse
@@ -206,14 +226,18 @@ class ServiceController extends Controller
             'customer_number' => ['required', 'string', 'min:4', 'max:60'],
         ]);
 
-        $item = PatupaaCatalogItem::query()->available()->ofType(PatupaaCatalogItem::TYPE_UTILITY)->findOrFail($data['item_id']);
+        $item = PatupaaCatalogItem::query()->available()->ofType(PatupaaCatalogItem::TYPE_UTILITY)->fromActiveProvider(PatupaaCatalogItem::TYPE_UTILITY)->findOrFail($data['item_id']);
 
         if (! PatupaaSettings::enabled(PatupaaCatalogItem::TYPE_UTILITY)) {
             return response()->json(['error' => 'Utility service is unavailable.'], 422);
         }
 
+        if ($item->provider === null || ! $item->provider->is_active || ! $item->provider->supports(PatupaaCatalogItem::TYPE_UTILITY)) {
+            return response()->json(['error' => 'Utility service is unavailable.'], 422);
+        }
+
         try {
-            $result = $client->post('/utilities/lookup', [
+            $result = $client->forProvider($item->provider)->post('/utilities/lookup', [
                 'service_key' => $item->remote_id,
                 'customer_number' => $data['customer_number'],
             ]);
@@ -256,6 +280,7 @@ class ServiceController extends Controller
         return PatupaaCatalogItem::query()
             ->available()
             ->ofType($type)
+            ->fromActiveProvider($type)
             ->orderBy('network')
             ->orderBy('price')
             ->orderBy('name')
@@ -267,6 +292,16 @@ class ServiceController extends Controller
         abort_unless($item->remote_type === $type, 404);
         abort_unless(PatupaaSettings::enabled($type), 404);
         abort_unless($item->isAvailable(), 404);
+        abort_unless($item->provider !== null && $item->provider->is_active && $item->provider->supports($type), 404);
+    }
+
+    private function afaProvider(): ?ServiceProvider
+    {
+        return ServiceProvider::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get()
+            ->first(fn (ServiceProvider $provider) => $provider->supports('afa'));
     }
 
     private function normalisePhone(string $phone): string
