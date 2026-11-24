@@ -653,3 +653,9 @@ git commit -m "feat: unify legacy layout with compiled design system"
 
 - service_providers table with encrypted credentials, per-source services, default selection and last-sync status; catalog items and service orders carry provider_id; sync/order routing/lookup use the item's own source. Admin /admin/services manages sources (add/edit/delete/default/sync) with masked keys; default bootstrapped from env.
 - Admin /admin/settings gained Features switches (module hide + 404 enforcement, nav filtering) and System design with five presets (CSS variable injection, WCAG AA tested). Feature/theme settings APIs under /api/admin/settings/*. Regressions: provider CRUD/sync/order routing/inactive source; feature toggle nav+routes; five presets contrast.
+
+### Mall-only adaptive mode
+
+- Feature toggles now adapt navigation: member sidebar gains Cart under Services and bottom navigation becomes Home / Super Mall / Cart / Profile when Mall is the only customer module (Bundles only when data is enabled). Shop orders + Wallet remain visible when enabled.
+- /dashboard redirects to the Super Mall when only shop modules are on; public home hides data sections/buttons and shows the mall hero/cards; footer/hero links are feature-gated. Admin Settings > Features has one-click Mall only and Enable all presets.
+- Regression tests: mall-only sidebar/bottom nav, home copy without data sections, dashboard redirect.

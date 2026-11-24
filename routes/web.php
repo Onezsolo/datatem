@@ -57,6 +57,10 @@ Route::get('/forgot-password', function () {
 })->name('password.request');
 
 Route::get('/dashboard', function () {
+    if (\App\Services\FeatureSettings::mallOnly()) {
+        return redirect()->route('shop.index');
+    }
+
     return view('dashboard');
 })->middleware('web.auth');
 

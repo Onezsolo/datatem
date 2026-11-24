@@ -2,23 +2,38 @@
     <section class="bg-brand-navy text-white">
         <div class="container-page grid gap-10 py-12 sm:py-16 lg:grid-cols-[1.15fr_1fr] lg:items-center">
             <div>
-                <p class="inline-flex items-center gap-2 rounded-control border border-white/25 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-brand-yellow">
-                    <span class="inline-block h-2 w-2 rounded-control bg-brand-yellow" aria-hidden="true"></span>
-                    MTN &middot; AirtelTigo &middot; Telecel
-                </p>
+                @if (\App\Services\FeatureSettings::enabled('data'))
+                    <p class="inline-flex items-center gap-2 rounded-control border border-white/25 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-brand-yellow">
+                        <span class="inline-block h-2 w-2 rounded-control bg-brand-yellow" aria-hidden="true"></span>
+                        MTN &middot; AirtelTigo &middot; Telecel
+                    </p>
+                @endif
 
                 <h1 class="mt-5 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
-                    Data in seconds.
-                    <span class="block text-brand-yellow">Shopping made simple.</span>
+                    @if (\App\Services\FeatureSettings::enabled('data'))
+                        Data in seconds.
+                        <span class="block text-brand-yellow">Shopping made simple.</span>
+                    @else
+                        Everything you need.
+                        <span class="block text-brand-yellow">Delivered across Ghana.</span>
+                    @endif
                 </h1>
 
                 <p class="mt-4 max-w-xl text-base leading-relaxed text-nav-muted">
-                    Buy mobile data bundles and everyday products in one place. Top up your wallet, shop with Paystack and track every order.
+                    @if (\App\Services\FeatureSettings::enabled('data'))
+                        Buy mobile data bundles and everyday products in one place. Top up your wallet, pay from it and track every order.
+                    @else
+                        Browse the Super Mall, add to cart and pay from your wallet. One account and one order history.
+                    @endif
                 </p>
 
                 <div class="mt-7 flex flex-wrap gap-3">
-                    <x-ui.button href="{{ route('services.data') }}" size="lg">Browse bundles</x-ui.button>
-                    <x-ui.button href="{{ url('/shop') }}" variant="ghost" size="lg">Visit Super Mall</x-ui.button>
+                    @if (\App\Services\FeatureSettings::enabled('data'))
+                        <x-ui.button href="{{ route('services.data') }}" size="lg">Browse bundles</x-ui.button>
+                    @endif
+                    @if (\App\Services\FeatureSettings::enabled('shop'))
+                        <x-ui.button href="{{ url('/shop') }}" variant="{{ \App\Services\FeatureSettings::enabled('data') ? 'ghost' : 'primary' }}" size="lg">Visit Super Mall</x-ui.button>
+                    @endif
                 </div>
 
                 <dl class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -31,6 +46,7 @@
                 </dl>
             </div>
 
+            @if (\App\Services\FeatureSettings::enabled('data'))
             <x-ui.card variant="feature" padding="lg" class="text-white">
                 <h2 class="text-lg font-extrabold">Buy data now</h2>
                 <p class="mt-1 text-sm text-nav-muted">Choose your network and get your bundle instantly.</p>
@@ -56,6 +72,7 @@
                     <a href="{{ route('topup') }}" class="text-sm font-bold text-brand-yellow underline underline-offset-4 hover:text-white">Top up your wallet</a>
                 </div>
             </x-ui.card>
+            @endif
         </div>
     </section>
 
@@ -97,6 +114,7 @@
         </div>
     </section>
 
+    @if (\App\Services\FeatureSettings::enabled('data'))
     <section class="container-page py-10 sm:py-12" aria-labelledby="networks-heading">
         <div class="flex flex-wrap items-end justify-between gap-3">
             <div>
@@ -127,6 +145,9 @@
         </div>
     </section>
 
+    @endif
+
+    @if (\App\Services\FeatureSettings::enabled('shop'))
     <section class="container-page pb-12" aria-labelledby="shop-heading">
         <div class="rounded-card border border-line bg-surface p-6 sm:p-8">
             <div class="flex flex-wrap items-center justify-between gap-4">
@@ -140,6 +161,8 @@
             </div>
         </div>
     </section>
+    @endif
+
     @auth
         <section class="bg-brand-yellow">
             <div class="container-page flex flex-wrap items-center justify-between gap-4 py-8">

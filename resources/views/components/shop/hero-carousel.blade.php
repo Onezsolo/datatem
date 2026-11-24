@@ -28,7 +28,9 @@
 
             <div class="mt-6 flex flex-wrap gap-3">
                 <x-ui.button :href="$slides[0]['primary']['url']" size="lg">{{ $slides[0]['primary']['label'] }}</x-ui.button>
-                <x-ui.button :href="$slides[0]['secondary']['url']" variant="ghost" size="lg">{{ $slides[0]['secondary']['label'] }}</x-ui.button>
+                @if (\App\Services\FeatureSettings::enabled('data'))
+                    <x-ui.button :href="$slides[0]['secondary']['url']" variant="ghost" size="lg">{{ $slides[0]['secondary']['label'] }}</x-ui.button>
+                @endif
             </div>
         </div>
 
@@ -37,7 +39,7 @@
             <ul class="mt-3 space-y-2 text-sm text-nav-muted">
                 <li class="flex items-start gap-2">
                     <x-ui.icon name="check" :size="16" class="mt-0.5 text-brand-yellow" />
-                    One r2b account for data and shopping
+                    One account for every order
                 </li>
                 <li class="flex items-start gap-2">
                     <x-ui.icon name="check" :size="16" class="mt-0.5 text-brand-yellow" />

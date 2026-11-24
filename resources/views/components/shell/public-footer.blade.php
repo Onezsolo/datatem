@@ -26,9 +26,18 @@
             <div>
                 <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Shop</p>
                 <ul class="mt-2 space-y-1.5 text-sm text-nav-muted">
-                    <li><a class="hover:text-white" href="{{ route('services.data') }}">Data bundles</a></li>
-                    <li><a class="hover:text-white" href="{{ url('/shop') }}">Products</a></li>
-                    <li><a class="hover:text-white" href="{{ route('store.landing') }}">Reseller stores</a></li>
+                    @if (\App\Services\FeatureSettings::enabled('data'))
+                        <li><a class="hover:text-white" href="{{ route('services.data') }}">Data bundles</a></li>
+                    @endif
+                    @if (\App\Services\FeatureSettings::enabled('shop'))
+                        <li><a class="hover:text-white" href="{{ url('/shop') }}">Super Mall</a></li>
+                    @endif
+                    @if (\App\Services\FeatureSettings::enabled('reseller'))
+                        <li><a class="hover:text-white" href="{{ route('store.landing') }}">Reseller stores</a></li>
+                    @endif
+                    @if (\App\Services\FeatureSettings::enabled('support'))
+                        <li><a class="hover:text-white" href="{{ route('support') }}">Support</a></li>
+                    @endif
                 </ul>
             </div>
 

@@ -32,7 +32,11 @@
                         <h2 class="text-xl font-black text-brand-navy">Features</h2>
                         <p class="mt-1 text-sm text-muted">Turn modules on or off. Hidden modules disappear from navigation and return 404 until re-enabled.</p>
                     </div>
-                    <button type="button" @click="saveFeatures()" :disabled="savingFeatures" class="btn-admin-primary px-4 py-2 text-sm disabled:opacity-50" x-text="savingFeatures ? 'Saving...' : 'Save features'"></button>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" @click="applyPreset('mall')" :disabled="savingFeatures" class="min-h-10 rounded-control border border-line px-3 text-sm font-bold text-brand-navy hover:bg-surface-muted disabled:opacity-50">Mall only</button>
+                        <button type="button" @click="applyPreset('all')" :disabled="savingFeatures" class="min-h-10 rounded-control border border-line px-3 text-sm font-bold text-brand-navy hover:bg-surface-muted disabled:opacity-50">Enable all</button>
+                        <button type="button" @click="saveFeatures()" :disabled="savingFeatures" class="btn-admin-primary px-4 py-2 text-sm disabled:opacity-50" x-text="savingFeatures ? 'Saving...' : 'Save features'"></button>
+                    </div>
                 </div>
                 <p x-show="featureMessage" x-text="featureMessage" class="mt-2 text-sm font-semibold text-brand-navy"></p>
                 <div class="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -778,6 +782,24 @@ function appearanceSettings() {
             }
         },
 
+
+        async applyPreset(kind) {
+            Object.keys(this.features).forEach((key) => {
+                this.features[key] = false;
+            });
+
+            if (kind === 'mall') {
+                this.features.shop = true;
+                this.features.shop_orders = true;
+                this.features.wallet = true;
+            } else {
+                Object.keys(this.features).forEach((key) => {
+                    this.features[key] = true;
+                });
+            }
+
+            await this.saveFeatures();
+        },
         async saveFeatures() {
             this.savingFeatures = true;
             this.featureMessage = '';

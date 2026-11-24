@@ -37,6 +37,7 @@ final class Navigation
             ]),
             'Services' => array_map(fn (array $item) => self::item($item), [
                 ['label' => 'Super Mall', 'url' => url('/shop'), 'pattern' => 'shop*', 'icon' => 'bag'],
+                ['label' => 'Cart', 'route' => 'shop.cart.show', 'pattern' => 'shop/cart', 'icon' => 'cart'],
                 ['label' => 'Data bundles', 'route' => 'services.data', 'pattern' => 'services/data', 'icon' => 'phone'],
                 ['label' => 'WAEC PINs', 'route' => 'services.waec', 'pattern' => 'services/waec', 'icon' => 'check'],
                 ['label' => 'Utility bills', 'route' => 'services.utility', 'pattern' => 'services/utility', 'icon' => 'grid'],
@@ -70,12 +71,23 @@ final class Navigation
     {
         $authed = auth()->check();
 
-        return self::filterItems([
+        $items = [
             ['label' => 'Home', 'url' => $authed ? url('/dashboard') : route('home'), 'active' => $authed ? request()->is('dashboard') : request()->routeIs('home'), 'icon' => 'home'],
-            ['label' => 'Super Mall', 'url' => url('/shop'), 'active' => request()->is('shop*'), 'icon' => 'bag'],
-            ['label' => 'Bundles', 'url' => route('services.data'), 'active' => request()->is('services/data'), 'icon' => 'phone'],
-            ['label' => 'Profile', 'url' => $authed ? route('profile') : url('/dashboard'), 'active' => $authed ? request()->routeIs('profile') : request()->is('dashboard'), 'icon' => 'help'],
-        ]);
+        ];
+
+        if (FeatureSettings::enabled('shop')) {
+            $items[] = ['label' => 'Super Mall', 'url' => url('/shop'), 'active' => request()->is('shop*'), 'icon' => 'bag'];
+        }
+
+        if (FeatureSettings::enabled('data')) {
+            $items[] = ['label' => 'Bundles', 'url' => route('services.data'), 'active' => request()->is('services/data'), 'icon' => 'phone'];
+        } elseif (FeatureSettings::enabled('shop')) {
+            $items[] = ['label' => 'Cart', 'url' => route('shop.cart.show'), 'active' => request()->is('shop/cart'), 'icon' => 'cart'];
+        }
+
+        $items[] = ['label' => 'Profile', 'url' => $authed ? route('profile') : url('/dashboard'), 'active' => $authed ? request()->routeIs('profile') : request()->is('dashboard'), 'icon' => 'help'];
+
+        return self::filterItems($items);
     }
 
     /**
@@ -110,6 +122,7 @@ final class Navigation
     {
         $feature = [
             'Super Mall' => 'shop',
+            'Cart' => 'shop',
             'Bundles' => 'data',
             'Stores' => 'reseller',
             'Support' => 'support',

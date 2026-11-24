@@ -34,6 +34,21 @@ final class FeatureSettings
         return (bool) (self::all()[$key] ?? true);
     }
 
+    public static function mallOnly(): bool
+    {
+        if (! self::enabled('shop')) {
+            return false;
+        }
+
+        foreach (['data', 'waec', 'utility', 'subscriptions', 'afa'] as $module) {
+            if (self::enabled($module)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * @param  array<string, mixed>  $flags
      * @return array<string, bool>

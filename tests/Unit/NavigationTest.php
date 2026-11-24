@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\User;
+use App\Services\FeatureSettings;
 use App\Support\Navigation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -39,7 +40,7 @@ class NavigationTest extends TestCase
             }
         }
 
-        $this->assertSame(16, $count);
+        $this->assertSame(17, $count);
 
         $labels = collect($groups)->flatten(1)->pluck('label');
         $this->assertTrue($labels->contains('Orders'));
@@ -79,5 +80,26 @@ class NavigationTest extends TestCase
         $bottom = Navigation::bottom();
         $this->assertSame(route('home'), $bottom[0]['url']);
         $this->assertSame(url('/dashboard'), $bottom[3]['url']);
+    }
+
+    public function test_mall_only_mode_puts_shop_features_in_navigation(): void
+    {
+        FeatureSettings::set(array_merge(
+            array_fill_keys(array_keys(FeatureSettings::definitions()), false),
+            ['shop' => true, 'shop_orders' => true, 'wallet' => true]
+        ));
+
+        $labels = collect(Navigation::member())->flatten(1)->pluck('label');
+
+        $this->assertTrue($labels->contains('Super Mall'));
+        $this->assertTrue($labels->contains('Cart'));
+        $this->assertTrue($labels->contains('Shop orders'));
+        $this->assertFalse($labels->contains('Data bundles'));
+        $this->assertFalse($labels->contains('WAEC PINs'));
+
+        $this->assertSame(
+            ['Home', 'Super Mall', 'Cart', 'Profile'],
+            array_column(Navigation::bottom(), 'label')
+        );
     }
 }

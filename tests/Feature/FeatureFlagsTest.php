@@ -86,4 +86,28 @@ class FeatureFlagsTest extends TestCase
         $this->assertFalse($labels->contains('WAEC PINs'));
         $this->get('/services/waec')->assertNotFound();
     }
+    public function test_mall_only_dashboard_opens_the_mall(): void
+    {
+        FeatureSettings::set(array_merge(
+            array_fill_keys(array_keys(FeatureSettings::definitions()), false),
+            ['shop' => true, 'shop_orders' => true, 'wallet' => true]
+        ));
+
+        $user = User::create([
+            'full_name' => 'Mall User',
+            'email' => 'mall-user@example.com',
+            'phone' => '0244000301',
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Everything you need')
+            ->assertSee('Visit Super Mall')
+            ->assertDontSee('Browse bundles');
+
+        $this->actingAs($user)
+            ->get('/dashboard')
+            ->assertRedirect(route('shop.index'));
+    }
 }
