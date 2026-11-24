@@ -47,7 +47,7 @@ final class PatupaaOrderService
         }
 
         if (! $this->client->configured()) {
-            throw new PatupaaException('PATUPAA_NOT_CONFIGURED', 'PATUPAA API credentials are not configured.');
+            throw new PatupaaException('PROVIDER_NOT_CONFIGURED', 'Service provider is not configured.');
         }
 
         $reference = 'SVC-'.Str::upper(Str::random(10));
@@ -92,7 +92,7 @@ final class PatupaaOrderService
 
             return $order->refresh();
         } catch (\Throwable $exception) {
-            $this->refund($order, $exception->getMessage());
+            $this->refund($order, $this->publicMessage($exception->getMessage()));
 
             throw $exception;
         }
@@ -112,7 +112,7 @@ final class PatupaaOrderService
         }
 
         if (! $this->client->configured()) {
-            throw new PatupaaException('PATUPAA_NOT_CONFIGURED', 'PATUPAA API credentials are not configured.');
+            throw new PatupaaException('PROVIDER_NOT_CONFIGURED', 'Service provider is not configured.');
         }
 
         $reference = 'AFA-'.Str::upper(Str::random(10));
@@ -156,10 +156,15 @@ final class PatupaaOrderService
 
             return $order->refresh();
         } catch (\Throwable $exception) {
-            $this->refund($order, $exception->getMessage());
+            $this->refund($order, $this->publicMessage($exception->getMessage()));
 
             throw $exception;
         }
+    }
+
+    private function publicMessage(string $message): string
+    {
+        return str_ireplace(['patupaa', 'patupa'], 'provider', $message);
     }
 
     private function refund(ServiceOrder $order, string $message): void

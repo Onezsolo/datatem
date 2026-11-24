@@ -3,7 +3,7 @@
         <header>
             <p class="text-xs font-bold uppercase tracking-wide text-muted">Services / AFA</p>
             <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy">AFA registration</h1>
-            <p class="mt-1 text-sm text-muted">Register a farmer using Ghana Card details. Submissions are processed through the PATUPAA API.</p>
+            <p class="mt-1 text-sm text-muted">Register a farmer using Ghana Card details. Submissions are processed by our service provider.</p>
         </header>
 
         @include('partials.guest-purchase-note')

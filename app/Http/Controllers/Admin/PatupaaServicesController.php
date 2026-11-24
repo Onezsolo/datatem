@@ -61,7 +61,7 @@ class PatupaaServicesController extends Controller
             return response()->json([
                 'error' => [
                     'code' => $exception->errorCode(),
-                    'message' => $exception->getMessage(),
+                    'message' => str_ireplace(['patupaa', 'patupa'], 'provider', $exception->getMessage()),
                 ],
             ], 422);
         }

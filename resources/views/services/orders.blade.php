@@ -4,7 +4,7 @@
             <div>
                 <p class="text-xs font-bold uppercase tracking-wide text-muted">Orders</p>
                 <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy">Service orders</h1>
-                <p class="mt-1 text-sm text-muted">PATUPAA services you have purchased from your wallet.</p>
+                <p class="mt-1 text-sm text-muted">Digital services you have purchased from your wallet.</p>
             </div>
             <a href="{{ route('services.index') }}" class="inline-flex min-h-11 items-center rounded-control border border-line bg-surface px-4 text-sm font-bold text-brand-navy hover:bg-surface-muted">All services</a>
         </header>

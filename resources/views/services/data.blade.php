@@ -14,7 +14,7 @@
         @if ($items->isEmpty())
             <div class="rounded-card border border-line bg-surface p-8 text-center">
                 <p class="text-sm font-bold text-brand-navy">No data bundles available right now.</p>
-                <p class="mt-1 text-sm text-muted">Run a PATUPAA sync in the admin console or check back later.</p>
+                <p class="mt-1 text-sm text-muted">Run a catalog sync in the admin console or check back later.</p>
             </div>
         @else
             <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

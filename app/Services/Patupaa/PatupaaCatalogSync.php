@@ -18,7 +18,7 @@ final class PatupaaCatalogSync
     public function sync(): array
     {
         if (! $this->client->configured()) {
-            throw new PatupaaException('PATUPAA_NOT_CONFIGURED', 'PATUPAA API credentials are not configured.');
+            throw new PatupaaException('PROVIDER_NOT_CONFIGURED', 'Service provider is not configured.');
         }
 
         $seen = [];

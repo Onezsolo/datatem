@@ -56,9 +56,9 @@
             </div>
 
             <aside class="h-fit rounded-card border border-line bg-surface p-5 text-sm">
-                <p class="text-xs font-bold uppercase tracking-wide text-muted">PATUPAA reference</p>
+                <p class="text-xs font-bold uppercase tracking-wide text-muted">Provider reference</p>
                 <p class="mt-1 break-all font-bold text-brand-navy">{{ $order->remote_reference ?: 'Pending' }}</p>
-                <p class="mt-3 text-xs leading-relaxed text-muted">Fulfilment is handled by PATUPAA. Status updates appear here; contact support with the reference if an order stalls.</p>
+                <p class="mt-3 text-xs leading-relaxed text-muted">Fulfilment is handled by our service provider. Status updates appear here; contact support with the reference if an order stalls.</p>
             </aside>
         </div>
     </div>

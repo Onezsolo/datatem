@@ -4,7 +4,7 @@
             <div>
                 <p class="text-xs font-bold uppercase tracking-wide text-muted">Services</p>
                 <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy">Data and digital services</h1>
-                <p class="mt-1 text-sm text-muted">Fulfilled through the PATUPAA API and paid from your wallet. Items disabled at PATUPAA stay disabled here.</p>
+                <p class="mt-1 text-sm text-muted">Fulfilled by our service provider and paid from your wallet. Items disabled by the provider stay disabled here.</p>
             </div>
             <a href="{{ route('services.orders') }}" class="inline-flex min-h-11 items-center rounded-control border border-line bg-surface px-4 text-sm font-bold text-brand-navy hover:bg-surface-muted">Service orders</a>
         </header>

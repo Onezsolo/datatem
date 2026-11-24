@@ -114,8 +114,8 @@ class PatupaaServicesTest extends TestCase
     {
         $this->dataItem();
 
-        $this->get('/services')->assertOk()->assertSee('Data and digital services');
-        $this->get('/services/data')->assertOk()->assertSee('MTN 1GB');
+        $this->get('/services')->assertOk()->assertSee('Data and digital services')->assertDontSee('PATUPAA', false);
+        $this->get('/services/data')->assertOk()->assertSee('MTN 1GB')->assertDontSee('PATUPAA', false);
     }
 
     public function test_services_hub_renders_available_services(): void

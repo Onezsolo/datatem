@@ -5,11 +5,11 @@
             <div>
                 <a href="/admin/dashboard" class="text-sm font-semibold text-brand-navy">Admin</a>
                 <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy">Services catalog</h1>
-                <p class="mt-1 text-sm text-muted">PATUPAA API catalog mirror: data, subscriptions, WAEC, utility and AFA. Turn items off here or let PATUPAA sync disable them.</p>
+                <p class="mt-1 text-sm text-muted">Provider catalog mirror: data, subscriptions, WAEC, utility and AFA. Turn items off here or let provider sync disable them.</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
-                <span class="inline-flex min-h-8 items-center rounded-control px-2.5 text-xs font-bold" :class="configured ? 'bg-brand-yellow text-brand-navy' : 'bg-surface text-brand-red-strong border border-brand-red-strong'" x-text="configured ? 'PATUPAA API connected' : 'PATUPAA API not configured'"></span>
-                <button type="button" @click="syncNow()" :disabled="syncing" class="min-h-10 rounded-control bg-brand-yellow px-4 text-sm font-bold text-brand-navy hover:bg-brand-yellow-strong disabled:opacity-60" x-text="syncing ? 'Syncing...' : 'Sync from PATUPAA'"></button>
+                <span class="inline-flex min-h-8 items-center rounded-control px-2.5 text-xs font-bold" :class="configured ? 'bg-brand-yellow text-brand-navy' : 'bg-surface text-brand-red-strong border border-brand-red-strong'" x-text="configured ? 'Provider API connected' : 'Provider API not configured'"></span>
+                <button type="button" @click="syncNow()" :disabled="syncing" class="min-h-10 rounded-control bg-brand-yellow px-4 text-sm font-bold text-brand-navy hover:bg-brand-yellow-strong disabled:opacity-60" x-text="syncing ? 'Syncing...' : 'Sync from provider'"></button>
             </div>
         </header>
 
@@ -17,7 +17,7 @@
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <h2 class="text-lg font-extrabold text-brand-navy">Service availability</h2>
-                    <p class="mt-1 text-sm text-muted">Global switches. Item-level switches below are manual overrides; PATUPAA sync controls remote availability.</p>
+                    <p class="mt-1 text-sm text-muted">Global switches. Item-level switches below are manual overrides; provider sync controls remote availability.</p>
                 </div>
                 <button type="button" @click="saveToggles()" :disabled="savingToggles" class="min-h-10 rounded-control border border-line px-4 text-sm font-bold text-brand-navy hover:bg-surface-muted disabled:opacity-60" x-text="savingToggles ? 'Saving...' : 'Save switches'"></button>
             </div>
@@ -62,7 +62,7 @@
                             <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Type</th>
                             <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Plan code</th>
                             <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Price</th>
-                            <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">PATUPAA</th>
+                            <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Provider</th>
                             <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Admin on/off</th>
                         </tr>
                     </thead>
@@ -90,7 +90,7 @@
                     </tbody>
                 </table>
             </div>
-            <p x-show="!loading && items.length === 0" class="p-6 text-sm text-muted">No catalog items yet. Run a PATUPAA sync.</p>
+            <p x-show="!loading && items.length === 0" class="p-6 text-sm text-muted">No catalog items yet. Run a provider sync.</p>
         </div>
     </div>
 </div>

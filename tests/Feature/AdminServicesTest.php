@@ -37,7 +37,7 @@ class AdminServicesTest extends TestCase
             ->get('/admin/services')
             ->assertOk()
             ->assertSee('Services catalog')
-            ->assertSee('Sync from PATUPAA')
+            ->assertSee('Sync from provider')
             ->assertSee('Admin navigation');
     }
 

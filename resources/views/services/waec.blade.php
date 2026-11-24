@@ -14,7 +14,7 @@
         @if ($items->isEmpty())
             <div class="rounded-card border border-line bg-surface p-8 text-center">
                 <p class="text-sm font-bold text-brand-navy">No WAEC PINs available right now.</p>
-                <p class="mt-1 text-sm text-muted">Inventory is mirrored from PATUPAA; check back later.</p>
+                <p class="mt-1 text-sm text-muted">Inventory is synced automatically; check back later.</p>
             </div>
         @else
             <div class="grid gap-3 sm:grid-cols-2">

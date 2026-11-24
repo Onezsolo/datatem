@@ -214,7 +214,7 @@ class ServiceController extends Controller
 
             return response()->json(['lookup' => $result]);
         } catch (PatupaaException $exception) {
-            return response()->json(['error' => $exception->getMessage()], 422);
+            return response()->json(['error' => $this->publicMessage($exception->getMessage())], 422);
         }
     }
 
@@ -268,6 +268,11 @@ class ServiceController extends Controller
         return preg_replace('/[\s\-]+/', '', trim($phone)) ?? '';
     }
 
+    private function publicMessage(string $message): string
+    {
+        return str_ireplace(['patupaa', 'patupa'], 'provider', $message);
+    }
+
     private function place(callable $callback): RedirectResponse
     {
         try {
@@ -278,7 +283,7 @@ class ServiceController extends Controller
                 ->route('services.orders.show', $order->reference)
                 ->with('status', 'Order '.$order->reference.' submitted.');
         } catch (PatupaaException $exception) {
-            return back()->withInput()->with('warning', $exception->getMessage());
+            return back()->withInput()->with('warning', $this->publicMessage($exception->getMessage()));
         }
     }
 }
