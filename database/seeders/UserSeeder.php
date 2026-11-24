@@ -8,52 +8,57 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * Seeded admin logins (change in production):
-     * - r2bmarketservices@gmail.com / adminpassword
-     * - admin@example.com / admin123
-     */
     public function run(): void
     {
-        User::updateOrCreate(
-            ['email' => 'demo@example.com'],
-            [
-                'full_name' => 'Demo User',
-                'phone' => '0240000000',
-                'balance' => 50.00,
-                'password' => Hash::make('password123'),
-                'role' => User::ROLE_USER,
-            ]
-        );
+        $adminEmail = trim((string) env('SEED_ADMIN_EMAIL', ''));
+        $adminPassword = (string) env('SEED_ADMIN_PASSWORD', '');
 
-        $admins = [
-            [
-                'email' => 'admin@r2bmarket.com',
-                'full_name' => 'Admin R2BMarket',
-                'phone' => '0500000000',
-                'password' => 'adminpassword',
-            ],
-            [
-                'email' => 'admin@example.com',
-                'full_name' => 'Admin Demo',
-                'phone' => '0500000001',
-                'password' => 'admin123',
-            ],
-        ];
-
-        foreach ($admins as $admin) {
-            $password = $admin['password'];
-            unset($admin['password']);
+        if ($adminEmail !== '' && $adminPassword !== '') {
             User::updateOrCreate(
-                ['email' => $admin['email']],
-                array_merge($admin, [
-                    'balance' => 1000.00,
-                    'password' => Hash::make($password),
+                ['email' => $adminEmail],
+                [
+                    'full_name' => env('SEED_ADMIN_NAME', 'Administrator'),
+                    'phone' => env('SEED_ADMIN_PHONE', '0500000000'),
+                    'balance' => 0,
+                    'password' => Hash::make($adminPassword),
                     'role' => User::ROLE_ADMIN,
-                ])
+                ]
+            );
+
+            $this->command?->info('Admin account seeded from SEED_ADMIN_EMAIL.');
+        } elseif ($this->isLocal()) {
+            User::updateOrCreate(
+                ['email' => 'admin@example.com'],
+                [
+                    'full_name' => 'Local Admin',
+                    'phone' => '0500000000',
+                    'balance' => 1000,
+                    'password' => Hash::make('admin123'),
+                    'role' => User::ROLE_ADMIN,
+                ]
+            );
+
+            $this->command?->warn('Local admin seeded: admin@example.com / admin123. Change it before going live.');
+        } else {
+            $this->command?->warn('No admin account seeded. Set SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD.');
+        }
+
+        if ($this->isLocal()) {
+            User::updateOrCreate(
+                ['email' => 'demo@example.com'],
+                [
+                    'full_name' => 'Demo User',
+                    'phone' => '0240000000',
+                    'balance' => 50,
+                    'password' => Hash::make('password123'),
+                    'role' => User::ROLE_USER,
+                ]
             );
         }
+    }
+
+    private function isLocal(): bool
+    {
+        return app()->environment('local', 'testing');
     }
 }

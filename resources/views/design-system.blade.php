@@ -2,7 +2,7 @@
     <x-ui.header :navigation="[
         ['label' => 'Home', 'url' => route('home'), 'current' => true],
         ['label' => 'Shop', 'url' => url('/shop')],
-        ['label' => 'Bundles', 'url' => route('bundles')],
+        ['label' => 'Bundles', 'url' => route('services.data')],
         ['label' => 'Support', 'url' => route('support')],
     ]" :cart-count="2" :cart-url="url('/cart')" />
 

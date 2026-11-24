@@ -5,7 +5,7 @@
             'title' => 'Everyday essentials, delivered across Ghana.',
             'body' => 'Browse phones, home, beauty and more. Pay with Paystack and track every order from the same account as your data bundles.',
             'primary' => ['label' => 'Browse products', 'url' => route('shop.index').'#categories'],
-            'secondary' => ['label' => 'Buy data', 'url' => route('bundles')],
+            'secondary' => ['label' => 'Buy data', 'url' => route('services.data')],
         ],
     ];
 @endphp

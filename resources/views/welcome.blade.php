@@ -17,7 +17,7 @@
                 </p>
 
                 <div class="mt-7 flex flex-wrap gap-3">
-                    <x-ui.button href="{{ route('bundles') }}" size="lg">Browse bundles</x-ui.button>
+                    <x-ui.button href="{{ route('services.data') }}" size="lg">Browse bundles</x-ui.button>
                     <x-ui.button href="{{ url('/shop') }}" variant="ghost" size="lg">Visit Super Mall</x-ui.button>
                 </div>
 
@@ -38,7 +38,7 @@
                 <ul class="mt-5 space-y-2">
                     @foreach ([['MTN', 'assets/mtn.jpg', 'network=mtn'], ['AirtelTigo', 'assets/airtelTigo.png', 'network=at'], ['Telecel', 'assets/telecel.png', 'network=telecel']] as [$network, $logo, $query])
                         <li>
-                            <a href="{{ route('bundles').'?'.$query }}" class="flex min-h-14 items-center gap-3 rounded-control border border-white/15 bg-white/5 px-3 hover:bg-white/10 focus-visible:outline-brand-yellow">
+                            <a href="{{ route('services.data').'?'.$query }}" class="flex min-h-14 items-center gap-3 rounded-control border border-white/15 bg-white/5 px-3 hover:bg-white/10 focus-visible:outline-brand-yellow">
                                 <span class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-control bg-surface">
                                     <img src="{{ asset($logo) }}" alt="{{ $network }}" class="h-8 w-8 object-contain">
                                 </span>
@@ -63,7 +63,7 @@
         <h2 id="quick-actions-heading" class="text-xl font-extrabold tracking-tight text-brand-navy">Start here</h2>
         <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
             @foreach ([
-                ['Buy data', 'Pick a bundle for your network', route('bundles'), 'phone'],
+                ['Buy data', 'Pick a bundle for your network', route('services.data'), 'phone'],
                 ['Top up wallet', 'Pay with Paystack or manual transfer', route('topup'), 'cart'],
                 ['Super Mall', 'Everyday items delivered to you', url('/shop'), 'bag'],
             ] as [$label, $description, $href, $icon])
@@ -103,7 +103,7 @@
                 <h2 id="networks-heading" class="text-xl font-extrabold tracking-tight text-brand-navy">Pick your network</h2>
                 <p class="mt-1 text-sm text-muted">Affordable bundles for MTN, AirtelTigo and Telecel.</p>
             </div>
-            <x-ui.button href="{{ route('bundles') }}" variant="outline" size="sm">See all bundles</x-ui.button>
+            <x-ui.button href="{{ route('services.data') }}" variant="outline" size="sm">See all bundles</x-ui.button>
         </div>
 
         <div class="mt-4 grid gap-3 sm:grid-cols-3">
@@ -112,7 +112,7 @@
                 ['AirtelTigo', 'assets/airtelTigo.png', 'network=at', 'bg-airteltigo text-white'],
                 ['Telecel', 'assets/telecel.png', 'network=telecel', 'bg-telecel text-white'],
             ] as [$network, $logo, $query, $badge])
-                <x-ui.card :href="route('bundles').'?'.$query" padding="sm" class="h-full hover:bg-surface-muted">
+                <x-ui.card :href="route('services.data').'?'.$query" padding="sm" class="h-full hover:bg-surface-muted">
                     <div class="flex items-center gap-3">
                         <span class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-control bg-surface-muted">
                             <img src="{{ asset($logo) }}" alt="{{ $network }}" class="h-9 w-9 object-contain">

@@ -6,14 +6,12 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        $this->call([
-            UserSeeder::class,
-            ShopCatalogSeeder::class,
-        ]);
+        $this->call(UserSeeder::class);
+
+        if (app()->environment('local', 'testing') || filter_var(env('SEED_DEMO_CATALOG', false), FILTER_VALIDATE_BOOL)) {
+            $this->call(ShopCatalogSeeder::class);
+        }
     }
 }

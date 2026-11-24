@@ -9,7 +9,7 @@ Route::get('/store/{slug}/packages', [\App\Http\Controllers\StorefrontController
 Route::post('/store/{slug}/checkout', [\App\Http\Controllers\StorefrontController::class, 'checkout']);
 Route::get('/store/{slug}/track', [\App\Http\Controllers\StorefrontController::class, 'trackOrders']);
 // Paystack webhook for storefront (no auth, no CSRF on api routes)
-Route::post('/webhook/paystack-storefront', [\App\Http\Controllers\StorefrontController::class, 'paystackWebhook']);
+Route::post('/webhook/paystack-storefront', [\App\Http\Controllers\StorefrontController::class, 'paystackWebhook'])->middleware('throttle:60,1');
 
 Route::group([
     'prefix' => 'auth'

@@ -641,3 +641,10 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Duplicate prevention: shop checkout and every service purchase form now carry a request token stored as a unique idempotency_key (per user) on shop_orders / service_orders; replays redirect to the original order instead of charging again, and an atomic cache lock blocks concurrent submits. Request tokens are also sent to the provider as idempotency keys.
 - Top-ups: manual approval now runs in a transaction with lockForUpdate on topup and user; second approval returns 400 and credits once. Paystack verification guards already-completed payments.
 - Accounting: admin finance dashboard now includes service revenue, paid/refunded service orders and a service daily breakdown; combined revenue = data + shop + services. Regression tests cover replayed shop checkout, replayed service purchase, double topup approval, and finance totals.
+
+### Template hardening (distribution-ready)
+
+- Security: global security headers + HSTS over HTTPS, forced HTTPS and destructive-command ban in production, rate limits on login/registration/OTP, storefront webhook, shop checkout and service purchases.
+- Secrets/seeders: .env.example now ships production-safe defaults (APP_ENV/DEBUG/timezone/session secure+encrypt); admin is seeded from SEED_ADMIN_* outside local; demo user/catalog only in local/testing or with SEED_DEMO_CATALOG=true. Hardcoded demo credentials removed from the seeder.
+- Consistency: legacy /bundles redirects to the provider-backed data page and all public links point there; brand fallback derives from APP_NAME only; timezone Africa/Accra.
+- Ops: /up health endpoint, README production checklist, config/route/view cache verified, providers registered via ootstrap/providers.php. Regression tests cover headers, health and timezone.

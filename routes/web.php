@@ -38,7 +38,7 @@ Route::post('/auth/session-token', function (Illuminate\Http\Request $request) {
 })->middleware(['jwt.cookie', 'web.auth'])->name('auth.session-token');
 
 Route::get('/bundles', function () {
-    return view('bundles');
+    return redirect()->route('services.data');
 })->name('bundles');
 
 Route::get('/support', function () {
@@ -174,7 +174,7 @@ Route::prefix('shop')->name('shop.')->middleware('jwt.cookie')->group(function (
     Route::get('/product/{product:slug}', [ShopCatalogController::class, 'product'])->name('products.show');
     Route::view('/more', 'shop.more')->name('more');
 
-    Route::middleware('web.auth')->group(function () {
+    Route::middleware(['web.auth', 'throttle:30,1'])->group(function () {
         Route::get('/cart', [ShopCartController::class, 'show'])->name('cart.show');
         Route::post('/cart/items', [ShopCartController::class, 'add'])->name('cart.items.store');
         Route::patch('/cart/items/{item}', [ShopCartController::class, 'update'])->name('cart.items.update');
@@ -202,7 +202,7 @@ Route::prefix('services')->name('services.')->group(function () {
     Route::get('/subscriptions', [ServicesController::class, 'subscriptions'])->name('subscriptions');
     Route::get('/afa', [ServicesController::class, 'afa'])->name('afa');
 
-    Route::middleware('web.auth')->group(function () {
+    Route::middleware(['web.auth', 'throttle:20,1'])->group(function () {
         Route::post('/data/{item}', [ServicesController::class, 'storeData'])->name('data.store');
         Route::post('/waec/{item}', [ServicesController::class, 'storeWaec'])->name('waec.store');
         Route::post('/utility/lookup', [ServicesController::class, 'lookupUtility'])->name('utility.lookup');

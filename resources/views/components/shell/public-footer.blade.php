@@ -26,7 +26,7 @@
             <div>
                 <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Shop</p>
                 <ul class="mt-2 space-y-1.5 text-sm text-nav-muted">
-                    <li><a class="hover:text-white" href="{{ route('bundles') }}">Data bundles</a></li>
+                    <li><a class="hover:text-white" href="{{ route('services.data') }}">Data bundles</a></li>
                     <li><a class="hover:text-white" href="{{ url('/shop') }}">Products</a></li>
                     <li><a class="hover:text-white" href="{{ route('store.landing') }}">Reseller stores</a></li>
                 </ul>

@@ -1,48 +1,81 @@
-# Datatem — One System
+# Datatem — Data, Services & Super Mall Template
 
-Combined Ghana-focused platform: mobile data bundles plus an online shop in one account, one checkout and one admin back office. The application is built on Laravel 11 (r2b base) with a uniform Tailwind 4 + Blade design system.
+Production-ready Laravel 11 template for a Ghana-focused digital services business: data bundles, WAEC PINs, utility bills, subscriptions, AFA registration, wallet, referrals/reseller tools and a local shopping module (Super Mall). Shop and services share one account, one wallet and one admin console.
 
 ## Stack
 
-- PHP 8.3, Laravel 11, MySQL 8 (SQLite for tests)
+- PHP 8.3, Laravel 11, MySQL 8 (SQLite in tests)
 - Vite 8, Tailwind CSS 4, Alpine.js 3, Instrument Sans
 - PHPUnit 10
+- External service provider API for data/services (credentials required); Super Mall stays local
 
 ## Local setup
 
 ```powershell
 composer install
-cp .env.example .env
+copy .env.example .env
+# For local development change: APP_ENV=local, APP_DEBUG=true, SESSION_SECURE_COOKIE=false, APP_URL=http://localhost
 php artisan key:generate
 
 $env:PATH = 'C:\laragon\bin\nodejs\node-v22;' + $env:PATH
 npm install
 npm run build
 
-php artisan migrate --seed
+php artisan migrate
+php artisan db:seed            # local/testing: admin@example.com / admin123 + demo user + demo catalog
+php artisan storage:link
 php artisan serve
 ```
 
-Database settings come from `.env`. Tests use SQLite `:memory:` and never touch the configured MySQL database.
+Tests use SQLite `:memory:` and never touch the configured database.
 
 ## Commands
 
 ```powershell
-npm run build          # production assets
-npm run dev            # Vite dev server
-php artisan test       # PHPUnit suite
-php artisan route:list # route inventory
+npm run build
+npm run dev
+php artisan test
+php artisan route:list
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 ```
+
+## Production checklist
+
+1. `.env`: `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://your-domain`, `APP_TIMEZONE=Africa/Accra`, `SESSION_SECURE_COOKIE=true`, `SESSION_ENCRYPT=true`.
+2. Generate `APP_KEY` once and keep it secret; never reuse another installation's key.
+3. Create the first admin with seed environment variables:
+   `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`, `SEED_ADMIN_NAME`, `SEED_ADMIN_PHONE`, then run `php artisan db:seed --class=UserSeeder --force`.
+   Demo data is not seeded outside local/testing (`SEED_DEMO_CATALOG=true` only if you want the sample shop).
+4. Set provider credentials: `PATUPAA_API_*` (data/services) and `PAYSTACK_*`; `REFER2BUNDLE_*` only if the legacy reseller storefront is used.
+5. Point the web server document root at `public/`, enable HTTPS, and run `php artisan storage:link`.
+6. Deploy assets: `composer install --no-dev --optimize-autoloader`, `npm ci && npm run build`.
+7. Cache: `php artisan config:cache && php artisan route:cache && php artisan view:cache`. Clear with the matching `:clear` commands after env changes.
+8. Schedule `php artisan schedule:work` via cron (`* * * * * cd /path && php artisan schedule:run`) and run a queue worker if you switch `QUEUE_CONNECTION` from `sync`.
+9. Back up the MySQL database and `storage/app` (uploads, provider assets, logs policy) daily.
+10. Rotate provider/admin credentials before handing the template to a new owner; delete demo accounts and change seeded passwords.
+
+## Security defaults
+
+- `/admin/*` requires the r2b login and an admin role; guests are redirected, non-admins get 403.
+- All wallet purchases are login-only; shop/services duplicate submissions are blocked by idempotency keys + atomic locks (replayed requests return the original order, never double-charge).
+- Login/registration, service purchases and checkout are rate-limited; provider webhooks are signature-checked.
+- Security headers (nosniff, frame options, referrer policy, permissions policy, HSTS over HTTPS) are applied globally; HTTPS and destructive DB commands are enforced in production.
+- `.env`, `vendor/`, build output, provider catalog copies and uploads are excluded from git.
 
 ## Structure
 
-- `app/Http/Controllers` — API and page controllers (r2b data system)
-- `app/Support` — `Brand` (settings-driven identity) and `Navigation` (public/member nav)
-- `resources/views/components` — design-system components and shells
-- `resources/views` — storefront and member pages
+- `app/Http/Controllers` — web/API controllers (shop, services, admin, auth)
+- `app/Services/Patupaa` — provider catalog sync, order submission, availability settings
+- `app/Shop` — local Super Mall module (models, services, mail)
+- `app/Support` — `Brand` and `Navigation`
+- `resources/views/components` — design-system components and shells (public, member, admin)
 - `docs/design-system.md` — tokens, components, navigation model
-- `docs/superpowers/plans` — implementation plans per phase
+- `docs/superpowers/plans` — phased implementation plans
 
-## Deployment
+## Operational notes
 
-Shared cPanel hosting: deploy outside the web root, point the document root at `public/`, run `composer install --no-dev --optimize-autoloader`, `php artisan migrate --force`, `npm run build`, then cache config/routes/views. Never commit `.env`, `vendor/` or uploaded storage.
+- Provider catalog availability is mirrored: items missing at the provider are disabled locally; admins can additionally force any item/service off in `/admin/services`.
+- Service purchases debit the wallet first and auto-refund on provider failure; finance totals (data + shop + services) live in `/admin/statistics`.
+- The legacy `/bundles` URL redirects to the provider-backed data page.

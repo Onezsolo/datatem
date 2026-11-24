@@ -14,14 +14,14 @@ class PageSmokeTest extends TestCase
 
     public function test_public_pages_render(): void
     {
-        foreach (['/', '/bundles', '/login', '/signup'] as $uri) {
+        foreach (['/', '/login', '/signup'] as $uri) {
             $this->get($uri)->assertOk();
         }
     }
 
     public function test_pilot_pages_use_unified_shell_without_external_cdns(): void
     {
-        foreach (['/', '/bundles', '/login', '/signup'] as $uri) {
+        foreach (['/', '/login', '/signup'] as $uri) {
             $response = $this->get($uri);
 
             $response->assertOk()
@@ -50,14 +50,9 @@ class PageSmokeTest extends TestCase
             ->assertSee('name="phone"', false);
     }
 
-    public function test_bundles_page_keeps_purchase_ui_and_networks(): void
+    public function test_legacy_bundles_route_redirects_to_services_data(): void
     {
-        $this->get('/bundles')
-            ->assertOk()
-            ->assertSee('x-data', false)
-            ->assertSee('MTN')
-            ->assertSee('AirtelTigo')
-            ->assertSee('Telecel');
+        $this->get('/bundles')->assertRedirect(route('services.data'));
     }
 
     public function test_home_page_links_to_data_and_shop(): void
@@ -65,7 +60,7 @@ class PageSmokeTest extends TestCase
         $this->get('/')
             ->assertOk()
             ->assertSee('Buy data')
-            ->assertSee('href="'.route('bundles').'"', false)
+            ->assertSee('href="'.route('services.data').'"', false)
             ->assertSee('href="'.url('/shop').'"', false);
     }
 
