@@ -15,7 +15,7 @@
 
     <aside class="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col overflow-y-auto bg-brand-navy text-white">
         <div class="flex items-center justify-between gap-2 border-b border-white/15 px-4 py-3">
-            <a href="{{ route('home') }}" class="flex items-center gap-2.5" aria-label="{{ \App\Support\Brand::name() }} home">
+            <a href="{{ url('/dashboard') }}" class="flex items-center gap-2.5" aria-label="{{ \App\Support\Brand::name() }} home">
                 <img src="{{ \App\Support\Brand::logoUrl() }}" alt="" width="40" height="40" class="h-9 w-9 rounded-control bg-surface object-contain p-1">
                 <span class="leading-none">
                     <span class="block text-sm font-extrabold tracking-[0.06em] text-white">{{ \Illuminate\Support\Str::upper(\App\Support\Brand::name()) }}</span>

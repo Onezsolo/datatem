@@ -7,6 +7,7 @@
 
 @php
     $navigation = \App\Support\Navigation::public();
+    $homeUrl = auth()->check() ? url('/dashboard') : route('home');
     $cartUrl = request()->is('shop*') && \Illuminate\Support\Facades\Route::has('shop.cart.show') ? route('shop.cart.show') : null;
     if ($cartCount === 0 && $cartUrl && \Illuminate\Support\Facades\Schema::hasTable('shop_carts')) {
         $cartCount = app(\App\Shop\Services\CartService::class)->count(request());
@@ -39,6 +40,7 @@
         :cart-count="$cartCount"
         :cart-url="$cartUrl"
         :brand="$brand"
+        :home-url="$homeUrl"
     />
 
     @if (session('status'))

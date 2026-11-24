@@ -2,7 +2,7 @@
 
 <aside class="hidden w-64 shrink-0 bg-brand-navy text-white lg:block" aria-label="Member navigation">
     <div class="sticky top-0 flex h-screen flex-col overflow-y-auto">
-        <a href="{{ route('home') }}" class="flex items-center gap-2.5 border-b border-white/15 px-5 py-4 focus-visible:outline-brand-yellow" aria-label="{{ \App\Support\Brand::name() }} home">
+        <a href="{{ url('/dashboard') }}" class="flex items-center gap-2.5 border-b border-white/15 px-5 py-4 focus-visible:outline-brand-yellow" aria-label="{{ \App\Support\Brand::name() }} home">
             <img src="{{ \App\Support\Brand::logoUrl() }}" alt="" width="48" height="48" class="h-10 w-10 rounded-control bg-surface object-contain p-1">
             <span class="leading-none">
                 <span class="block text-sm font-extrabold tracking-[0.06em] text-white">{{ \Illuminate\Support\Str::upper(\App\Support\Brand::name()) }}</span>

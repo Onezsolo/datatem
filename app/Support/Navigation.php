@@ -11,8 +11,14 @@ final class Navigation
      */
     public static function public(): array
     {
+        $authed = auth()->check();
+
         return array_map(fn (array $item) => self::item($item), [
-            ['label' => 'Home', 'route' => 'home', 'pattern' => 'home'],
+            [
+                'label' => 'Home',
+                'url' => $authed ? url('/dashboard') : route('home'),
+                'pattern' => $authed ? 'dashboard' : 'home',
+            ],
             ['label' => 'Shop', 'url' => url('/shop'), 'pattern' => 'shop*'],
             ['label' => 'Bundles', 'route' => 'services.data', 'pattern' => 'services/data'],
             ['label' => 'Stores', 'route' => 'store.landing', 'pattern' => 'store*'],
@@ -27,20 +33,20 @@ final class Navigation
         return [
             'Overview' => array_map(fn (array $item) => self::item($item), [
                 ['label' => 'Dashboard', 'url' => url('/dashboard'), 'pattern' => 'dashboard', 'icon' => 'home'],
+            ]),
+            'Services' => array_map(fn (array $item) => self::item($item), [
                 ['label' => 'Shop', 'url' => url('/shop'), 'pattern' => 'shop*', 'icon' => 'bag'],
+                ['label' => 'Data bundles', 'route' => 'services.data', 'pattern' => 'services/data', 'icon' => 'phone'],
+                ['label' => 'WAEC PINs', 'route' => 'services.waec', 'pattern' => 'services/waec', 'icon' => 'check'],
+                ['label' => 'Utility bills', 'route' => 'services.utility', 'pattern' => 'services/utility', 'icon' => 'grid'],
+                ['label' => 'Subscriptions', 'route' => 'services.subscriptions', 'pattern' => 'services/subscriptions', 'icon' => 'bag'],
+                ['label' => 'AFA registration', 'route' => 'services.afa', 'pattern' => 'services/afa', 'icon' => 'help'],
             ]),
             'Orders' => array_map(fn (array $item) => self::item($item), [
                 ['label' => 'Orders', 'route' => 'orders.index', 'pattern' => 'orders', 'icon' => 'truck'],
                 ['label' => 'Shop orders', 'route' => 'orders.shop', 'pattern' => 'orders/shop', 'icon' => 'bag'],
                 ['label' => 'Wallet', 'route' => 'topup', 'pattern' => 'topup*', 'icon' => 'cart'],
                 ['label' => 'Service orders', 'route' => 'services.orders', 'pattern' => 'services/orders', 'icon' => 'grid'],
-            ]),
-            'Services' => array_map(fn (array $item) => self::item($item), [
-                ['label' => 'Data bundles', 'route' => 'services.data', 'pattern' => 'services/data', 'icon' => 'phone'],
-                ['label' => 'WAEC PINs', 'route' => 'services.waec', 'pattern' => 'services/waec', 'icon' => 'check'],
-                ['label' => 'Utility bills', 'route' => 'services.utility', 'pattern' => 'services/utility', 'icon' => 'grid'],
-                ['label' => 'Subscriptions', 'route' => 'services.subscriptions', 'pattern' => 'services/subscriptions', 'icon' => 'bag'],
-                ['label' => 'AFA registration', 'route' => 'services.afa', 'pattern' => 'services/afa', 'icon' => 'help'],
             ]),
             'Data earnings' => array_map(fn (array $item) => self::item($item), [
                 ['label' => 'Data referral', 'route' => 'referral', 'pattern' => 'referral', 'icon' => 'check'],
@@ -59,11 +65,13 @@ final class Navigation
      */
     public static function bottom(): array
     {
+        $authed = auth()->check();
+
         return [
-            ['label' => 'Home', 'url' => route('home'), 'active' => request()->routeIs('home'), 'icon' => 'home'],
+            ['label' => 'Home', 'url' => $authed ? url('/dashboard') : route('home'), 'active' => $authed ? request()->is('dashboard') : request()->routeIs('home'), 'icon' => 'home'],
             ['label' => 'Shop', 'url' => url('/shop'), 'active' => request()->is('shop*'), 'icon' => 'bag'],
             ['label' => 'Bundles', 'url' => route('bundles'), 'active' => request()->routeIs('bundles'), 'icon' => 'phone'],
-            ['label' => 'Account', 'url' => url('/dashboard'), 'active' => request()->is('dashboard'), 'icon' => 'help'],
+            ['label' => 'Account', 'url' => $authed ? route('profile') : url('/dashboard'), 'active' => $authed ? request()->routeIs('profile') : request()->is('dashboard'), 'icon' => 'help'],
         ];
     }
 

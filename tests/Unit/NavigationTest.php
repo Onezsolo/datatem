@@ -2,11 +2,15 @@
 
 namespace Tests\Unit;
 
+use App\Models\User;
 use App\Support\Navigation;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class NavigationTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_public_navigation_resolves(): void
     {
         $items = Navigation::public();
@@ -24,7 +28,7 @@ class NavigationTest extends TestCase
     {
         $groups = Navigation::member();
 
-        $this->assertSame(['Overview', 'Orders', 'Services', 'Data earnings', 'Account'], array_keys($groups));
+        $this->assertSame(['Overview', 'Services', 'Orders', 'Data earnings', 'Account'], array_keys($groups));
 
         $count = 0;
 
@@ -47,5 +51,33 @@ class NavigationTest extends TestCase
         $items = Navigation::bottom();
 
         $this->assertSame(['Home', 'Shop', 'Bundles', 'Account'], array_column($items, 'label'));
+    }
+    public function test_authenticated_home_links_point_to_account(): void
+    {
+        $user = User::create([
+            'full_name' => 'Home User',
+            'email' => 'nav-home@example.com',
+            'phone' => '0244000090',
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->actingAs($user);
+
+        $public = Navigation::public();
+        $this->assertSame(url('/dashboard'), $public[0]['url']);
+
+        $bottom = Navigation::bottom();
+        $this->assertSame(url('/dashboard'), $bottom[0]['url']);
+        $this->assertSame(route('profile'), $bottom[3]['url']);
+    }
+
+    public function test_guest_home_links_point_to_public_home(): void
+    {
+        $public = Navigation::public();
+        $this->assertSame(route('home'), $public[0]['url']);
+
+        $bottom = Navigation::bottom();
+        $this->assertSame(route('home'), $bottom[0]['url']);
+        $this->assertSame(url('/dashboard'), $bottom[3]['url']);
     }
 }
