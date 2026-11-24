@@ -145,4 +145,26 @@
         border-color: var(--color-brand-navy);
         background: var(--color-brand-navy);
         color: var(--color-surface);
+    }
+    .shop-marquee {
+        animation: shop-marquee 28s linear infinite;
+    }
+
+    .shop-marquee:hover {
+        animation-play-state: paused;
+    }
+
+    @keyframes shop-marquee {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(-50%);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .shop-marquee {
+            animation: none;
+        }
     }}

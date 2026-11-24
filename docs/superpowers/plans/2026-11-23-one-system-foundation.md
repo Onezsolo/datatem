@@ -723,3 +723,8 @@ git commit -m "feat: unify legacy layout with compiled design system"
 
 - Added x-ui.page-heading and .service-tab primitives; all service pages (hub, data, WAEC, utility, subscriptions) now use them. Data networks, WAEC products, utility services and subscriptions switch one panel at a time; AFA keeps the single compact form.
 - Design-system documentation now defines the service-page rules so future templates inherit the same pattern.
+
+### Shop hero photography and mobile length
+
+- Added four bundled CC0 shopping photos under public/assets/shop (credits file included) and replaced the tall why-shop card with a moving photo marquee plus brand watermark. Motion pauses on hover and respects reduced-motion.
+- Mobile hero reduced: smaller heading, one-line copy, compact actions and a 128px photo strip.

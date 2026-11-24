@@ -1,0 +1,10 @@
+Shopping photography
+
+The four photos in this folder are CC0 / public-domain images from Openverse (Flickr and Wikimedia Commons):
+
+- shopping-1.jpg — "Groceries in Shopping Bag" — https://live.staticflickr.com/65535/52327379059_a81c1633c2_b.jpg
+- shopping-2.jpg — "Groceries in Shopping Bag" — https://live.staticflickr.com/65535/52326127837_ed40ccaecd_b.jpg
+- shopping-3.jpg — "Cloth shopping bag" — https://live.staticflickr.com/5685/21068394239_c4ab1db3c4_b.jpg
+- shopping-4.jpg — "DJ's shopping bag" — https://live.staticflickr.com/1927/30068953797_d9f8283355.jpg
+
+License: CC0 1.0 / Public Domain (no attribution required). Replace these with the client's own product photography before launch if preferred.
