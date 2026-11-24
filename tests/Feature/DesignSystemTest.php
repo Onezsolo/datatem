@@ -27,4 +27,30 @@ class DesignSystemTest extends TestCase
         $response->assertDontSee('unpkg.com', false);
         $response->assertDontSee('fonts.googleapis.com', false);
     }
+
+    public function test_public_shell_renders_navigation_footer_and_bottom_nav(): void
+    {
+        $html = $this->blade('<x-layouts.public>Body content</x-layouts.public>');
+
+        $html->assertSee('Skip to main content')
+            ->assertSee('id="main-content"', false)
+            ->assertSee('Bottom navigation')
+            ->assertSee('Bundles')
+            ->assertSee('Reseller stores')
+            ->assertSee('Body content')
+            ->assertDontSee('cdn.tailwindcss.com', false)
+            ->assertDontSee('unpkg.com', false);
+    }
+
+    public function test_member_shell_has_sidebar_and_bottom_nav(): void
+    {
+        $html = $this->blade('<x-layouts.member title="Dashboard">Body content</x-layouts.member>');
+
+        $html->assertSee('Member navigation')
+            ->assertSee('Overview')
+            ->assertSee('Dashboard')
+            ->assertSee('Sign out')
+            ->assertSee('lg:hidden', false)
+            ->assertSee('Body content');
+    }
 }
