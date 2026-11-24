@@ -30,7 +30,7 @@
             <div>
                 <p class="text-xs font-bold uppercase tracking-wide text-muted">Orders</p>
                 <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy">Shop orders</h1>
-                <p class="mt-1 text-sm text-muted">Products bought with this account's phone or email.</p>
+                <p class="mt-1 text-sm text-muted">Paid from this account's wallet. Separate from data orders.</p>
             </div>
             <a href="{{ route('orders.index') }}" class="inline-flex min-h-11 items-center rounded-control border border-line bg-surface px-4 text-sm font-bold text-brand-navy hover:bg-surface-muted">
                 Data orders

@@ -70,7 +70,9 @@ Route::get('/notifications', function () {
 })->name('notifications');
 
 Route::get('/profile', function () {
-    return view('profile');
+    return view('profile', [
+        'deliveryZones' => \App\Shop\Services\ShopSettings::deliveryZones(),
+    ]);
 })->name('profile');
 
 Route::get('/referral', function () {
@@ -143,14 +145,16 @@ Route::prefix('shop')->name('shop.')->middleware('jwt.cookie')->group(function (
     Route::get('/product/{product:slug}', [ShopCatalogController::class, 'product'])->name('products.show');
     Route::view('/more', 'shop.more')->name('more');
 
-    Route::get('/cart', [ShopCartController::class, 'show'])->name('cart.show');
-    Route::post('/cart/items', [ShopCartController::class, 'add'])->name('cart.items.store');
-    Route::patch('/cart/items/{item}', [ShopCartController::class, 'update'])->name('cart.items.update');
-    Route::delete('/cart/items/{item}', [ShopCartController::class, 'remove'])->name('cart.items.destroy');
-    Route::delete('/cart', [ShopCartController::class, 'clear'])->name('cart.clear');
+    Route::middleware('web.auth')->group(function () {
+        Route::get('/cart', [ShopCartController::class, 'show'])->name('cart.show');
+        Route::post('/cart/items', [ShopCartController::class, 'add'])->name('cart.items.store');
+        Route::patch('/cart/items/{item}', [ShopCartController::class, 'update'])->name('cart.items.update');
+        Route::delete('/cart/items/{item}', [ShopCartController::class, 'remove'])->name('cart.items.destroy');
+        Route::delete('/cart', [ShopCartController::class, 'clear'])->name('cart.clear');
 
-    Route::get('/checkout', [ShopCheckoutController::class, 'show'])->name('checkout.show');
-    Route::post('/checkout', [ShopCheckoutController::class, 'store'])->name('checkout.store');
+        Route::get('/checkout', [ShopCheckoutController::class, 'show'])->name('checkout.show');
+        Route::post('/checkout', [ShopCheckoutController::class, 'store'])->name('checkout.store');
+    });
 
     Route::get('/track', [ShopOrderController::class, 'trackForm'])->name('track');
     Route::post('/track', [ShopOrderController::class, 'track'])->middleware('throttle:10,1')->name('track.lookup');

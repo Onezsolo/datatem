@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'jwt.cookie' => \App\Http\Middleware\JwtFromCookie::class,
             'admin.web' => \App\Http\Middleware\AdminWebGate::class,
+            'web.auth' => \App\Http\Middleware\EnsureWebAuth::class,
         ]);
         $middleware->encryptCookies(except: [
             'auth_token',

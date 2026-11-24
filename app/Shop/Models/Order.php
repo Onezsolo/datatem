@@ -133,7 +133,7 @@ class Order extends Model
     {
         static::creating(function (Order $order): void {
             if (empty($order->order_number)) {
-                $order->order_number = 'NGL-'.Str::upper(Str::random(8));
+                $order->order_number = 'DT-'.Str::upper(Str::random(8));
             }
         });
     }

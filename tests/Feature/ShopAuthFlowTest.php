@@ -26,6 +26,7 @@ class ShopAuthFlowTest extends TestCase
             'full_name' => 'Cookie Shopper',
             'email' => 'cookie-shopper@example.com',
             'phone' => '0244000009',
+            'balance' => 5000,
             'password' => bcrypt('password'),
         ]);
 
@@ -57,14 +58,17 @@ class ShopAuthFlowTest extends TestCase
                 'delivery_address' => '12 Independence Avenue',
                 'delivery_city' => 'Accra',
                 'delivery_zone' => 'accra',
-                'payment_method' => 'paystack',
+                'payment_method' => 'wallet',
             ])
             ->assertRedirect();
 
         $order = Order::query()->latest('id')->firstOrFail();
 
         $this->assertSame($user->id, $order->user_id);
-        $this->assertSame('pending', $order->payment_status);
+        $this->assertSame('paid', $order->payment_status);
+        $this->assertSame('wallet', $order->payment_method);
+        $this->assertSame(5000.0 - (float) $order->total, (float) $user->fresh()->balance);
+        $this->assertSame('12 Independence Avenue', $user->fresh()->delivery_address);
     }
 
     public function test_guest_is_redirected_to_r2b_login_before_checkout(): void

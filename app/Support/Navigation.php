@@ -32,7 +32,8 @@ final class Navigation
                 ['label' => 'Buy data', 'route' => 'bundles', 'pattern' => 'bundles', 'icon' => 'phone'],
             ]),
             'Orders' => array_map(fn (array $item) => self::item($item), [
-                ['label' => 'Orders', 'route' => 'orders.index', 'pattern' => 'orders*', 'icon' => 'truck'],
+                ['label' => 'Orders', 'route' => 'orders.index', 'pattern' => 'orders', 'icon' => 'truck'],
+                ['label' => 'Shop orders', 'route' => 'orders.shop', 'pattern' => 'orders/shop', 'icon' => 'bag'],
                 ['label' => 'Wallet', 'route' => 'topup', 'pattern' => 'topup*', 'icon' => 'cart'],
             ]),
             'Earnings' => array_map(fn (array $item) => self::item($item), [

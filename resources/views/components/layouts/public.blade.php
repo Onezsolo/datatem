@@ -7,7 +7,7 @@
 
 @php
     $navigation = \App\Support\Navigation::public();
-    $cartUrl = \Illuminate\Support\Facades\Route::has('shop.cart.show') ? route('shop.cart.show') : null;
+    $cartUrl = request()->is('shop*') && \Illuminate\Support\Facades\Route::has('shop.cart.show') ? route('shop.cart.show') : null;
     if ($cartCount === 0 && $cartUrl && \Illuminate\Support\Facades\Schema::hasTable('shop_carts')) {
         $cartCount = app(\App\Shop\Services\CartService::class)->count(request());
     }

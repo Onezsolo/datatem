@@ -80,6 +80,50 @@
                             <button type="submit" class="px-6 py-3 rounded-card font-semibold bg-brand-navy text-white hover:bg-brand-navy transition-colors text-sm">Save changes</button>
                         </div>
                     </form>
+
+                    <div class="mt-8 border-t border-line pt-6">
+                        <h3 class="text-base font-bold text-brand-navy">Delivery details</h3>
+                        <p class="mt-1 text-sm text-muted">Saved for shop checkout so delivery fields are filled next time.</p>
+
+                        <form @submit.prevent="saveDeliveryDetails" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Delivery name</label>
+                                <input type="text" name="delivery_name" x-model="user.delivery_name" placeholder="Receiver name" class="w-full px-4 py-3 rounded-card bg-surface-muted border border-line focus:outline-none focus:border-brand-navy font-medium text-brand-navy text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Delivery phone</label>
+                                <input type="tel" name="delivery_phone" x-model="user.delivery_phone" placeholder="0244000000" class="w-full px-4 py-3 rounded-card bg-surface-muted border border-line focus:outline-none focus:border-brand-navy font-medium text-brand-navy text-sm">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Delivery address</label>
+                                <input type="text" name="delivery_address" x-model="user.delivery_address" placeholder="Street, house number, landmark" class="w-full px-4 py-3 rounded-card bg-surface-muted border border-line focus:outline-none focus:border-brand-navy font-medium text-brand-navy text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">City or town</label>
+                                <input type="text" name="delivery_city" x-model="user.delivery_city" placeholder="Accra" class="w-full px-4 py-3 rounded-card bg-surface-muted border border-line focus:outline-none focus:border-brand-navy font-medium text-brand-navy text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Region</label>
+                                <input type="text" name="delivery_region" x-model="user.delivery_region" placeholder="Greater Accra" class="w-full px-4 py-3 rounded-card bg-surface-muted border border-line focus:outline-none focus:border-brand-navy font-medium text-brand-navy text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Delivery zone</label>
+                                <select name="delivery_zone" x-model="user.delivery_zone" class="w-full px-4 py-3 rounded-card bg-surface-muted border border-line focus:outline-none focus:border-brand-navy font-medium text-brand-navy text-sm">
+                                    <option value="">Use checkout default</option>
+                                    @foreach ($deliveryZones as $key => $zone)
+                                        <option value="{{ $key }}">{{ $zone['label'] }} - {{ config('store.currency') }} {{ number_format((float) $zone['fee'], 2) }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Delivery notes</label>
+                                <input type="text" name="delivery_notes" x-model="user.delivery_notes" placeholder="Optional instructions" class="w-full px-4 py-3 rounded-card bg-surface-muted border border-line focus:outline-none focus:border-brand-navy font-medium text-brand-navy text-sm">
+                            </div>
+                            <div class="md:col-span-2 flex justify-end">
+                                <button type="submit" :disabled="loading" class="px-6 py-3 rounded-card font-semibold bg-brand-yellow text-brand-navy hover:bg-brand-yellow-strong disabled:opacity-50 transition-colors text-sm">Save delivery details</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- Security -->
@@ -154,7 +198,7 @@
 function profilePage() {
     return {
         activeSection: 'personal',
-        user: { full_name: 'User', email: '', phone: '' },
+        user: { full_name: 'User', email: '', phone: '', delivery_name: '', delivery_phone: '', delivery_address: '', delivery_city: '', delivery_region: '', delivery_zone: '', delivery_notes: '' },
         successMessage: '',
         showDeleteModal: false,
         deletePassword: '',
@@ -187,11 +231,18 @@ function profilePage() {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    this.user = {
+                    this.user = Object.assign({}, this.user, {
                         full_name: data.full_name ?? this.user.full_name,
                         email: data.email ?? this.user.email,
-                        phone: data.phone ?? this.user.phone
-                    };
+                        phone: data.phone ?? this.user.phone,
+                        delivery_name: data.delivery_name ?? this.user.delivery_name,
+                        delivery_phone: data.delivery_phone ?? this.user.delivery_phone,
+                        delivery_address: data.delivery_address ?? this.user.delivery_address,
+                        delivery_city: data.delivery_city ?? this.user.delivery_city,
+                        delivery_region: data.delivery_region ?? this.user.delivery_region,
+                        delivery_zone: data.delivery_zone ?? this.user.delivery_zone,
+                        delivery_notes: data.delivery_notes ?? this.user.delivery_notes
+                    });
                     if (this.$store.auth.user && typeof this.$store.auth.user === 'object') {
                         this.$store.auth.user = Object.assign({}, this.$store.auth.user, data);
                     }
@@ -238,6 +289,46 @@ function profilePage() {
             } catch (e) {
                 console.error(e);
                 alert('Network error. Please try again.');
+            } finally {
+                this.loading = false;
+            }
+        },
+
+
+        async saveDeliveryDetails() {
+            this.loading = true;
+            this.successMessage = '';
+            try {
+                const response = await fetch('{{ url("/api/auth/user/delivery-details") }}', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Bearer ' + this.$store.auth.token,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        delivery_name: this.user.delivery_name || null,
+                        delivery_phone: this.user.delivery_phone || null,
+                        delivery_address: this.user.delivery_address || null,
+                        delivery_city: this.user.delivery_city || null,
+                        delivery_region: this.user.delivery_region || null,
+                        delivery_zone: this.user.delivery_zone || null,
+                        delivery_notes: this.user.delivery_notes || null
+                    })
+                });
+                const data = await response.json().catch(() => ({}));
+                if (response.ok) {
+                    this.user = Object.assign({}, this.user, data.user || {});
+                    if (this.$store.auth.user) {
+                        this.$store.auth.user = Object.assign({}, this.$store.auth.user, data.user || {});
+                    }
+                    this.successMessage = 'Delivery details saved.';
+                    setTimeout(() => { this.successMessage = ''; }, 3000);
+                } else {
+                    window.showAlert(data.message || 'Could not save delivery details.');
+                }
+            } catch (error) {
+                window.showAlert('Could not save delivery details. Check your connection.');
             } finally {
                 this.loading = false;
             }

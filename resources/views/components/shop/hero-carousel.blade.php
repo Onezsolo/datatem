@@ -37,7 +37,7 @@
             <ul class="mt-3 space-y-2 text-sm text-nav-muted">
                 <li class="flex items-start gap-2">
                     <x-ui.icon name="check" :size="16" class="mt-0.5 text-brand-yellow" />
-                    Guest checkout with order tracking by phone
+                    One r2b account for data and shopping
                 </li>
                 <li class="flex items-start gap-2">
                     <x-ui.icon name="check" :size="16" class="mt-0.5 text-brand-yellow" />
@@ -45,7 +45,7 @@
                 </li>
                 <li class="flex items-start gap-2">
                     <x-ui.icon name="check" :size="16" class="mt-0.5 text-brand-yellow" />
-                    Secure Paystack payments for Mobile Money and card
+                    Pay from your wallet after a quick top-up
                 </li>
             </ul>
             <div class="mt-4 border-t border-white/15 pt-4">

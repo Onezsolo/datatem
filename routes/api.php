@@ -25,6 +25,7 @@ Route::group([
         Route::post('/refresh', [AuthController::class, 'refresh']);
         Route::get('/user-profile', [AuthController::class, 'userProfile']);
         Route::put('/user/profile', [\App\Http\Controllers\UserController::class, 'updateProfile']);
+        Route::put('/user/delivery-details', [\App\Http\Controllers\UserController::class, 'updateDeliveryDetails']);
         Route::put('/user/password', [\App\Http\Controllers\UserController::class, 'changePassword']);
         Route::delete('/user/account', [\App\Http\Controllers\UserController::class, 'deleteAccount']);
         Route::get('/user/stats', [\App\Http\Controllers\UserController::class, 'getStats']);

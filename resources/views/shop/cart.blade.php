@@ -3,7 +3,7 @@
         <div class="flex flex-wrap items-end justify-between gap-3">
             <div>
                 <h1 class="text-3xl font-extrabold tracking-tight text-brand-navy">Your cart</h1>
-                <p class="mt-1 text-sm text-muted">Guest cart. No account required.</p>
+                <p class="mt-1 text-sm text-muted">Items saved to your account. Checkout pays from your wallet.</p>
             </div>
             @if ($cart && $cart->items->isNotEmpty())
                 <a href="{{ route('shop.index') }}" class="text-sm font-bold text-brand-navy underline underline-offset-4">Continue shopping</a>

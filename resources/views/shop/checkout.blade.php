@@ -1,7 +1,11 @@
 <x-layouts.public title="Checkout">
+    @php
+        $checkoutUser = auth()->user();
+        $walletBalance = (float) ($checkoutUser?->balance ?? 0);
+    @endphp
     <div class="container-page py-8">
         <h1 class="text-3xl font-extrabold tracking-tight text-brand-navy">Checkout</h1>
-        <p class="mt-2 max-w-2xl text-sm text-muted">Delivery details for your account. This order will appear in your Shop orders list.</p>
+        <p class="mt-2 max-w-2xl text-sm text-muted">Delivery details are saved to your account for next time. This order will appear in Shop orders.</p>
 
         @if ($errors->any())
             <div class="mt-4 rounded-card border border-brand-red-strong bg-surface p-4" role="alert">
@@ -11,6 +15,9 @@
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
+                @if ($errors->has('wallet'))
+                    <a href="{{ route('topup') }}" class="mt-3 inline-flex min-h-10 items-center rounded-control bg-brand-yellow px-4 text-sm font-bold text-brand-navy hover:bg-brand-yellow-strong">Top up wallet</a>
+                @endif
             </div>
         @endif
 
@@ -30,33 +37,33 @@
                 <div class="mt-4 grid gap-4 sm:grid-cols-2">
                     <div class="sm:col-span-2">
                         <label for="customer_name" class="block text-xs font-bold uppercase tracking-wide text-muted">Full name</label>
-                        <input id="customer_name" name="customer_name" type="text" value="{{ old('customer_name', auth()->user()?->full_name) }}" required class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
+                        <input id="customer_name" name="customer_name" type="text" value="{{ old('customer_name', $checkoutUser?->delivery_name ?: $checkoutUser?->full_name) }}" required class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
                     </div>
                     <div>
                         <label for="customer_phone" class="block text-xs font-bold uppercase tracking-wide text-muted">Phone</label>
-                        <input id="customer_phone" name="customer_phone" type="tel" value="{{ old('customer_phone', auth()->user()?->phone) }}" required placeholder="0244000000" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
+                        <input id="customer_phone" name="customer_phone" type="tel" value="{{ old('customer_phone', $checkoutUser?->delivery_phone ?: $checkoutUser?->phone) }}" required placeholder="0244000000" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
                     </div>
                     <div>
                         <label for="customer_email" class="block text-xs font-bold uppercase tracking-wide text-muted">Email (optional)</label>
-                        <input id="customer_email" name="customer_email" type="email" value="{{ old('customer_email', auth()->user()?->email) }}" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
+                        <input id="customer_email" name="customer_email" type="email" value="{{ old('customer_email', $checkoutUser?->email) }}" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
                     </div>
                     <div class="sm:col-span-2">
                         <label for="delivery_address" class="block text-xs font-bold uppercase tracking-wide text-muted">Delivery address</label>
-                        <input id="delivery_address" name="delivery_address" type="text" value="{{ old('delivery_address') }}" required class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
+                        <input id="delivery_address" name="delivery_address" type="text" value="{{ old('delivery_address', $checkoutUser?->delivery_address) }}" required class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
                     </div>
                     <div>
                         <label for="delivery_city" class="block text-xs font-bold uppercase tracking-wide text-muted">City or town</label>
-                        <input id="delivery_city" name="delivery_city" type="text" value="{{ old('delivery_city') }}" required class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
+                        <input id="delivery_city" name="delivery_city" type="text" value="{{ old('delivery_city', $checkoutUser?->delivery_city) }}" required class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
                     </div>
                     <div>
                         <label for="delivery_region" class="block text-xs font-bold uppercase tracking-wide text-muted">Region (optional)</label>
-                        <input id="delivery_region" name="delivery_region" type="text" value="{{ old('delivery_region') }}" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
+                        <input id="delivery_region" name="delivery_region" type="text" value="{{ old('delivery_region', $checkoutUser?->delivery_region) }}" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
                     </div>
                     <div>
                         <label for="delivery_zone" class="block text-xs font-bold uppercase tracking-wide text-muted">Delivery zone</label>
                         <select id="delivery_zone" name="delivery_zone" required class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink" data-zone-select>
                             @foreach ($zones as $key => $zone)
-                                <option value="{{ $key }}" data-fee="{{ (float) $zone['fee'] }}" @selected(old('delivery_zone', $defaultZone) === $key)>
+                                <option value="{{ $key }}" data-fee="{{ (float) $zone['fee'] }}" @selected(old('delivery_zone', $checkoutUser?->delivery_zone ?: $defaultZone) === $key)>
                                     {{ $zone['label'] }} - {{ config('store.currency') }} {{ number_format((float) $zone['fee'], 2) }}
                                 </option>
                             @endforeach
@@ -64,27 +71,31 @@
                     </div>
                     <div>
                         <label for="delivery_phone" class="block text-xs font-bold uppercase tracking-wide text-muted">Delivery phone (optional)</label>
-                        <input id="delivery_phone" name="delivery_phone" type="tel" value="{{ old('delivery_phone') }}" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
+                        <input id="delivery_phone" name="delivery_phone" type="tel" value="{{ old('delivery_phone', $checkoutUser?->delivery_phone) }}" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
                     </div>
                     <div class="sm:col-span-2">
                         <label for="delivery_notes" class="block text-xs font-bold uppercase tracking-wide text-muted">Delivery notes (optional)</label>
-                        <textarea id="delivery_notes" name="delivery_notes" rows="3" class="mt-1 w-full rounded-control border border-line px-3 py-2 text-sm text-ink">{{ old('delivery_notes') }}</textarea>
+                        <textarea id="delivery_notes" name="delivery_notes" rows="3" class="mt-1 w-full rounded-control border border-line px-3 py-2 text-sm text-ink">{{ old('delivery_notes', $checkoutUser?->delivery_notes) }}</textarea>
                     </div>
                 </div>
 
                 <h2 class="mt-8 text-lg font-extrabold text-brand-navy">Payment</h2>
-                <label class="mt-3 flex items-start gap-3 rounded-card border border-line p-4">
-                    <input type="radio" name="payment_method" value="paystack" checked class="mt-1">
-                    <span>
-                        <span class="block text-sm font-bold text-brand-navy">Pay with Paystack</span>
-                        <span class="mt-1 block text-xs leading-relaxed text-muted">Mobile Money and card are handled on Paystack. We never store card numbers or Mobile Money PINs.</span>
-                    </span>
-                </label>
+                <input type="hidden" name="payment_method" value="wallet">
+                <div class="mt-3 rounded-card border border-line bg-surface-muted p-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <p class="text-sm font-bold text-brand-navy">Wallet balance</p>
+                        <p class="text-sm font-extrabold text-brand-navy">GHS {{ number_format($walletBalance, 2) }}</p>
+                    </div>
+                    <p class="mt-2 text-xs leading-relaxed text-muted">
+                        Shop orders are paid from your wallet. Top up before purchase if your balance is below the order total.
+                    </p>
+                    <a href="{{ route('topup') }}" class="mt-3 inline-flex min-h-10 items-center rounded-control border border-line bg-surface px-3 text-sm font-bold text-brand-navy hover:bg-surface-muted">Top up wallet</a>
+                </div>
 
                 <div class="mt-6">
-                    <x-ui.button type="submit" size="lg" class="w-full">Place order and pay</x-ui.button>
+                    <x-ui.button type="submit" size="lg" class="w-full">Pay from wallet</x-ui.button>
                 </div>
-                <p class="mt-2 text-xs text-muted">You will be redirected to Paystack to complete payment. Your order is saved before payment.</p>
+                <p class="mt-2 text-xs text-muted">The order total is deducted from your wallet immediately and the order is created as paid.</p>
             </form>
 
             <aside class="h-fit rounded-card border border-line bg-surface p-5">

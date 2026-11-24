@@ -61,12 +61,22 @@ class CheckoutController
 
         $order = $checkout->placeOrder($cart, $data);
 
+        $request->user()->forceFill([
+            'delivery_name' => $data['customer_name'],
+            'delivery_phone' => $data['delivery_phone'] ?? $data['customer_phone'],
+            'delivery_address' => $data['delivery_address'],
+            'delivery_city' => $data['delivery_city'],
+            'delivery_region' => $data['delivery_region'] ?? null,
+            'delivery_zone' => $data['delivery_zone'],
+            'delivery_notes' => $data['delivery_notes'] ?? null,
+        ])->save();
+
         $request->session()->forget(CartService::SESSION_KEY);
 
         $url = URL::temporarySignedRoute('shop.orders.show', now()->addDay(), [
             'order' => $order->order_number,
         ]);
 
-        return redirect($url)->with('status', 'Order '.$order->order_number.' was created.');
+        return redirect($url)->with('status', 'Order '.$order->order_number.' was paid from your wallet.');
     }
 }

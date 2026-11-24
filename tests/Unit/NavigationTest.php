@@ -35,7 +35,11 @@ class NavigationTest extends TestCase
             }
         }
 
-        $this->assertSame(10, $count);
+        $this->assertSame(11, $count);
+
+        $labels = collect($groups)->flatten(1)->pluck('label');
+        $this->assertTrue($labels->contains('Orders'));
+        $this->assertTrue($labels->contains('Shop orders'));
     }
 
     public function test_bottom_navigation_has_four_items(): void

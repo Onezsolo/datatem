@@ -582,3 +582,11 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Phase 3 complete: reseller storefront and spin preview render inside the shared public shell; all view CDNs removed (Tailwind/Alpine/fonts/confetti now bundled); spin wheel uses brand palette, no gradients or glow.
 - Phase 4 complete: one admin shell (sidebar + mobile drawer + bottom nav), all 14 admin views migrated, `/admin/*` gated server-side by `jwt.cookie` + `admin.web` (guest -> login, non-admin -> 403). MFA explicitly out of scope per user decision.
 - QA: Playwright screenshots captured at 390px and 1280px for home, shop, bundles, store, design system, dashboard, orders, top-up, shop orders, admin dashboard, admin shop and admin statistics; mobile sidebars verified open/close.
+
+### Shop policy update (latest user requirements)
+
+- Orders and Shop orders are separate pages and separate sidebar entries; the data Orders page no longer mixes shop tabs.
+- Delivery details are saved on the user (`delivery_*` columns), auto-filled at checkout, auto-updated after each order and editable from Profile.
+- Shop no longer behaves as guest: cart, checkout and wallet payment require the r2b login (auth middleware redirects guests to login); guest wording removed.
+- Cart is shop-only: header cart link/badge renders only inside `/shop*`; data flows never touch the cart.
+- Top up before purchase: checkout is wallet-only. The order and wallet debit happen in one transaction; insufficient balance blocks the order with a Top up CTA (Paystack shop checkout removed).

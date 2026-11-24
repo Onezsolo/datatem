@@ -1,4 +1,4 @@
-<x-layouts.public title="Track an order" description="Track a guest order with your order number and phone number.">
+<x-layouts.public title="Track an order" description="Track a shop order with your order number and phone number.">
     <div class="container-page py-10">
         <div class="mx-auto max-w-xl">
             <h1 class="text-3xl font-extrabold tracking-tight text-brand-navy">Track your order</h1>
@@ -20,7 +20,7 @@
                 @csrf
                 <div>
                     <label for="order_number" class="block text-xs font-bold uppercase tracking-wide text-muted">Order number</label>
-                    <input id="order_number" name="order_number" type="text" value="{{ old('order_number') }}" required placeholder="NGL-XXXXXXXX" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
+                    <input id="order_number" name="order_number" type="text" value="{{ old('order_number') }}" required placeholder="DT-XXXXXXXX" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink">
                 </div>
                 <div class="mt-4">
                     <label for="phone" class="block text-xs font-bold uppercase tracking-wide text-muted">Phone number</label>

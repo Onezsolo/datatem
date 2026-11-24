@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Shop\Services;
 
+use App\Models\User;
 use App\Shop\Models\Cart;
 use App\Shop\Models\Order;
+use App\Shop\Models\Payment;
 use App\Shop\Services\ShopSettings;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class CheckoutService
@@ -91,8 +94,22 @@ class CheckoutService
             $serviceCharge = ShopSettings::serviceCharge();
             $total = round($subtotal + $deliveryFee + $serviceCharge, 2);
 
+            $user = User::query()->lockForUpdate()->find($data['user_id'] ?? null);
+
+            if ($user === null) {
+                throw ValidationException::withMessages(['wallet' => 'Sign in again to place this order.']);
+            }
+
+            $balance = (float) $user->balance;
+
+            if (round($balance, 2) < $total) {
+                throw ValidationException::withMessages([
+                    'wallet' => 'Your wallet balance is GHS '.number_format($balance, 2).'. Top up before placing this order.',
+                ]);
+            }
+
             $order = Order::create([
-                'user_id' => $data['user_id'] ?? null,
+                'user_id' => $user->id,
                 'customer_name' => (string) $data['customer_name'],
                 'customer_phone' => $this->normalisePhone((string) $data['customer_phone']),
                 'customer_email' => $data['customer_email'] ?? null,
@@ -108,9 +125,10 @@ class CheckoutService
                 'discount' => 0,
                 'total' => $total,
                 'currency' => (string) config('store.currency', 'GHS'),
-                'payment_method' => 'paystack',
-                'status' => Order::STATUS_PENDING,
-                'payment_status' => 'pending',
+                'payment_method' => 'wallet',
+                'status' => Order::STATUS_PAID,
+                'payment_status' => 'paid',
+                'paid_at' => now(),
                 'meta' => ['delivery_zone_label' => $zones[$zone]['label'] ?? null],
             ]);
 
@@ -120,10 +138,32 @@ class CheckoutService
 
             app(InventoryService::class)->reserve($order);
 
+            $user->update(['balance' => round($balance - $total, 2)]);
+
+            $reference = 'WALLET-'.strtoupper(Str::random(12));
+
+            Payment::create([
+                'order_id' => $order->id,
+                'reference' => $reference,
+                'provider' => 'wallet',
+                'amount' => $total,
+                'currency' => (string) config('store.currency', 'GHS'),
+                'status' => Payment::STATUS_PAID,
+                'payment_method' => 'wallet',
+                'paid_at' => now(),
+                'meta' => [
+                    'user_id' => $user->id,
+                    'balance_before' => $balance,
+                    'balance_after' => round($balance - $total, 2),
+                ],
+            ]);
+
+            $order->update(['payment_reference' => $reference]);
+
             $lockedCart->items()->delete();
             $lockedCart->delete();
 
-            return $order->load('items');
+            return $order->refresh()->load('items');
         });
     }
 

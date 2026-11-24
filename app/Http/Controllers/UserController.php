@@ -135,6 +135,32 @@ class UserController extends Controller
     /**
      * Update authenticated user profile (full_name, phone).
      */
+    public function updateDeliveryDetails(Request $request)
+    {
+        $user = auth('api')->user();
+
+        if (! $user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $data = $request->validate([
+            'delivery_name' => ['nullable', 'string', 'max:255'],
+            'delivery_phone' => ['nullable', 'string', 'regex:/^(?:\+233|0)[235]\d{8}$/'],
+            'delivery_address' => ['nullable', 'string', 'max:500'],
+            'delivery_city' => ['nullable', 'string', 'max:120'],
+            'delivery_region' => ['nullable', 'string', 'max:120'],
+            'delivery_zone' => ['nullable', 'string', 'max:40'],
+            'delivery_notes' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $user->forceFill($data)->save();
+
+        return response()->json([
+            'message' => 'Delivery details saved.',
+            'user' => $user->fresh(),
+        ]);
+    }
+
     public function updateProfile(Request $request)
     {
         $user = auth('api')->user();
