@@ -19,12 +19,24 @@ return new class extends Migration
         });
 
         // Allow guest (storefront) purchases: user_id nullable
-        DB::statement('ALTER TABLE purchases MODIFY user_id BIGINT UNSIGNED NULL');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('ALTER TABLE purchases MODIFY user_id BIGINT UNSIGNED NULL');
+        } else {
+            Schema::table('purchases', function (Blueprint $table) {
+                $table->foreignId('user_id')->nullable()->change();
+            });
+        }
     }
 
     public function down(): void
     {
-        DB::statement('ALTER TABLE purchases MODIFY user_id BIGINT UNSIGNED NOT NULL');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('ALTER TABLE purchases MODIFY user_id BIGINT UNSIGNED NOT NULL');
+        } else {
+            Schema::table('purchases', function (Blueprint $table) {
+                $table->foreignId('user_id')->nullable(false)->change();
+            });
+        }
         Schema::table('purchases', function (Blueprint $table) {
             $table->dropForeign(['reseller_id']);
             $table->dropColumn(['reseller_id', 'reseller_profit']);
