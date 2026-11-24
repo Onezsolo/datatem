@@ -1,4 +1,4 @@
-<x-layouts.member title="More" description="Order tracking, policies and support links.">
+<x-layouts.shop title="More" description="Order tracking, policies and support links.">
     <div class="container-page py-10">
         <div class="mx-auto max-w-xl">
             <h1 class="text-3xl font-extrabold tracking-tight text-brand-navy">More</h1>
@@ -16,4 +16,4 @@
             <div class="mt-4"><x-ui.button href="{{ route('shop.index') }}" variant="outline">Back to shopping</x-ui.button></div>
         </div>
     </div>
-</x-layouts.member>
+</x-layouts.shop>

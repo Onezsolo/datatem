@@ -1,4 +1,4 @@
-<x-layouts.member :title="$product->name" :description="$product->short_description">
+<x-layouts.shop :title="$product->name" :description="$product->short_description">
     <div class="container-page py-8">
         <nav aria-label="Breadcrumb" class="text-sm text-muted">
             <ol class="flex flex-wrap items-center gap-2">
@@ -79,10 +79,15 @@
 
                     <div class="mt-4">
                         <x-ui.button type="submit" size="lg" class="w-full" :disabled="! $product->isInStock()">
-                            {{ $product->isInStock() ? 'Add to cart' : 'Out of stock' }}
+                            {{ ! $product->isInStock() ? 'Out of stock' : (auth()->check() ? 'Add to cart' : 'Sign in to buy') }}
                         </x-ui.button>
                     </div>
-                    <p class="mt-2 text-xs text-muted">Price and availability are confirmed again in your cart.</p>
+                    <p class="mt-2 text-xs text-muted">
+                        Price and availability are confirmed again in your cart.
+                        @guest
+                            <a href="{{ route('login', ['redirect' => url()->current()]) }}" class="font-bold text-brand-navy underline underline-offset-4">Sign in</a> to add items and pay from your wallet.
+                        @endguest
+                    </p>
                 </form>
 
                 <dl class="mt-6 space-y-2 text-sm">
@@ -120,4 +125,4 @@
             </section>
         @endif
     </div>
-</x-layouts.member>
+</x-layouts.shop>

@@ -32,30 +32,29 @@ class ShopStorefrontTest extends TestCase
         ]);
     }
 
-    public function test_shop_home_lists_seeded_catalogue(): void
+    public function test_shop_home_lists_seeded_catalogue_publicly(): void
     {
-        $this->actingAs($this->shopper());
-
         $this->get('/shop')
             ->assertOk()
             ->assertSee('Shop by category')
-            ->assertSee('Samsung Galaxy A56');
+            ->assertSee('Samsung Galaxy A56')
+            ->assertSee('Primary navigation')
+            ->assertDontSee('Member navigation');
     }
 
-    public function test_product_page_renders(): void
+    public function test_product_page_renders_publicly(): void
     {
-        $this->actingAs($this->shopper());
-
         $this->get('/shop/product/samsung-galaxy-a56')
             ->assertOk()
             ->assertSee('Samsung Galaxy A56')
-            ->assertSee('Add to cart');
+            ->assertSee('Sign in to buy')
+            ->assertDontSee('Add to cart', false);
     }
 
-    public function test_guest_cannot_browse_shop_or_checkout(): void
+    public function test_guest_can_browse_but_cannot_cart_or_checkout(): void
     {
-        $this->get('/shop')->assertRedirectContains('/login');
-        $this->get('/shop/product/samsung-galaxy-a56')->assertRedirectContains('/login');
+        $this->get('/shop')->assertOk();
+        $this->get('/shop/product/samsung-galaxy-a56')->assertOk();
 
         $product = Product::query()->where('slug', 'samsung-galaxy-a56')->firstOrFail();
 
@@ -145,10 +144,17 @@ class ShopStorefrontTest extends TestCase
         $this->assertSame(100.0, (float) $user->fresh()->balance);
     }
 
-    public function test_track_form_and_more_page_render(): void
+    public function test_logged_in_shop_uses_member_sidebar(): void
     {
         $this->actingAs($this->shopper());
 
+        $this->get('/shop')
+            ->assertOk()
+            ->assertSee('Member navigation');
+    }
+
+    public function test_track_form_and_more_page_render_publicly(): void
+    {
         $this->get('/shop/track')->assertOk()->assertSee('Track an order');
         $this->get('/shop/more')->assertOk();
     }

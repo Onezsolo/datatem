@@ -1,4 +1,4 @@
-<x-layouts.member title="Checkout">
+<x-layouts.shop title="Checkout">
     @php
         $checkoutUser = auth()->user();
         $walletBalance = (float) ($checkoutUser?->balance ?? 0);
@@ -145,4 +145,4 @@
             </aside>
         </div>
     </div>
-</x-layouts.member>
+</x-layouts.shop>

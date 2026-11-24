@@ -602,3 +602,9 @@ git commit -m "feat: unify legacy layout with compiled design system"
 
 - New DEV ESCCAY TEMPLATE logo set: `public/assets/dev-esccay-mark.svg` (header/sidebar), `dev-esccay-favicon.svg` (favicon), `dev-esccay-logo.svg` (horizontal lockup for docs/deploy). SettingsService logo/favicon fallbacks now point to the new assets.
 - Public mobile navigation drawer moved to the left and overlay strengthened so it matches the member/admin sidebars (sidebars are left-hand everywhere; login page has no sidebar).
+
+### Public shop browsing
+
+- Shop catalogue is public again: `/shop`, category, product, search, more and track render for guests in the public shell (header/footer/bottom nav), like data bundles.
+- Purchase actions stay gated: cart add/view, checkout, wallet payment and shop orders require login (`web.auth`), and product pages show "Sign in to buy" for guests.
+- Adaptive shell `x-layouts.shop`: guests get the public shell, logged-in users get the shared member sidebar, so both systems keep the same sidebar once signed in.

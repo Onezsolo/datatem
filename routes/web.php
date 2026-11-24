@@ -138,7 +138,7 @@ if (! app()->environment('production')) {
 }
 
 // Shop (guest checkout, physical goods) — wired into the data system.
-Route::prefix('shop')->name('shop.')->middleware(['jwt.cookie', 'web.auth'])->group(function () {
+Route::prefix('shop')->name('shop.')->middleware('jwt.cookie')->group(function () {
     Route::get('/', ShopHomeController::class)->name('index');
     Route::get('/search', [ShopCatalogController::class, 'search'])->name('search');
     Route::get('/category/{category:slug}', [ShopCatalogController::class, 'category'])->name('categories.show');

@@ -1,4 +1,4 @@
-<x-layouts.member title="Search" description="Search the {{ \App\Support\Brand::name() }} catalogue.">
+<x-layouts.shop title="Search" description="Search the {{ \App\Support\Brand::name() }} catalogue.">
     <div class="container-page py-8">
         <h1 class="text-3xl font-extrabold tracking-tight text-brand-navy">Search products</h1>
         <p class="mt-2 text-sm text-muted">Search by product name, SKU or description.</p>
@@ -43,4 +43,4 @@
             <div class="mt-8">{{ $products->links() }}</div>
         @endif
     </div>
-</x-layouts.member>
+</x-layouts.shop>
