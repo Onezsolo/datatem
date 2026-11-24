@@ -6,7 +6,7 @@
     @php
         $siteName = \App\Services\SettingsService::get('site_name', config('app.name', 'R2BMarket'));
         $siteDescription = \App\Services\SettingsService::get('site_description', 'R2BMarket – Affordable mobile data bundles for MTN, AirtelTigo & Telecel in Ghana. Top up your wallet and get instant delivery.');
-        $siteLogoUrl = request()->is('/') ? asset('assets/l1.png') : \App\Services\SettingsService::getLogoUrl();
+        $siteLogoUrl = request()->is('/') ? asset('assets/dev-esccay-mark.svg') : \App\Services\SettingsService::getLogoUrl();
         $siteFaviconUrl = \App\Services\SettingsService::getFaviconUrl();
     @endphp
     <title>@yield('title', $siteName)</title>

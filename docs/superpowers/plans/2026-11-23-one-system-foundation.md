@@ -597,3 +597,8 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Shop pages now render inside the member shell, so data and shop share the same sidebar, topbar and bottom navigation; cart link/badge appears in the member topbar only on `/shop*`.
 - Login is enforced server-side for the whole shop and member area (`web.auth` on `/shop/*`, dashboard, orders, shop orders, topup, referral, reseller, profile, notifications).
 - `JwtFromCookie` is appended to the global web stack so the `auth_token` cookie authenticates every web request (browser + curl), with `auth_token` excluded from cookie encryption.
+
+### Branding and navigation fixes
+
+- New DEV ESCCAY TEMPLATE logo set: `public/assets/dev-esccay-mark.svg` (header/sidebar), `dev-esccay-favicon.svg` (favicon), `dev-esccay-logo.svg` (horizontal lockup for docs/deploy). SettingsService logo/favicon fallbacks now point to the new assets.
+- Public mobile navigation drawer moved to the left and overlay strengthened so it matches the member/admin sidebars (sidebars are left-hand everywhere; login page has no sidebar).

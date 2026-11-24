@@ -114,9 +114,9 @@
         aria-label="Mobile navigation"
         @keydown.escape.window="mobileNavOpen = false"
     >
-        <div class="absolute inset-0 bg-brand-navy/60" @click="mobileNavOpen = false" aria-hidden="true"></div>
+        <div class="absolute inset-0 bg-brand-navy/70" @click="mobileNavOpen = false" aria-hidden="true"></div>
 
-        <aside class="absolute inset-y-0 right-0 flex w-72 max-w-[85vw] flex-col overflow-y-auto bg-brand-navy text-white">
+        <aside class="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col overflow-y-auto bg-brand-navy text-white">
             <div class="flex items-center justify-between gap-2 border-b border-white/15 px-4 py-3">
                 <span class="text-sm font-extrabold tracking-[0.06em] text-white">{{ \Illuminate\Support\Str::upper($brand) }}</span>
                 <button

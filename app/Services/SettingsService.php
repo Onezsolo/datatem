@@ -175,13 +175,13 @@ final class SettingsService
     public static function getLogoUrl(): string
     {
         $path = self::get('site_logo', '');
-        return $path !== '' ? asset('storage/' . $path) : asset('assets/l1.png');
+        return $path !== '' ? asset('storage/' . $path) : asset('assets/dev-esccay-mark.svg');
     }
 
     /** Full URL for site favicon (for use in layouts). Empty setting = default asset. */
     public static function getFaviconUrl(): string
     {
         $path = self::get('site_favicon', '');
-        return $path !== '' ? asset('storage/' . $path) : asset('assets/l2.png');
+        return $path !== '' ? asset('storage/' . $path) : asset('assets/dev-esccay-favicon.svg');
     }
 }
