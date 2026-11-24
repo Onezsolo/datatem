@@ -36,8 +36,8 @@ final class Navigation
                 ['label' => 'Dashboard', 'url' => url('/dashboard'), 'pattern' => 'dashboard', 'icon' => 'home'],
             ]),
             'Services' => array_map(fn (array $item) => self::item($item), [
-                ['label' => 'Super Mall', 'url' => url('/shop'), 'pattern' => 'shop*', 'icon' => 'bag'],
-                ['label' => 'Cart', 'route' => 'shop.cart.show', 'pattern' => 'shop/cart', 'icon' => 'cart'],
+                ['label' => 'Super Mall', 'url' => url('/shop'), 'pattern' => ['shop', 'shop/product/*', 'shop/category/*', 'shop/search', 'shop/more'], 'icon' => 'bag'],
+                ['label' => 'Cart', 'route' => 'shop.cart.show', 'pattern' => ['shop/cart', 'shop/cart/*'], 'icon' => 'cart'],
                 ['label' => 'Data bundles', 'route' => 'services.data', 'pattern' => 'services/data', 'icon' => 'phone'],
                 ['label' => 'WAEC PINs', 'route' => 'services.waec', 'pattern' => 'services/waec', 'icon' => 'check'],
                 ['label' => 'Utility bills', 'route' => 'services.utility', 'pattern' => 'services/utility', 'icon' => 'grid'],
@@ -216,13 +216,21 @@ final class Navigation
     {
         $route = $item['route'] ?? null;
         $url = $route && Route::has($route) ? route($route) : ($item['url'] ?? '#');
-        $pattern = $item['pattern'] ?? $route;
+        $patterns = (array) ($item['pattern'] ?? $route);
+        $active = false;
+
+        foreach ($patterns as $pattern) {
+            if (is_string($pattern) && $pattern !== '' && request()->is($pattern)) {
+                $active = true;
+                break;
+            }
+        }
 
         return [
             'label' => $item['label'],
             'url' => $url,
             'route' => $route,
-            'active' => $pattern !== null && request()->is($pattern),
+            'active' => $active,
             'icon' => $item['icon'] ?? null,
         ];
     }

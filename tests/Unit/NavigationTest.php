@@ -102,4 +102,29 @@ class NavigationTest extends TestCase
             array_column(Navigation::bottom(), 'label')
         );
     }
-}
+
+    public function test_shop_and_cart_have_distinct_active_states(): void
+    {
+        $user = User::create([
+            'full_name' => 'Nav Shopper',
+            'email' => 'nav-shopper-'.uniqid().'@example.com',
+            'phone' => '05'.random_int(100000000, 999999999),
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->actingAs($user);
+
+        $this->get('/shop/cart')->assertOk();
+
+        $active = collect(Navigation::member())->flatten(1)->filter(fn ($item) => $item['active'])->pluck('label');
+
+        $this->assertTrue($active->contains('Cart'));
+        $this->assertFalse($active->contains('Super Mall'));
+
+        $this->get('/shop')->assertOk();
+
+        $active = collect(Navigation::member())->flatten(1)->filter(fn ($item) => $item['active'])->pluck('label');
+
+        $this->assertTrue($active->contains('Super Mall'));
+        $this->assertFalse($active->contains('Cart'));
+    }}
