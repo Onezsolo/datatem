@@ -92,7 +92,11 @@ class ServiceController extends Controller
             && PatupaaSettings::afaPrice() > 0
             && $this->afaProvider() !== null;
 
-        return view('services.afa', ['available' => $available, 'price' => PatupaaSettings::afaPrice()]);
+        return view('services.afa', [
+            'available' => $available,
+            'price' => PatupaaSettings::afaPrice(),
+            'wallet' => (float) (auth()->user()?->balance ?? 0),
+        ]);
     }
 
     public function storeData(Request $request, PatupaaCatalogItem $item, PatupaaOrderService $orders): RedirectResponse

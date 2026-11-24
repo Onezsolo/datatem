@@ -706,3 +706,9 @@ git commit -m "feat: unify legacy layout with compiled design system"
 
 - Removed /admin/services entirely (404) and its admin navigation entry; service availability, AFA price, provider sources and catalog overrides now live only at /developer/services. All /api/admin/services* endpoints require a developer token.
 - Developers no longer have access to the business admin console (/admin/*) or admin APIs; their console is limited to template products, packages, web templates, licenses, service sources and handover. Tests updated accordingly.
+
+### Humanised AFA service page
+
+- Replaced the generic eyebrow/heading/paragraph header with a practical service introduction: back to all services, AFA mark, direct title and useful facts (fee, completion, reference, refund).
+- Added a subject-specific Ghana Card number example with helper copy, a before-you-start checklist, form helper text, numbered after-submit sequence and a short FAQ using native details elements.
+- Kept the design system palette/components; screenshots at 1280 and 390 reviewed.
