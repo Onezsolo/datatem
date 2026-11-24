@@ -18,8 +18,9 @@
 <body class="min-h-full bg-surface-muted pb-16 text-ink lg:pb-0">
     <a class="skip-link" href="#main-content">Skip to main content</a>
 
-    <div class="mx-auto flex min-h-screen w-full max-w-[90rem]">
+    <div class="mx-auto flex min-h-screen w-full max-w-[90rem]" x-data="{ mobileSidebarOpen: false }">
         <x-shell.member-sidebar :groups="$groups" />
+        <x-shell.member-mobile-drawer :groups="$groups" />
 
         <div class="flex min-w-0 flex-1 flex-col">
             <x-shell.member-topbar :title="$title" />

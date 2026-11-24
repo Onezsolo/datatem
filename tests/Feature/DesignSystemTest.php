@@ -35,6 +35,8 @@ class DesignSystemTest extends TestCase
         $html->assertSee('Skip to main content')
             ->assertSee('id="main-content"', false)
             ->assertSee('Bottom navigation')
+            ->assertSee('Mobile navigation')
+            ->assertSee('Open navigation menu')
             ->assertSee('Bundles')
             ->assertSee('Reseller stores')
             ->assertSee('Body content')
@@ -47,6 +49,8 @@ class DesignSystemTest extends TestCase
         $html = $this->blade('<x-layouts.member title="Dashboard">Body content</x-layouts.member>');
 
         $html->assertSee('Member navigation')
+            ->assertSee('Mobile member navigation')
+            ->assertSee('Open navigation menu')
             ->assertSee('Overview')
             ->assertSee('Dashboard')
             ->assertSee('Sign out')
