@@ -624,3 +624,5 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Fixed home page auth mismatch: the New here? Create free account / Sign in banner now renders only for guests; authenticated users see Welcome back with Dashboard and Shop orders. Updated the stale Shopping is coming copy to reflect the live shop.
 
 - Sidebar trigger moved to the far left of the public header (before the brand), matching member/admin topbars; brand wordmark collapses to the logo on very small screens so the row stays on one line.
+
+- Home stays public outside login: authenticated users can view the landing page (no redirect); the CTA switches to Welcome back with Dashboard (admin-aware) and Shop. Login/signup still land on the dashboard after signing in.

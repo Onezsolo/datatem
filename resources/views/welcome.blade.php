@@ -141,17 +141,16 @@
             </div>
         </div>
     </section>
-
     @auth
         <section class="bg-brand-yellow">
             <div class="container-page flex flex-wrap items-center justify-between gap-4 py-8">
                 <div>
                     <h2 class="text-xl font-extrabold text-brand-navy">Welcome back</h2>
-                    <p class="mt-1 text-sm font-semibold text-brand-navy">Your dashboard, data orders and shop orders are ready.</p>
+                    <p class="mt-1 text-sm font-semibold text-brand-navy">Your dashboard, data orders and shop are ready.</p>
                 </div>
                 <div class="flex flex-wrap gap-3">
-                    <x-ui.button href="{{ url('/dashboard') }}" variant="secondary">Dashboard</x-ui.button>
-                    <x-ui.button href="{{ route('orders.shop') }}" variant="outline">Shop orders</x-ui.button>
+                    <x-ui.button href="{{ auth()->user()->role === 'admin' ? url('/admin/dashboard') : url('/dashboard') }}" variant="secondary">Dashboard</x-ui.button>
+                    <x-ui.button href="{{ url('/shop') }}" variant="outline">Shop</x-ui.button>
                 </div>
             </div>
         </section>
