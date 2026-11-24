@@ -68,4 +68,12 @@ class AdminConsoleTest extends TestCase
                 ->assertDontSee('fonts.googleapis.com', false);
         }
     }
+
+    public function test_welcome_flag_opens_the_admin_mobile_sidebar(): void
+    {
+        $this->actingAs($this->adminUser())
+            ->get('/admin/dashboard?welcome=1')
+            ->assertOk()
+            ->assertSee('adminSidebarOpen: true', false);
+    }
 }

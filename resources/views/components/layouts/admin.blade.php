@@ -19,7 +19,7 @@
 <body class="min-h-full bg-surface-muted pb-16 text-ink lg:pb-0">
     <a class="skip-link" href="#main-content">Skip to main content</a>
 
-    <div class="mx-auto flex min-h-screen w-full max-w-[100rem]" x-data="{ adminSidebarOpen: false }">
+    <div class="mx-auto flex min-h-screen w-full max-w-[100rem]" x-data="{ adminSidebarOpen: {{ request()->boolean('welcome') ? 'true' : 'false' }} }" x-init="const welcomeUrl = new URL(window.location.href); if (welcomeUrl.searchParams.has('welcome')) { welcomeUrl.searchParams.delete('welcome'); window.history.replaceState({}, '', welcomeUrl.pathname + welcomeUrl.search + welcomeUrl.hash); }">
         <x-shell.admin-sidebar :groups="$groups" />
         <x-shell.admin-drawer :groups="$groups" />
 

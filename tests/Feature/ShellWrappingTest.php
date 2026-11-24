@@ -49,4 +49,17 @@ class ShellWrappingTest extends TestCase
                 ->assertDontSee('fonts.googleapis.com', false);
         }
     }
+
+    public function test_welcome_flag_opens_the_mobile_sidebar_after_login(): void
+    {
+        $this->actingMember();
+
+        $this->get('/dashboard?welcome=1')
+            ->assertOk()
+            ->assertSee('mobileSidebarOpen: true', false);
+
+        $this->get('/dashboard')
+            ->assertOk()
+            ->assertSee('mobileSidebarOpen: false', false);
+    }
 }

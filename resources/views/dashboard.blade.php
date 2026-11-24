@@ -14,30 +14,6 @@
 .dash-board .dash-pkg.telecel { border-color: #ef4444; }
 </style>
 <div class="dash-board min-h-screen bg-surface-muted text-brand-navy" x-data="userDashboard()" x-init="init()">
-    <!-- Welcome modal (redesigned) -->
-    <div x-show="showPopup" x-cloak class="fixed inset-0 z-[150] flex items-center justify-center p-4">
-        <div x-show="showPopup" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
-        <div x-show="showPopup" x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="relative w-full max-w-md bg-surface border border-line rounded-card p-8 shadow-none">
-            <div class="text-center">
-                <div class="inline-flex w-16 h-16 rounded-card bg-line text-brand-navy items-center justify-center mb-6 border border-cyan-200">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-                </div>
-                <h2 class="text-2xl font-bold text-brand-navy mb-2">You're in</h2>
-                <p class="text-muted text-sm mb-8">Your account is ready. Top up, buy data, and manage orders from here.</p>
-                @php $whatsappChannelUrl = \App\Services\SettingsService::get('support_whatsapp_group_url') ?: ''; @endphp
-                <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                    @if($whatsappChannelUrl !== '')
-                    <a href="{{ e($whatsappChannelUrl) }}" target="_blank" rel="noopener noreferrer" @click="showPopup = false; localStorage.setItem('welcomeShown', 'true')" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-card bg-[#25D366] text-white font-semibold text-sm hover:opacity-90 transition-opacity">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 0 5.414 0 12.05c0 2.123.551 4.2 1.6 6.04L0 24l6.101-1.601A11.77 11.77 0 0012.05 24.1c6.636 0 12.05-5.414 12.05-12.05 0-3.212-1.25-6.231-3.513-8.5zm-.002 0z"/></svg>
-                        Join WhatsApp
-                    </a>
-                    @endif
-                    <button @click="showPopup = false; localStorage.setItem('welcomeShown', 'true')" class="px-5 py-3 rounded-card bg-slate-200 text-brand-navy font-semibold text-sm hover:bg-slate-300 transition-colors border border-slate-300">Continue</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
         <!-- Top: greeting + balance strip -->
         <header class="dash-hero rounded-card border border-line p-6 sm:p-8 mb-8 dash-glow">
@@ -209,7 +185,6 @@
 function userDashboard() {
     const packageLogos = { MTN: '{{ asset('assets/mtn.jpg') }}', AT: '{{ asset('assets/airtelTigo.png') }}', Telecel: '{{ asset('assets/telecel.png') }}' };
     return {
-        showPopup: false,
         stats: { balance: 0, todaySpent: 0, totalSpent: 0, totalOrders: 0 },
         popularPackages: { mtn: [], at: [], telecel: [] },
         showOrderModal: false,
@@ -229,9 +204,7 @@ function userDashboard() {
         },
         async init() {
             if (!this.$store.auth.token) { window.location.href = '/login'; return; }
-            const shouldShowWelcome = !localStorage.getItem('welcomeShown');
             await Promise.all([this.fetchStats(), this.fetchPopularPackages(), this.fetchResellerStatus()]);
-            if (shouldShowWelcome) this.$nextTick(() => { this.showPopup = true; });
         },
         async fetchResellerStatus() {
             try {

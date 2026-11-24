@@ -35,7 +35,9 @@
                         const target = redirectParam && redirectParam.startsWith('/') && !redirectParam.startsWith('//')
                             ? redirectParam
                             : '/dashboard';
-                        window.location.href = target;
+                        const welcomeUrl = new URL(target, window.location.origin);
+                        welcomeUrl.searchParams.set('welcome', '1');
+                        window.location.href = welcomeUrl.pathname + welcomeUrl.search + welcomeUrl.hash;
                     } else {
                         if (typeof data === 'object' && data !== null && !Array.isArray(data)) {
                             this.errors = {};

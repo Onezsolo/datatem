@@ -30,7 +30,9 @@
         }
 
         if (localStorage.getItem('token')) {
-            window.location.replace(target);
+            const welcomeUrl = new URL(target, window.location.origin);
+            welcomeUrl.searchParams.set('welcome', '1');
+            window.location.replace(welcomeUrl.pathname + welcomeUrl.search + welcomeUrl.hash);
         }
     });
 </script>

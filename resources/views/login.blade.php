@@ -24,7 +24,9 @@
                         const target = redirectParam && redirectParam.startsWith('/') && !redirectParam.startsWith('//')
                             ? redirectParam
                             : (data.user.role === 'developer' ? '/developer' : (data.user.role === 'admin' ? '/admin/dashboard' : '/dashboard'));
-                        window.location.href = target;
+                        const welcomeUrl = new URL(target, window.location.origin);
+                        welcomeUrl.searchParams.set('welcome', '1');
+                        window.location.href = welcomeUrl.pathname + welcomeUrl.search + welcomeUrl.hash;
                     } else {
                         this.error = data.error || 'Invalid credentials';
                     }
