@@ -119,4 +119,4 @@ Developer → **Template products** ships five individual template setups, each 
 | Subscriptions only | Subscriptions, service orders, wallet, notifications, support | Digital | Plum & Rose |
 | Data only | Data, service orders, data orders, wallet, notifications, support | Data bundles | Graphite & Ember |
 
-Click **Set up this template** to configure the current deployment as that product line; the applied product is recorded. Custom combinations can still be captured as template packages.
+Each product has its **own console path** (/developer/products/{product}) and a **preview path** (/developer/products/{product}/preview). Opening, previewing or creating a package from a product never changes the current deployment. Create a client package from the product, then apply that package on the client's deployment. Custom combinations can also be captured as template packages.

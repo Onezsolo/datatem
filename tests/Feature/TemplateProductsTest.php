@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\TemplatePackage;
 use App\Models\User;
 use App\Services\FeatureSettings;
 use App\Services\Patupaa\PatupaaSettings;
@@ -42,42 +43,68 @@ class TemplateProductsTest extends TestCase
             ->assertSee('Data + Subscriptions + Mall')
             ->assertSee('Mall only')
             ->assertSee('Subscriptions only')
-            ->assertSee('Data only');
+            ->assertSee('Data only')
+            ->assertSee('Open template')
+            ->assertSee('Preview');
     }
 
-    public function test_mall_only_product_configures_shop_only_template(): void
+    public function test_each_product_has_its_own_console_path_and_preview_without_touching_the_deployment(): void
     {
-        $this->actingAs($this->developer())
-            ->post('/developer/products/mall-only/apply')
-            ->assertRedirect(route('developer.products'));
+        ThemeSettings::set('navy-gold');
+        FeatureSettings::set(['shop' => true, 'data' => true]);
+        PatupaaSettings::setToggles(['data_bundle' => true, 'digital' => true]);
+        PatupaaSettings::setAfaPrice(120);
 
+        $this->actingAs($this->developer());
+
+        $this->get('/developer/products/mall-only')
+            ->assertOk()
+            ->assertSee('Super Mall shopping with wallet checkout only.')
+            ->assertSee('Ocean & Steel')
+            ->assertSee('/developer/products/mall-only/preview');
+
+        $this->get('/developer/products/mall-only/preview')
+            ->assertOk()
+            ->assertSee('not applied to this deployment')
+            ->assertSee('Mall only template');
+
+        $this->get('/developer/products/data-subscription')
+            ->assertOk()
+            ->assertSee('Emerald & Brass');
+
+        $this->assertSame('navy-gold', ThemeSettings::currentKey());
         $this->assertTrue(FeatureSettings::enabled('shop'));
-        $this->assertTrue(FeatureSettings::enabled('shop_orders'));
-        $this->assertTrue(FeatureSettings::enabled('wallet'));
-        $this->assertFalse(FeatureSettings::enabled('data'));
-        $this->assertFalse(FeatureSettings::enabled('subscriptions'));
-        $this->assertFalse(PatupaaSettings::enabled('data_bundle'));
-        $this->assertFalse(PatupaaSettings::enabled('digital'));
-        $this->assertSame('ocean-steel', ThemeSettings::currentKey());
-        $this->assertSame('mall-only', TemplateProductService::active()['key']);
-    }
-
-    public function test_data_subscription_product_enables_data_and_digital_services_only(): void
-    {
-        $this->actingAs($this->developer())
-            ->post('/developer/products/data-subscription/apply')
-            ->assertRedirect();
-
         $this->assertTrue(FeatureSettings::enabled('data'));
-        $this->assertTrue(FeatureSettings::enabled('subscriptions'));
-        $this->assertFalse(FeatureSettings::enabled('shop'));
         $this->assertTrue(PatupaaSettings::enabled('data_bundle'));
-        $this->assertTrue(PatupaaSettings::enabled('digital'));
-        $this->assertFalse(PatupaaSettings::enabled('waec'));
-        $this->assertSame('emerald-brass', ThemeSettings::currentKey());
+        $this->assertSame(120.0, PatupaaSettings::afaPrice());
     }
 
-    public function test_admins_cannot_apply_template_products(): void
+    public function test_creating_a_client_package_from_a_product_does_not_change_the_deployment(): void
+    {
+        ThemeSettings::set('navy-gold');
+        FeatureSettings::set(['shop' => true, 'data' => true]);
+        PatupaaSettings::setToggles(['data_bundle' => true, 'digital' => true]);
+
+        $this->actingAs($this->developer());
+
+        $this->post('/developer/products/mall-only/package')
+            ->assertRedirect(route('developer.products.show', 'mall-only'));
+
+        $package = TemplatePackage::query()->firstOrFail();
+
+        $this->assertSame('Mall only', $package->name);
+        $this->assertSame('ocean-steel', $package->payload['theme']);
+        $this->assertFalse($package->payload['features']['data']);
+        $this->assertTrue($package->payload['features']['shop']);
+        $this->assertFalse($package->payload['services']['data_bundle']);
+
+        $this->assertSame('navy-gold', ThemeSettings::currentKey());
+        $this->assertTrue(FeatureSettings::enabled('data'));
+        $this->assertTrue(FeatureSettings::enabled('shop'));
+        $this->assertTrue(PatupaaSettings::enabled('data_bundle'));
+    }
+
+    public function test_admins_cannot_use_template_product_paths(): void
     {
         $admin = User::create([
             'full_name' => 'Product Admin',
@@ -87,8 +114,8 @@ class TemplateProductsTest extends TestCase
             'role' => User::ROLE_ADMIN,
         ]);
 
-        $this->actingAs($admin)
-            ->post('/developer/products/mall-only/apply')
-            ->assertForbidden();
+        $this->actingAs($admin)->get('/developer/products/mall-only')->assertForbidden();
+        $this->actingAs($admin)->get('/developer/products/mall-only/preview')->assertForbidden();
+        $this->actingAs($admin)->post('/developer/products/mall-only/package')->assertForbidden();
     }
 }

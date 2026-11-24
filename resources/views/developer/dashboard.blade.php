@@ -47,24 +47,21 @@
             <div class="flex flex-wrap items-center justify-between gap-2">
                 <div>
                     <h2 class="text-lg font-extrabold text-brand-navy">Template products</h2>
-                    <p class="mt-1 text-sm text-muted">Each product line configures modules, services and design for its own template.</p>
+                    <p class="mt-1 text-sm text-muted">Five individual template paths. Open one to review its admin setup and create a client package — this deployment is untouched.</p>
                 </div>
                 <a href="{{ route('developer.products') }}" class="text-sm font-bold text-brand-navy underline underline-offset-4">Manage products</a>
             </div>
 
             <div class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
                 @foreach ($productVariants as $key => $variant)
-                    @php($isActive = ($activeProduct['key'] ?? null) === $key)
-                    <div class="flex h-full flex-col rounded-control border p-3 {{ $isActive ? 'border-brand-navy bg-surface-muted' : 'border-line bg-surface' }}">
+                    <div class="flex h-full flex-col rounded-control border border-line bg-surface p-3">
                         <p class="text-sm font-bold text-brand-navy">{{ $variant['name'] }}</p>
                         <p class="mt-1 text-[0.6875rem] leading-relaxed text-muted">{{ $variant['description'] }}</p>
-                        <p class="mt-2 text-[0.625rem] font-bold uppercase tracking-wide text-muted">{{ $isActive ? 'Active template' : (\App\Services\ThemeSettings::presets()[$variant['theme']]['label'] ?? $variant['theme']) }}</p>
-                        <form action="{{ route('developer.products.apply', $key) }}" method="POST" class="mt-auto pt-3" onsubmit="return confirm('Apply the {{ $variant['name'] }} template to this deployment?')">
-                            @csrf
-                            <button type="submit" class="min-h-8 w-full rounded-control text-xs font-bold {{ $isActive ? 'border border-line bg-surface text-brand-navy hover:bg-surface-muted' : 'bg-brand-yellow text-brand-navy hover:bg-brand-yellow-strong' }}">
-                                {{ $isActive ? 'Re-apply' : 'Set up' }}
-                            </button>
-                        </form>
+                        <p class="mt-2 text-[0.625rem] font-bold uppercase tracking-wide text-muted">{{ \App\Services\ThemeSettings::presets()[$variant['theme']]['label'] ?? $variant['theme'] }}</p>
+                        <div class="mt-auto flex gap-1.5 pt-3">
+                            <a href="{{ route('developer.products.show', $key) }}" class="inline-flex min-h-8 flex-1 items-center justify-center rounded-control bg-brand-yellow px-2 text-xs font-bold text-brand-navy hover:bg-brand-yellow-strong">Open</a>
+                            <a href="{{ route('developer.products.preview', $key) }}" target="_blank" rel="noopener" class="inline-flex min-h-8 items-center justify-center rounded-control border border-line bg-surface px-2 text-xs font-bold text-brand-navy hover:bg-surface-muted">Preview</a>
+                        </div>
                     </div>
                 @endforeach
             </div>

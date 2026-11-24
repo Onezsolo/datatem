@@ -227,7 +227,9 @@ Route::prefix('developer')->name('developer.')->middleware(['jwt.cookie', 'web.a
     Route::post('/licenses/{license}/reinstate', [\App\Http\Controllers\DeveloperController::class, 'reinstate'])->name('licenses.reinstate');
     Route::post('/deployment-license', [\App\Http\Controllers\DeveloperController::class, 'setDeploymentLicense'])->name('deployment-license');
     Route::get('/products', [\App\Http\Controllers\DeveloperController::class, 'products'])->name('products');
-    Route::post('/products/{product}/apply', [\App\Http\Controllers\DeveloperController::class, 'applyProduct'])->name('products.apply');
+    Route::get('/products/{product}', [\App\Http\Controllers\DeveloperController::class, 'productShow'])->name('products.show');
+    Route::get('/products/{product}/preview', [\App\Http\Controllers\DeveloperController::class, 'productPreview'])->name('products.preview');
+    Route::post('/products/{product}/package', [\App\Http\Controllers\DeveloperController::class, 'productPackage'])->name('products.package');
     Route::get('/packages', [\App\Http\Controllers\DeveloperController::class, 'packages'])->name('packages');
     Route::post('/packages', [\App\Http\Controllers\DeveloperController::class, 'storePackage'])->name('packages.store');
     Route::post('/packages/{package}/apply', [\App\Http\Controllers\DeveloperController::class, 'applyPackage'])->name('packages.apply');

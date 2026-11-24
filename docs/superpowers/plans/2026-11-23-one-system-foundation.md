@@ -684,3 +684,9 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - config/template_products.php defines five product lines: data+subscriptions+mall, data+subscriptions, mall only, subscription only, data only — each with its own feature map, provider-service switches and design preset.
 - Developer → Template products (/developer/products) applies a product to the deployment in one click (features, services, AFA price, design) and records the active product; developer dashboard shows the five products for quick setup. Admin-only access is denied.
 - Tests: five variants present, mall-only and data+subscription setups, admin denial.
+
+### Product paths are isolated from the developer deployment
+
+- Applying a product directly to the current deployment was removed: each template product now has its own console path (/developer/products/{key}) and an independent preview path (/developer/products/{key}/preview) with the product's theme and module setup.
+- Creating a client package from a product snapshots its features/services/design plus current provider sources into 	emplate_packages without touching this deployment; packages are applied on client installations before licensing/handover.
+- Developer products, dashboard, tests updated; global settings restored after local experimentation.

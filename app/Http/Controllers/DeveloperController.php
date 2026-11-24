@@ -35,7 +35,6 @@ class DeveloperController extends Controller
             'packagesCount' => TemplatePackage::query()->count(),
             'appliedPackage' => TemplatePackageService::applied(),
             'productVariants' => TemplateProductService::variants(),
-            'activeProduct' => TemplateProductService::active(),
         ]);
     }
 
@@ -97,21 +96,47 @@ class DeveloperController extends Controller
         return back()->with('status', 'Deployment license set to '.$license->key_prefix.' ('.$license->statusLabel().').');
     }
 
-    public function products(TemplateProductService $products): View
+    public function products(): View
     {
         return view('developer.products', [
             'variants' => TemplateProductService::variants(),
-            'active' => TemplateProductService::active(),
         ]);
     }
 
-    public function applyProduct(string $product, TemplateProductService $products, Request $request): RedirectResponse
+    public function productShow(string $product): View
     {
-        $variant = $products->apply($product, $request->user());
+        $variant = TemplateProductService::variant($product);
+        abort_if($variant === null, 404);
+
+        return view('developer.product', [
+            'key' => $product,
+            'variant' => $variant,
+        ]);
+    }
+
+    public function productPreview(string $product): View
+    {
+        $variant = TemplateProductService::variant($product);
+        abort_if($variant === null, 404);
+
+        return view('developer.product-preview', [
+            'key' => $product,
+            'variant' => $variant,
+            'colours' => TemplateProductService::themeColours($variant),
+            'services' => TemplateProductService::serviceLabels($variant),
+        ]);
+    }
+
+    public function productPackage(string $product, TemplatePackageService $packages, Request $request): RedirectResponse
+    {
+        $variant = TemplateProductService::variant($product);
+        abort_if($variant === null, 404);
+
+        $package = $packages->captureVariant($product, $variant, $request->user());
 
         return redirect()
-            ->route('developer.products')
-            ->with('status', $variant['name'].' template applied: its modules, services and design are now active on this deployment.');
+            ->route('developer.products.show', $product)
+            ->with('status', 'Package '.$package->name.' created. Use Template packages to apply it on a client deployment.');
     }
 
     public function packages(TemplatePackageService $packages): View

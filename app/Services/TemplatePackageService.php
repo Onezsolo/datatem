@@ -19,17 +19,7 @@ final class TemplatePackageService
      */
     public function capture(array $data, User $user): TemplatePackage
     {
-        $providers = ServiceProvider::query()->orderBy('sort_order')->get()->map(fn (ServiceProvider $provider): array => [
-            'name' => $provider->name,
-            'driver' => $provider->driver,
-            'base_url' => $provider->base_url,
-            'api_key' => (string) $provider->api_key,
-            'api_secret' => (string) $provider->api_secret,
-            'services' => $provider->services,
-            'is_active' => $provider->is_active,
-            'is_default' => $provider->is_default,
-            'sort_order' => $provider->sort_order,
-        ])->all();
+        $providers = $this->currentProviders();
 
         return TemplatePackage::create([
             'name' => (string) $data['name'],
@@ -44,6 +34,47 @@ final class TemplatePackageService
             ],
             'created_by' => $user->id,
         ]);
+    }
+
+    /**
+     * Snapshot a template product definition (features, services, design, AFA price)
+     * with the current provider sources, without changing this deployment.
+     *
+     * @param  array<string, mixed>  $variant
+     */
+    public function captureVariant(string $key, array $variant, User $user): TemplatePackage
+    {
+        return TemplatePackage::create([
+            'name' => (string) $variant['name'],
+            'version' => (string) ($variant['version'] ?? '1.0.0'),
+            'description' => $variant['description'] ?? null,
+            'payload' => [
+                'theme' => (string) $variant['theme'],
+                'features' => (array) $variant['features'],
+                'services' => (array) $variant['services'],
+                'afa_price' => (float) ($variant['afa_price'] ?? 0),
+                'providers' => $this->currentProviders(),
+            ],
+            'created_by' => $user->id,
+        ]);
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function currentProviders(): array
+    {
+        return ServiceProvider::query()->orderBy('sort_order')->get()->map(fn (ServiceProvider $provider): array => [
+            'name' => $provider->name,
+            'driver' => $provider->driver,
+            'base_url' => $provider->base_url,
+            'api_key' => (string) $provider->api_key,
+            'api_secret' => (string) $provider->api_secret,
+            'services' => $provider->services,
+            'is_active' => $provider->is_active,
+            'is_default' => $provider->is_default,
+            'sort_order' => $provider->sort_order,
+        ])->all();
     }
 
     /**
