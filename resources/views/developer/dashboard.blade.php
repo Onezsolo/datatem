@@ -43,6 +43,32 @@
             </div>
         </div>
 
+        <section class="rounded-card border border-line bg-surface p-5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                    <h2 class="text-lg font-extrabold text-brand-navy">Template products</h2>
+                    <p class="mt-1 text-sm text-muted">Each product line configures modules, services and design for its own template.</p>
+                </div>
+                <a href="{{ route('developer.products') }}" class="text-sm font-bold text-brand-navy underline underline-offset-4">Manage products</a>
+            </div>
+
+            <div class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                @foreach ($productVariants as $key => $variant)
+                    @php($isActive = ($activeProduct['key'] ?? null) === $key)
+                    <div class="flex h-full flex-col rounded-control border p-3 {{ $isActive ? 'border-brand-navy bg-surface-muted' : 'border-line bg-surface' }}">
+                        <p class="text-sm font-bold text-brand-navy">{{ $variant['name'] }}</p>
+                        <p class="mt-1 text-[0.6875rem] leading-relaxed text-muted">{{ $variant['description'] }}</p>
+                        <p class="mt-2 text-[0.625rem] font-bold uppercase tracking-wide text-muted">{{ $isActive ? 'Active template' : (\App\Services\ThemeSettings::presets()[$variant['theme']]['label'] ?? $variant['theme']) }}</p>
+                        <form action="{{ route('developer.products.apply', $key) }}" method="POST" class="mt-auto pt-3" onsubmit="return confirm('Apply the {{ $variant['name'] }} template to this deployment?')">
+                            @csrf
+                            <button type="submit" class="min-h-8 w-full rounded-control text-xs font-bold {{ $isActive ? 'border border-line bg-surface text-brand-navy hover:bg-surface-muted' : 'bg-brand-yellow text-brand-navy hover:bg-brand-yellow-strong' }}">
+                                {{ $isActive ? 'Re-apply' : 'Set up' }}
+                            </button>
+                        </form>
+                    </div>
+                @endforeach
+            </div>
+        </section>
         <div class="grid gap-6 lg:grid-cols-[1fr_22rem]">
             <section class="space-y-6">
                 <div class="rounded-card border border-line bg-surface p-5">

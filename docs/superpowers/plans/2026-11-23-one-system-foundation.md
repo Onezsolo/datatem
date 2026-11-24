@@ -678,3 +678,9 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - web_templates registry (local git path or git URL, branch, version) plus web_template_pushes audit. Developer console page /developer/templates adds/removes templates and pushes a template to a client GitHub repository (owner/repo/branch/private/note).
 - GitHubService creates repositories via the API when missing and builds a token-authenticated remote; GitTemplatePusher clones the source into temp and pushes it, with tokens redacted from failures. Interface-bound pusher allows deterministic tests.
 - Tests cover registry access, token-gated push, repository creation, success/failure records and an end-to-end git push to a bare remote.
+
+### Five individual template products
+
+- config/template_products.php defines five product lines: data+subscriptions+mall, data+subscriptions, mall only, subscription only, data only — each with its own feature map, provider-service switches and design preset.
+- Developer → Template products (/developer/products) applies a product to the deployment in one click (features, services, AFA price, design) and records the active product; developer dashboard shows the five products for quick setup. Admin-only access is denied.
+- Tests: five variants present, mall-only and data+subscription setups, admin denial.

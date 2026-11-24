@@ -11,6 +11,7 @@ use App\Services\HandoverService;
 use App\Models\TemplatePackage;
 use App\Services\TemplateLicenseService;
 use App\Services\TemplatePackageService;
+use App\Services\TemplateProductService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -33,6 +34,8 @@ class DeveloperController extends Controller
             'handover' => HandoverService::details(),
             'packagesCount' => TemplatePackage::query()->count(),
             'appliedPackage' => TemplatePackageService::applied(),
+            'productVariants' => TemplateProductService::variants(),
+            'activeProduct' => TemplateProductService::active(),
         ]);
     }
 
@@ -92,6 +95,23 @@ class DeveloperController extends Controller
         }
 
         return back()->with('status', 'Deployment license set to '.$license->key_prefix.' ('.$license->statusLabel().').');
+    }
+
+    public function products(TemplateProductService $products): View
+    {
+        return view('developer.products', [
+            'variants' => TemplateProductService::variants(),
+            'active' => TemplateProductService::active(),
+        ]);
+    }
+
+    public function applyProduct(string $product, TemplateProductService $products, Request $request): RedirectResponse
+    {
+        $variant = $products->apply($product, $request->user());
+
+        return redirect()
+            ->route('developer.products')
+            ->with('status', $variant['name'].' template applied: its modules, services and design are now active on this deployment.');
     }
 
     public function packages(TemplatePackageService $packages): View

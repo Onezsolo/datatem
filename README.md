@@ -107,3 +107,16 @@ php artisan template:dev-account dev@yourdomain.com --password="StrongPassword" 
 - Developer → **Web templates** registers template projects from a local git path or a git URL (branch + version).
 - Per template, enter the client GitHub owner, repository, branch, visibility and a note; **Push** creates the repository when missing, clones the source, pushes the branch and records the result with the repository URL. Failed pushes are logged with tokens redacted.
 - Source paths must be git repositories on the server. This console is developer-only and is disabled after handover like the rest of the developer tools.
+### Template products (five template setups)
+
+Developer → **Template products** ships five individual template setups, each with its own modules, provider services and design:
+
+| Product | Modules | Services | Design |
+|---|---|---|---|
+| Data + Subscriptions + Mall | Shop, shop orders, data, subscriptions, service orders, data orders, wallet, notifications, support | Data bundles, digital | Navy & Gold |
+| Data + Subscriptions | Data, subscriptions, service orders, data orders, wallet, notifications, support | Data bundles, digital | Emerald & Brass |
+| Mall only | Shop, shop orders, wallet, notifications, support | None | Ocean & Steel |
+| Subscriptions only | Subscriptions, service orders, wallet, notifications, support | Digital | Plum & Rose |
+| Data only | Data, service orders, data orders, wallet, notifications, support | Data bundles | Graphite & Ember |
+
+Click **Set up this template** to configure the current deployment as that product line; the applied product is recorded. Custom combinations can still be captured as template packages.
