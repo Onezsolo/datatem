@@ -14,10 +14,18 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/login', function () {
+    if (auth()->check()) {
+        return redirect()->intended(auth()->user()->role === 'admin' ? '/admin/dashboard' : '/dashboard');
+    }
+
     return view('login');
 })->name('login');
 
 Route::get('/signup', function () {
+    if (auth()->check()) {
+        return redirect()->intended(auth()->user()->role === 'admin' ? '/admin/dashboard' : '/dashboard');
+    }
+
     return view('signup');
 })->name('signup');
 
@@ -136,6 +144,19 @@ Route::get('/maintenance', function () {
 if (! app()->environment('production')) {
     Route::view('/design-system', 'design-system')->name('design-system');
 }
+
+Route::post('/logout', function (Illuminate\Http\Request $request) {
+    try {
+        auth('api')->logout();
+    } catch (\Throwable) {
+        // Token already invalid.
+    }
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return response()->json(['message' => 'Signed out.'])->withoutCookie('auth_token');
+})->name('logout');
 
 // Shop (guest checkout, physical goods) — wired into the data system.
 Route::prefix('shop')->name('shop.')->middleware('jwt.cookie')->group(function () {

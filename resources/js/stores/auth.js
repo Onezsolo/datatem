@@ -117,9 +117,24 @@ export function createAuthStore() {
             this.token = token;
             this.scheduleRefresh();
         },
-        logout() {
+        async logout() {
             if (this._refreshTimer) clearTimeout(this._refreshTimer);
             this._refreshTimer = null;
+
+            try {
+                const match = document.cookie.match(/(?:^|; )XSRF-TOKEN=([^;]+)/);
+                await fetch('/logout', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-XSRF-TOKEN': match ? decodeURIComponent(match[1]) : ''
+                    }
+                });
+            } catch (error) {
+                /* clear local state even if the server call fails */
+            }
+
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             localStorage.removeItem('auth_storage');

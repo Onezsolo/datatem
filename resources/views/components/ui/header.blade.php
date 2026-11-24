@@ -70,20 +70,23 @@
                 </form>
             @endif
 
-            <a
-                href="{{ url('/dashboard') }}"
-                x-data
-                x-show="$store.auth.token"
-                x-cloak
-                class="hidden min-h-11 items-center rounded-control px-2.5 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white sm:inline-flex"
-            >Account</a>
-            <a
-                href="{{ route('login') }}"
-                x-data
-                x-show="!$store.auth.token"
-                x-cloak
-                class="hidden min-h-11 items-center rounded-control px-2.5 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white sm:inline-flex"
-            >Sign in</a>
+            @auth
+                <a
+                    href="{{ url('/dashboard') }}"
+                    class="hidden min-h-11 items-center rounded-control px-2.5 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white sm:inline-flex"
+                >Account</a>
+                <button
+                    type="button"
+                    x-data
+                    @click="$store.auth.logout()"
+                    class="hidden min-h-11 items-center rounded-control px-2.5 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white sm:inline-flex"
+                >Sign out</button>
+            @else
+                <a
+                    href="{{ route('login') }}"
+                    class="hidden min-h-11 items-center rounded-control px-2.5 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white sm:inline-flex"
+                >Sign in</a>
+            @endauth
 
             @if ($cartUrl)
                 <a
@@ -149,8 +152,12 @@
             </nav>
 
             <div class="border-t border-white/15 px-3 py-3">
-                <a href="{{ url('/dashboard') }}" class="flex min-h-11 items-center rounded-control px-2 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white">Account</a>
-                <a href="{{ route('login') }}" class="flex min-h-11 items-center rounded-control px-2 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white">Sign in</a>
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="flex min-h-11 items-center rounded-control px-2 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white">Account</a>
+                    <button type="button" x-data @click="$store.auth.logout()" class="flex min-h-11 w-full items-center rounded-control px-2 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white">Sign out</button>
+                @else
+                    <a href="{{ route('login') }}" class="flex min-h-11 items-center rounded-control px-2 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white">Sign in</a>
+                @endauth
                 @if ($cartUrl)
                     <a href="{{ $cartUrl }}" class="mt-1 flex min-h-11 items-center justify-center rounded-control bg-brand-yellow px-3 text-sm font-extrabold text-brand-navy hover:bg-brand-yellow-strong">
                         Cart ({{ $cartCount }})
