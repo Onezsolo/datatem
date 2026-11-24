@@ -1,11 +1,11 @@
-<x-layouts.shop title="More" description="Order tracking, policies and support links.">
+<x-layouts.shop title="More" description="Policies and support links.">
     <div class="container-page py-10">
         <div class="mx-auto max-w-xl">
             <h1 class="text-3xl font-extrabold tracking-tight text-brand-navy">More</h1>
-            <p class="mt-2 text-sm leading-relaxed text-muted">Order tracking, store policies and support links.</p>
+            <p class="mt-2 text-sm leading-relaxed text-muted">Store policies and support links.</p>
 
             <ul class="mt-6 divide-y divide-line rounded-card border border-line bg-surface">
-                <li><a href="{{ route('shop.track') }}" class="flex items-center justify-between gap-3 p-4 text-sm font-bold text-brand-navy hover:bg-surface-muted">Track an order <x-ui.icon name="chevron-right" :size="16" class="text-muted" /></a></li>
+                <li><a href="{{ route('orders.shop') }}" class="flex items-center justify-between gap-3 p-4 text-sm font-bold text-brand-navy hover:bg-surface-muted">My shop orders <x-ui.icon name="chevron-right" :size="16" class="text-muted" /></a></li>
                 <li><a href="{{ route('legal.privacy') }}" class="flex items-center justify-between gap-3 p-4 text-sm font-bold text-brand-navy hover:bg-surface-muted">Privacy <x-ui.icon name="chevron-right" :size="16" class="text-muted" /></a></li>
                 <li><a href="{{ route('legal.terms') }}" class="flex items-center justify-between gap-3 p-4 text-sm font-bold text-brand-navy hover:bg-surface-muted">Terms of sale <x-ui.icon name="chevron-right" :size="16" class="text-muted" /></a></li>
                 <li><a href="{{ route('legal.returns') }}" class="flex items-center justify-between gap-3 p-4 text-sm font-bold text-brand-navy hover:bg-surface-muted">Returns and refunds <x-ui.icon name="chevron-right" :size="16" class="text-muted" /></a></li>

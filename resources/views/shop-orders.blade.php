@@ -30,7 +30,7 @@
             <div>
                 <p class="text-xs font-bold uppercase tracking-wide text-muted">Orders</p>
                 <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy">Shop orders</h1>
-                <p class="mt-1 text-sm text-muted">Paid from this account's wallet. Separate from data orders.</p>
+                <p class="mt-1 text-sm text-muted">Payment status and fulfilment for every order paid with this wallet. Separate from data orders.</p>
             </div>
             <a href="{{ route('orders.index') }}" class="inline-flex min-h-11 items-center rounded-control border border-line bg-surface px-4 text-sm font-bold text-brand-navy hover:bg-surface-muted">
                 Data orders
@@ -63,6 +63,9 @@
                         </div>
                         <div class="flex items-center gap-3">
                             <span class="text-sm font-extrabold text-brand-navy" x-text="(order.currency || 'GHS') + ' ' + Number(order.total).toFixed(2)"></span>
+                            <span class="inline-flex min-h-7 items-center rounded-control px-2.5 text-xs font-bold capitalize"
+                                  :class="order.payment_status === 'paid' ? 'bg-brand-yellow text-brand-navy' : ((order.payment_status === 'refunded' || order.payment_status === 'failed') ? 'border border-brand-red-strong bg-surface text-brand-red-strong' : 'bg-surface-muted text-muted')"
+                                  x-text="order.payment_status"></span>
                             <span class="inline-flex min-h-7 items-center rounded-control bg-surface-muted px-2.5 text-xs font-bold capitalize text-brand-navy" x-text="order.status"></span>
                         </div>
                     </div>

@@ -25,6 +25,7 @@
                             </div>
                             <div class="flex items-center gap-3">
                                 <span class="text-sm font-extrabold text-brand-navy">GHS {{ number_format((float) $order->amount, 2) }}</span>
+                                <span class="inline-flex min-h-7 items-center rounded-control px-2.5 text-xs font-bold capitalize {{ $order->payment_status === 'paid' ? 'bg-brand-yellow text-brand-navy' : ($order->payment_status === 'refunded' ? 'border border-brand-red-strong bg-surface text-brand-red-strong' : 'bg-surface-muted text-muted') }}">Payment: {{ $order->payment_status }}</span>
                                 <span class="inline-flex min-h-7 items-center rounded-control bg-surface-muted px-2.5 text-xs font-bold capitalize text-brand-navy">{{ $order->status }}</span>
                             </div>
                         </div>

@@ -154,9 +154,17 @@ class ShopStorefrontTest extends TestCase
             ->assertSee('Member navigation');
     }
 
-    public function test_track_form_and_more_page_render_publicly(): void
+    public function test_tracking_redirects_to_the_users_own_shop_orders(): void
     {
-        $this->get('/shop/track')->assertOk()->assertSee('Track an order');
+        $this->get('/shop/track')->assertRedirectContains('/login');
+
+        $this->actingAs($this->shopper())
+            ->get('/shop/track')
+            ->assertRedirect(route('orders.shop'));
+    }
+
+    public function test_more_page_renders_publicly(): void
+    {
         $this->get('/shop/more')->assertOk();
     }
 

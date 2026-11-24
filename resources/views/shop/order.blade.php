@@ -98,7 +98,7 @@
                     <h2 class="text-sm font-extrabold uppercase tracking-wide text-muted">Track this order</h2>
                     <p class="mt-2 text-sm leading-relaxed text-brand-navy">
                         Use order number <strong>{{ $order->order_number }}</strong> and your phone number on the
-                        <a href="{{ route('shop.track') }}" class="underline underline-offset-4">tracking page</a>.
+                        your <a href="{{ route('orders.shop') }}" class="underline underline-offset-4">shop orders</a>.
                     </p>
                     <p class="mt-2 text-xs leading-relaxed text-muted">
                         Keep this page open or save the order number. For payment issues, contact {{ config('store.support_email') }}.

@@ -19,7 +19,7 @@
 
             <div class="mt-6 rounded-card border border-line bg-surface-muted p-5 text-sm leading-relaxed text-brand-navy">
                 <p class="font-bold">Order tracking</p>
-                <p class="mt-1">Use the <a href="{{ route('shop.track') }}" class="underline underline-offset-4">tracking page</a> with your order number and phone number for status and payment information.</p>
+                <p class="mt-1">Use the <a href="{{ route('orders.shop') }}" class="underline underline-offset-4">tracking page</a> with your order number and phone number for status and payment information.</p>
             </div>
 
             <div class="mt-6 rounded-card border border-line bg-surface p-5 text-sm leading-relaxed text-muted">

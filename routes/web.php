@@ -185,8 +185,7 @@ Route::prefix('shop')->name('shop.')->middleware('jwt.cookie')->group(function (
         Route::post('/checkout', [ShopCheckoutController::class, 'store'])->name('checkout.store');
     });
 
-    Route::get('/track', [ShopOrderController::class, 'trackForm'])->name('track');
-    Route::post('/track', [ShopOrderController::class, 'track'])->middleware('throttle:10,1')->name('track.lookup');
+    Route::get('/track', fn () => redirect()->route('orders.shop'))->middleware('web.auth')->name('track');
     Route::get('/orders/{order:order_number}', [ShopOrderController::class, 'show'])->middleware('signed')->name('orders.show');
 
     Route::get('/payments/callback', [ShopPaymentController::class, 'callback'])->name('payments.callback');

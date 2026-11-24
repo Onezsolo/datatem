@@ -49,7 +49,7 @@
                 </li>
             </ul>
             <div class="mt-4 border-t border-white/15 pt-4">
-                <a href="{{ route('shop.track') }}" class="text-sm font-bold text-brand-yellow underline underline-offset-4 hover:text-white">Track an order</a>
+                <a href="{{ route('orders.shop') }}" class="text-sm font-bold text-brand-yellow underline underline-offset-4 hover:text-white">My shop orders</a>
             </div>
         </div>
     </div>
