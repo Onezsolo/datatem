@@ -28,7 +28,7 @@ class NavigationTest extends TestCase
     {
         $groups = Navigation::member();
 
-        $this->assertSame(['Overview', 'Services', 'Orders', 'Data earnings', 'Account'], array_keys($groups));
+        $this->assertSame(['Overview', 'Services', 'Orders', 'Data earnings', 'Profile'], array_keys($groups));
 
         $count = 0;
 
@@ -50,7 +50,7 @@ class NavigationTest extends TestCase
     {
         $items = Navigation::bottom();
 
-        $this->assertSame(['Home', 'Super Mall', 'Bundles', 'Account'], array_column($items, 'label'));
+        $this->assertSame(['Home', 'Super Mall', 'Bundles', 'Profile'], array_column($items, 'label'));
     }
     public function test_authenticated_home_links_point_to_account(): void
     {

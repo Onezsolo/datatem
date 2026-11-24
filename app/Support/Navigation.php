@@ -52,7 +52,7 @@ final class Navigation
                 ['label' => 'Data referral', 'route' => 'referral', 'pattern' => 'referral', 'icon' => 'check'],
                 ['label' => 'Data reseller', 'route' => 'reseller', 'pattern' => 'reseller*', 'icon' => 'grid'],
             ]),
-            'Account' => array_map(fn (array $item) => self::item($item), [
+            'Profile' => array_map(fn (array $item) => self::item($item), [
                 ['label' => 'Notifications', 'route' => 'notifications', 'pattern' => 'notifications', 'icon' => 'more'],
                 ['label' => 'Profile', 'route' => 'profile', 'pattern' => 'profile', 'icon' => 'help'],
                 ['label' => 'Support', 'route' => 'support', 'pattern' => 'support', 'icon' => 'help'],
@@ -71,7 +71,7 @@ final class Navigation
             ['label' => 'Home', 'url' => $authed ? url('/dashboard') : route('home'), 'active' => $authed ? request()->is('dashboard') : request()->routeIs('home'), 'icon' => 'home'],
             ['label' => 'Super Mall', 'url' => url('/shop'), 'active' => request()->is('shop*'), 'icon' => 'bag'],
             ['label' => 'Bundles', 'url' => route('services.data'), 'active' => request()->is('services/data'), 'icon' => 'phone'],
-            ['label' => 'Account', 'url' => $authed ? route('profile') : url('/dashboard'), 'active' => $authed ? request()->routeIs('profile') : request()->is('dashboard'), 'icon' => 'help'],
+            ['label' => 'Profile', 'url' => $authed ? route('profile') : url('/dashboard'), 'active' => $authed ? request()->routeIs('profile') : request()->is('dashboard'), 'icon' => 'help'],
         ];
     }
 
