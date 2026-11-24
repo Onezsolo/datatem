@@ -39,10 +39,6 @@
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                             <span>Security</span>
                         </button>
-                        <button @click="activeSection = 'danger'" :class="activeSection === 'danger' ? 'bg-surface text-brand-red-strong border border-brand-red-strong' : 'text-muted hover:bg-surface-muted hover:text-brand-red-strong'" class="w-full flex items-center gap-3 px-4 py-3 rounded-control font-semibold transition-all text-sm">
-                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            <span>Danger Zone</span>
-                        </button>
                     </nav>
 
 
@@ -160,26 +156,26 @@
                     </form>
                 </div>
 
-                <!-- Danger Zone -->
-                <div x-show="activeSection === 'danger'" x-transition class="bg-surface rounded-card p-6 md:p-8 shadow-none border border-line">
-                    <h2 class="text-lg font-bold text-brand-red-strong mb-1">Danger Zone</h2>
-                    <p class="text-muted text-sm mb-6">Irreversible actions. Proceed with caution.</p>
+            </div>
+        </div>
 
-                    <div class="p-6 rounded-card bg-surface-muted border border-line">
-                        <div class="flex items-start gap-4 mb-6">
-                            <div class="w-10 h-10 bg-surface rounded-card flex items-center justify-center text-brand-red-strong shrink-0 shadow-none">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-brand-navy">Delete Your Account</h3>
-                                <p class="text-muted text-sm mt-1">Once deleted, all your data—transactions, balance, referrals—will be permanently removed.</p>
-                            </div>
-                        </div>
-                        <button @click="showDeleteModal = true" class="px-6 py-3 rounded-control font-semibold bg-brand-red-strong text-white hover:bg-brand-red-strong-hover transition-colors text-sm">Permanently delete account</button>
+        <section class="rounded-card border border-line bg-surface p-6 md:p-8" aria-labelledby="danger-zone-heading">
+            <h2 id="danger-zone-heading" class="text-lg font-bold text-brand-red-strong">Danger zone</h2>
+            <p class="mt-1 text-sm text-muted">Irreversible actions. Proceed with caution.</p>
+
+            <div class="mt-4 rounded-card border border-line bg-surface-muted p-5">
+                <div class="flex items-start gap-4">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-control bg-surface text-brand-red-strong">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="font-bold text-brand-navy">Delete your account</h3>
+                        <p class="mt-1 text-sm text-muted">Once deleted, your data, transactions, balance and referral history are permanently removed.</p>
+                        <button @click="showDeleteModal = true" class="mt-4 rounded-control bg-brand-red-strong px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-red-strong-hover">Permanently delete account</button>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 
     <!-- Delete account modal -->
