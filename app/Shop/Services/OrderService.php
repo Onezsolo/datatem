@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Shop\Services;
 
-use App\Shop\Models\Admin;
 use App\Shop\Models\Order;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -32,7 +31,7 @@ class OrderService
         return self::TRANSITIONS[$order->status] ?? [];
     }
 
-    public function transition(Order $order, string $status, ?Admin $admin = null, ?string $note = null): Order
+    public function transition(Order $order, string $status, ?string $note = null): Order
     {
         if (! in_array($status, self::TRANSITIONS[$order->status] ?? [], true)) {
             throw ValidationException::withMessages([
@@ -42,7 +41,7 @@ class OrderService
 
         $previous = $order->status;
 
-        DB::transaction(function () use ($order, $status, $admin, $note, $previous): void {
+        DB::transaction(function () use ($order, $status, $note, $previous): void {
             $order->refresh();
 
             if (! in_array($status, self::TRANSITIONS[$order->status] ?? [], true)) {
@@ -68,17 +67,11 @@ class OrderService
 
             if ($note !== null && $note !== '') {
                 $order->notes()->create([
-                    'admin_id' => $admin?->id,
                     'note' => $note,
                 ]);
             }
 
-            app(AuditService::class)->record(
-                $admin,
-                'order.status_changed',
-                ['from' => $previous, 'to' => $status, 'note' => $note],
-                $order
-            );
+
         });
 
         $order->refresh();
@@ -98,7 +91,7 @@ class OrderService
         $count = 0;
 
         foreach ($orders as $order) {
-            $this->transition($order, Order::STATUS_CANCELLED, null, 'Payment window expired.');
+            $this->transition($order, Order::STATUS_CANCELLED, 'Payment window expired.');
             $count++;
         }
 

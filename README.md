@@ -131,3 +131,10 @@ The developer catalog follows the structure used by established template provide
 ### Service sources are a developer page
 
 Provider sources, service switches and AFA pricing live at **`/developer/services`** in the developer console. The admin **Services** page (`/admin/services`) now contains only the catalog mirror (search, sync, per-item availability) and never exposes provider credentials or global service switches.
+## Security and schema hygiene
+
+- Passwords: minimum **6 characters**, enforced by server validation (`register`, admin user changes) and client `minlength` hints. Raise this value in the validators if the agreement requires a stronger policy.
+- API requests are globally rate-limited (120/min) with stricter limits on login, registration, OTP, checkout and service purchases. Secrets are never returned by the settings API; provider credentials are encrypted and masked.
+- Authorization is server-side throughout: member routes require the authenticated web session, `/admin/*` and admin APIs are admin-only, developer tools and service management live under `/developer` with a developer role. Client-side hiding is never the only protection.
+- Legacy shop admin tables/columns (`shop_admins`, `shop_admin_audit_logs`, `admin_id` on inventory/notes) were removed; admin identity is the unified `users.role` model. Dead legacy views (`bundles`, classic `layouts/app`) were deleted.
+- Service management APIs live at `/api/developer/services` (developer token only); the old `/api/admin/services` path is gone.

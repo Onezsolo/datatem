@@ -29,6 +29,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'shop/webhooks/paystack',
         ]);
+        $middleware->api(append: [
+            'throttle:120,1',
+        ]);
+
         $middleware->web(append: [
             \App\Http\Middleware\CheckMaintenanceMode::class,
             \App\Http\Middleware\JwtFromCookie::class,

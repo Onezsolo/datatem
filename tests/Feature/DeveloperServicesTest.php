@@ -69,12 +69,12 @@ class DeveloperServicesTest extends TestCase
     {
         $adminHeaders = ['Authorization' => 'Bearer '.$this->token($this->admin())];
 
-        $this->withHeaders($adminHeaders)->getJson('/api/admin/services')->assertForbidden();
-        $this->withHeaders($adminHeaders)->putJson('/api/admin/services/toggles', ['toggles' => ['waec' => false]])->assertForbidden();
+        $this->withHeaders($adminHeaders)->getJson('/api/developer/services')->assertForbidden();
+        $this->withHeaders($adminHeaders)->putJson('/api/developer/services/toggles', ['toggles' => ['waec' => false]])->assertForbidden();
 
         $devHeaders = ['Authorization' => 'Bearer '.$this->token($this->developer())];
 
-        $this->withHeaders($devHeaders)->getJson('/api/admin/services')->assertOk();
+        $this->withHeaders($devHeaders)->getJson('/api/developer/services')->assertOk();
     }
 
     public function test_developer_can_toggle_items_switches_and_sync(): void
@@ -109,18 +109,18 @@ class DeveloperServicesTest extends TestCase
         $headers = ['Authorization' => 'Bearer '.$this->token($this->developer())];
 
         $this->withHeaders($headers)
-            ->getJson('/api/admin/services')
+            ->getJson('/api/developer/services')
             ->assertOk()
             ->assertJsonPath('items.total', 1)
             ->assertJsonPath('providers.0.name', 'Dev Source');
 
         $this->withHeaders($headers)
-            ->putJson('/api/admin/services/catalog/'.$item->id, ['admin_enabled' => false])
+            ->putJson('/api/developer/services/catalog/'.$item->id, ['admin_enabled' => false])
             ->assertOk()
             ->assertJsonPath('item.admin_enabled', false);
 
         $this->withHeaders($headers)
-            ->putJson('/api/admin/services/toggles', ['toggles' => ['waec' => false, 'utility' => true]])
+            ->putJson('/api/developer/services/toggles', ['toggles' => ['waec' => false, 'utility' => true]])
             ->assertOk()
             ->assertJsonPath('toggles.waec', false);
 
@@ -129,7 +129,7 @@ class DeveloperServicesTest extends TestCase
         ]]));
 
         $this->withHeaders($headers)
-            ->postJson('/api/admin/services/sync')
+            ->postJson('/api/developer/services/sync')
             ->assertOk()
             ->assertJsonPath('summary.data_bundle.synced', 1);
     }

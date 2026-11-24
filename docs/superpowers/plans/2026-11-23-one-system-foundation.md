@@ -728,3 +728,10 @@ git commit -m "feat: unify legacy layout with compiled design system"
 
 - Added four bundled CC0 shopping photos under public/assets/shop (credits file included) and replaced the tall why-shop card with a moving photo marquee plus brand watermark. Motion pauses on hover and respects reduced-motion.
 - Mobile hero reduced: smaller heading, one-line copy, compact actions and a 128px photo strip.
+
+### Conflict cleanup, server-side enforcement and password policy
+
+- Removed unused shop admin models/services/tables and admin_id columns; unified admin identity on users.role; migrations cleaned and local schema updated.
+- Service management APIs renamed to /api/developer/services (developer-only); admin business console/API access blocked for developers; dead legacy views and classic layout deleted.
+- Global API throttle added; settings API secret exposure verified absent; password minimum 6 enforced in validation and client hints.
+- Regression tests: unique table creation names, legacy admin code absence, password length, secret non-exposure, removed admin service path.

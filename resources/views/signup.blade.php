@@ -105,7 +105,7 @@
                     <div class="grid gap-4 sm:grid-cols-2">
                         <div>
                             <label for="new-password" class="block text-sm font-bold text-brand-navy">Password</label>
-                            <input id="new-password" name="password" type="password" x-model="password" required autocomplete="new-password" placeholder="Your password" class="mt-1 h-11 w-full rounded-control border border-line bg-surface px-3 text-sm text-ink">
+                            <input id="new-password" name="password" type="password" x-model="password" required minlength="6" autocomplete="new-password" placeholder="Your password" class="mt-1 h-11 w-full rounded-control border border-line bg-surface px-3 text-sm text-ink">
                         </div>
                         <div>
                             <label for="confirm-password" class="block text-sm font-bold text-brand-navy">Confirm</label>

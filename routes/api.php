@@ -133,7 +133,7 @@ Route::group([
     Route::post('/reseller-withdrawals/{id}/reject', [\App\Http\Controllers\AdminController::class, 'rejectResellerWithdrawal']);
 });
 // Developer-only service management APIs
-Route::prefix('admin')->middleware(['auth:api', 'developer.api'])->group(function () {
+Route::prefix('developer')->middleware(['auth:api', 'developer.api'])->group(function () {
     // Developer-only service management APIs
     // (service availability, AFA pricing, provider sources, catalog overrides)
     Route::get('/services', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'index']);

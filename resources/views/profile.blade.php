@@ -143,7 +143,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">New Password</label>
-                            <input type="password" x-model="security.password" placeholder="Min. 6 characters" class="w-full px-4 py-3 rounded-control bg-surface-muted border border-line focus:outline-none focus:border-brand-navy font-medium text-sm" required minlength="6">
+                            <input type="password" x-model="security.password" minlength="6" placeholder="Min. 6 characters" class="w-full px-4 py-3 rounded-control bg-surface-muted border border-line focus:outline-none focus:border-brand-navy font-medium text-sm" required minlength="6">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Confirm New Password</label>

@@ -13,7 +13,6 @@ return new class extends Migration
         Schema::create('shop_order_notes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained('shop_orders')->cascadeOnDelete();
-            $table->foreignId('admin_id')->nullable()->constrained('shop_admins')->nullOnDelete();
             $table->text('note');
             $table->timestamps();
 

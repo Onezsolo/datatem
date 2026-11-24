@@ -55,7 +55,7 @@ class ProviderSourceTest extends TestCase
         $headers = ['Authorization' => 'Bearer '.$token];
 
         $created = $this->withHeaders($headers)
-            ->postJson('/api/admin/services/providers', [
+            ->postJson('/api/developer/services/providers', [
                 'name' => 'Source B',
                 'base_url' => 'https://source-b.test/api/v1',
                 'api_key' => 'source-b-key',
@@ -76,7 +76,7 @@ class ProviderSourceTest extends TestCase
         $this->assertSame('source-b-key', $provider->api_key);
 
         $this->withHeaders($headers)
-            ->putJson('/api/admin/services/providers/'.$provider->id, [
+            ->putJson('/api/developer/services/providers/'.$provider->id, [
                 'name' => 'Source B renamed',
                 'base_url' => 'https://source-b.test/api/v1',
                 'services' => ['data_bundle'],
@@ -91,12 +91,12 @@ class ProviderSourceTest extends TestCase
         $second = $this->provider(['name' => 'Source C', 'base_url' => 'https://source-c.test/api/v1']);
 
         $this->withHeaders($headers)
-            ->postJson('/api/admin/services/providers/'.$second->id.'/default')
+            ->postJson('/api/developer/services/providers/'.$second->id.'/default')
             ->assertOk()
             ->assertJsonPath('provider.is_default', true);
 
         $this->withHeaders($headers)
-            ->deleteJson('/api/admin/services/providers/'.$provider->id)
+            ->deleteJson('/api/developer/services/providers/'.$provider->id)
             ->assertOk();
 
         $this->assertNull(ServiceProvider::find($provider->id));
@@ -120,7 +120,7 @@ class ProviderSourceTest extends TestCase
         $headers = ['Authorization' => 'Bearer '.$this->adminToken()];
 
         $this->withHeaders($headers)
-            ->postJson('/api/admin/services/providers/'.$provider->id.'/sync')
+            ->postJson('/api/developer/services/providers/'.$provider->id.'/sync')
             ->assertOk()
             ->assertJsonPath('summary.data_bundle.synced', 1);
 

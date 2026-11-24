@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Shop\Services;
 
-use App\Shop\Models\Admin;
 use App\Shop\Models\InventoryMovement;
 use App\Shop\Models\Order;
 use App\Shop\Models\OrderItem;
@@ -35,10 +34,9 @@ class InventoryService
         int $quantity,
         string $type,
         ?string $reason = null,
-        ?Admin $admin = null,
         ?string $reference = null,
     ): InventoryMovement {
-        return DB::transaction(function () use ($product, $variant, $quantity, $type, $reason, $admin, $reference): InventoryMovement {
+        return DB::transaction(function () use ($product, $variant, $quantity, $type, $reason, $reference): InventoryMovement {
             DB::table('shop_products')->where('id', $product->id)->lockForUpdate()->first();
 
             $lockedProduct = Product::query()->whereKey($product->id)->first();
@@ -77,7 +75,6 @@ class InventoryService
             return InventoryMovement::create([
                 'product_id' => $lockedProduct->id,
                 'variant_id' => $lockedVariant?->id,
-                'admin_id' => $admin?->id,
                 'type' => $type,
                 'quantity' => $quantity,
                 'reason' => $reason,
@@ -121,7 +118,6 @@ class InventoryService
         InventoryMovement::create([
             'product_id' => $product->id,
             'variant_id' => $variant?->id,
-            'admin_id' => null,
             'type' => InventoryMovement::TYPE_SALE,
             'quantity' => -$item->quantity,
             'reason' => 'Order reservation',
@@ -159,7 +155,6 @@ class InventoryService
         InventoryMovement::create([
             'product_id' => $product->id,
             'variant_id' => $variant?->id,
-            'admin_id' => null,
             'type' => InventoryMovement::TYPE_RETURN,
             'quantity' => $item->quantity,
             'reason' => 'Order cancellation',

@@ -13,7 +13,6 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $product_id
  * @property int|null $variant_id
- * @property int|null $admin_id
  * @property string $type
  * @property int $quantity
  * @property string|null $reason
@@ -21,7 +20,6 @@ use Illuminate\Support\Carbon;
  * @property array<string, mixed>|null $meta
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Admin|null $admin
  * @property-read Product $product
  * @property-read ProductVariant|null $variant
  *
@@ -29,9 +27,9 @@ use Illuminate\Support\Carbon;
  */
 class InventoryMovement extends Model
 {
-    protected $table = 'shop_inventory_movements';
-
     use HasFactory;
+
+    protected $table = 'shop_inventory_movements';
 
     public const TYPE_RESTOCK = 'restock';
 
@@ -44,7 +42,6 @@ class InventoryMovement extends Model
     protected $fillable = [
         'product_id',
         'variant_id',
-        'admin_id',
         'type',
         'quantity',
         'reason',
@@ -65,10 +62,5 @@ class InventoryMovement extends Model
     public function variant(): BelongsTo
     {
         return $this->belongsTo(ProductVariant::class, 'variant_id');
-    }
-
-    public function admin(): BelongsTo
-    {
-        return $this->belongsTo(Admin::class);
     }
 }

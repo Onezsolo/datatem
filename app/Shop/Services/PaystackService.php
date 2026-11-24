@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Shop\Services;
 
-use App\Shop\Models\Admin;
 use App\Shop\Models\Order;
 use App\Shop\Models\Payment;
 use Illuminate\Http\Request;
@@ -153,7 +152,7 @@ class PaystackService
         return hash_equals(hash_hmac('sha512', $request->getContent(), $secret), $signature);
     }
 
-    public function refund(Order $order, ?Admin $admin = null): Payment
+    public function refund(Order $order): Payment
     {
         if (! $this->isConfigured()) {
             throw ValidationException::withMessages(['payment' => 'Paystack is not configured.']);
@@ -180,7 +179,7 @@ class PaystackService
             throw ValidationException::withMessages(['payment' => 'Paystack did not accept the refund request.']);
         }
 
-        $this->markRefunded($payment, (array) $response->json('data', []), $admin, 'admin_refund');
+        $this->markRefunded($payment, (array) $response->json('data', []), 'admin_refund');
 
         return $payment->refresh();
     }
@@ -210,12 +209,6 @@ class PaystackService
             $locked->order->markAsPaid();
             $locked->order->update(['payment_reference' => $locked->reference]);
 
-            app(AuditService::class)->record(null, 'payment.paid', [
-                'reference' => $locked->reference,
-                'amount' => (float) $locked->amount,
-                'currency' => $locked->currency,
-            ], $locked->order);
-
             return $locked->order;
         });
 
@@ -230,15 +223,11 @@ class PaystackService
 
         $payment->markAsFailed($providerResponse);
         $payment->order->update(['payment_status' => 'failed']);
-
-        app(AuditService::class)->record(null, 'payment.failed', [
-            'reference' => $payment->reference,
-        ], $payment->order);
     }
 
-    private function markRefunded(Payment $payment, array $providerResponse, ?Admin $admin, string $reason): void
+    private function markRefunded(Payment $payment, array $providerResponse, string $reason): void
     {
-        $order = DB::transaction(function () use ($payment, $providerResponse, $admin, $reason): Order {
+        $order = DB::transaction(function () use ($payment, $providerResponse, $reason): Order {
             DB::table('shop_payments')->where('id', $payment->id)->lockForUpdate()->first();
 
             $locked = Payment::query()->whereKey($payment->id)->first();
@@ -257,11 +246,6 @@ class PaystackService
                 'provider_response' => $providerResponse,
             ]);
             $locked->order->markAsRefunded();
-
-            app(AuditService::class)->record($admin, 'payment.refunded', [
-                'reference' => $locked->reference,
-                'reason' => $reason,
-            ], $locked->order);
 
             return $locked->order;
         });

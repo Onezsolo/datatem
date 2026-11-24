@@ -267,7 +267,7 @@ function servicesAdmin() {
                 if (this.search) params.set('search', this.search);
                 if (this.typeFilter) params.set('type', this.typeFilter);
 
-                const data = await this.api('/api/admin/services?' + params.toString());
+                const data = await this.api('/api/developer/services?' + params.toString());
                 this.items = data.items.data || [];
                 this.total = data.items.total || 0;
                 this.toggles = data.toggles || {};
@@ -285,7 +285,7 @@ function servicesAdmin() {
         async syncNow() {
             this.syncing = true;
             try {
-                const data = await this.api('/api/admin/services/sync', { method: 'POST' });
+                const data = await this.api('/api/developer/services/sync', { method: 'POST' });
                 await this.load();
                 const parts = Object.entries(data.summary || {}).map(([type, counts]) => (this.types[type] || type) + ': ' + counts.synced + ' synced, ' + counts.disabled + ' off');
                 window.showAlert(parts.join('\n') || 'Catalog synced.');
@@ -298,7 +298,7 @@ function servicesAdmin() {
 
         async toggleItem(item, enabled) {
             try {
-                await this.api('/api/admin/services/catalog/' + item.id, {
+                await this.api('/api/developer/services/catalog/' + item.id, {
                     method: 'PUT',
                     body: JSON.stringify({ admin_enabled: enabled })
                 });
@@ -340,7 +340,7 @@ function servicesAdmin() {
             this.providerSaving = true;
             try {
                 const id = this.providerEditing;
-                const url = id ? '/api/admin/services/providers/' + id : '/api/admin/services/providers';
+                const url = id ? '/api/developer/services/providers/' + id : '/api/developer/services/providers';
                 await this.api(url, {
                     method: id ? 'PUT' : 'POST',
                     body: JSON.stringify(this.providerForm)
@@ -358,7 +358,7 @@ function servicesAdmin() {
         async deleteProvider(provider) {
             if (!window.confirm('Delete source ' + provider.name + '? Its synced items will be removed.')) return;
             try {
-                await this.api('/api/admin/services/providers/' + provider.id, { method: 'DELETE' });
+                await this.api('/api/developer/services/providers/' + provider.id, { method: 'DELETE' });
                 await this.load();
             } catch (error) {
                 window.showAlert(error.message);
@@ -367,7 +367,7 @@ function servicesAdmin() {
 
         async setDefaultProvider(provider) {
             try {
-                await this.api('/api/admin/services/providers/' + provider.id + '/default', { method: 'POST' });
+                await this.api('/api/developer/services/providers/' + provider.id + '/default', { method: 'POST' });
                 await this.load();
             } catch (error) {
                 window.showAlert(error.message);
@@ -376,7 +376,7 @@ function servicesAdmin() {
 
         async syncProvider(provider) {
             try {
-                const data = await this.api('/api/admin/services/providers/' + provider.id + '/sync', { method: 'POST' });
+                const data = await this.api('/api/developer/services/providers/' + provider.id + '/sync', { method: 'POST' });
                 await this.load();
                 const parts = Object.entries(data.summary || {}).map(([type, counts]) => (this.types[type] || type) + ': ' + counts.synced + ' synced, ' + counts.disabled + ' off');
                 window.showAlert(parts.join('\n') || 'Source synced.');
@@ -387,7 +387,7 @@ function servicesAdmin() {
         async saveToggles() {
             this.savingToggles = true;
             try {
-                const data = await this.api('/api/admin/services/toggles', {
+                const data = await this.api('/api/developer/services/toggles', {
                     method: 'PUT',
                     body: JSON.stringify({ toggles: this.toggles, afa_price: this.afaPrice })
                 });

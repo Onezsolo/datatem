@@ -116,7 +116,6 @@ class AdminCatalogController
             (int) $data['quantity'],
             (int) $data['quantity'] > 0 ? 'restock' : 'correction',
             $data['reason'] ?? 'Admin stock adjustment',
-            null,
             'admin:'.($request->user()?->id ?? 'system')
         );
 
@@ -146,7 +145,7 @@ class AdminCatalogController
             'note' => ['nullable', 'string', 'max:500'],
         ]);
 
-        $order = $orders->transition($order, $data['status'], null, $data['note'] ?? null);
+        $order = $orders->transition($order, $data['status'], $data['note'] ?? null);
 
         return response()->json(['order' => $order->fresh()]);
     }
