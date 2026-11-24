@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Shop;
 
 use App\Http\Requests\CheckoutRequest;
+use App\Shop\Models\Order;
 use App\Shop\Services\CartService;
 use App\Shop\Services\CheckoutService;
 use App\Shop\Services\ShopSettings;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class CheckoutController
@@ -50,33 +53,67 @@ class CheckoutController
             return redirect()->guest(route('login', ['redirect' => url()->previous()]));
         }
 
+        $user = $request->user();
+        $token = trim((string) $request->input('checkout_token', ''));
+
+        if ($token === '') {
+            $token = (string) Str::uuid();
+        }
+
+        $existing = Order::query()
+            ->where('user_id', $user->id)
+            ->where('idempotency_key', $token)
+            ->first();
+
+        if ($existing !== null) {
+            return $this->orderUrl($existing)
+                ->with('status', 'This order was already placed.');
+        }
+
         $cart = $carts->current($request);
 
         if ($cart === null) {
             throw ValidationException::withMessages(['cart' => 'Your cart is empty.']);
         }
 
-        $data = $request->validated();
-        $data['user_id'] = $request->user()->id;
+        $lock = Cache::lock('shop-checkout:'.$user->id.':'.$token, 15);
 
-        $order = $checkout->placeOrder($cart, $data);
+        if (! $lock->get()) {
+            return back()->withInput()->with('warning', 'This checkout is already processing. Wait a moment and refresh your orders.');
+        }
 
-        $request->user()->forceFill([
-            'delivery_name' => $data['customer_name'],
-            'delivery_phone' => $data['delivery_phone'] ?? $data['customer_phone'],
-            'delivery_address' => $data['delivery_address'],
-            'delivery_city' => $data['delivery_city'],
-            'delivery_region' => $data['delivery_region'] ?? null,
-            'delivery_zone' => $data['delivery_zone'],
-            'delivery_notes' => $data['delivery_notes'] ?? null,
-        ])->save();
+        try {
+            $data = $request->validated();
+            $data['user_id'] = $user->id;
+            $data['idempotency_key'] = $token;
 
-        $request->session()->forget(CartService::SESSION_KEY);
+            $order = $checkout->placeOrder($cart, $data);
 
+            $user->forceFill([
+                'delivery_name' => $data['customer_name'],
+                'delivery_phone' => $data['delivery_phone'] ?? $data['customer_phone'],
+                'delivery_address' => $data['delivery_address'],
+                'delivery_city' => $data['delivery_city'],
+                'delivery_region' => $data['delivery_region'] ?? null,
+                'delivery_zone' => $data['delivery_zone'],
+                'delivery_notes' => $data['delivery_notes'] ?? null,
+            ])->save();
+
+            $request->session()->forget(CartService::SESSION_KEY);
+        } finally {
+            $lock->release();
+        }
+
+        return $this->orderUrl($order)
+            ->with('status', 'Order '.$order->order_number.' was paid from your wallet.');
+    }
+
+    private function orderUrl(Order $order): RedirectResponse
+    {
         $url = URL::temporarySignedRoute('shop.orders.show', now()->addDay(), [
             'order' => $order->order_number,
         ]);
 
-        return redirect($url)->with('status', 'Order '.$order->order_number.' was paid from your wallet.');
+        return redirect($url);
     }
 }

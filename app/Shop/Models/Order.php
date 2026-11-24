@@ -86,6 +86,7 @@ class Order extends Model
 
     protected $fillable = [
         'user_id',
+        'idempotency_key',
         'order_number',
         'customer_name',
         'customer_phone',

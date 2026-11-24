@@ -635,3 +635,9 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Catalog mirror patupaa_catalog_items + PatupaaCatalogSync: data bundles, airtime/digital products, WAEC products, utility services; items missing at PATUPAA are marked emote_enabled = false; admin manual override (dmin_enabled) and global per-service switches + AFA price are enforced together. Admin console: /admin/services with sync, switches, AFA price and per-item on/off.
 - Wallet-paid service orders (service_orders) through PatupaaOrderService: debit before API submit, auto-refund and failed/refunded status when PATUPAA rejects or errors; order pages under /services/orders.
 - Customer pages (public browsing, login to buy): /services hub, /services/data, /services/waec, /services/utility (with account lookup), /services/subscriptions (gift cards region/terms + shared accounts), /services/afa. Data navigation now points to the PATUPAA data channel; shop remains fully local.
+
+### Accounting integrity and duplicate protection
+
+- Duplicate prevention: shop checkout and every service purchase form now carry a request token stored as a unique idempotency_key (per user) on shop_orders / service_orders; replays redirect to the original order instead of charging again, and an atomic cache lock blocks concurrent submits. Request tokens are also sent to the provider as idempotency keys.
+- Top-ups: manual approval now runs in a transaction with lockForUpdate on topup and user; second approval returns 400 and credits once. Paystack verification guards already-completed payments.
+- Accounting: admin finance dashboard now includes service revenue, paid/refunded service orders and a service daily breakdown; combined revenue = data + shop + services. Regression tests cover replayed shop checkout, replayed service purchase, double topup approval, and finance totals.

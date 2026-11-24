@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Models\ServiceOrder;
 use App\Shop\Models\Order;
 use App\Shop\Models\Payment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -52,17 +53,40 @@ class FinanceDashboardTest extends TestCase
             'status' => 'paid',
         ]);
 
+        ServiceOrder::create([
+            'user_id' => null,
+            'reference' => 'SVC-FIN-1',
+            'remote_type' => 'data_bundle',
+            'amount' => 200,
+            'status' => 'successful',
+            'payment_status' => 'paid',
+            'wallet_debited' => true,
+        ]);
+
+        ServiceOrder::create([
+            'user_id' => null,
+            'reference' => 'SVC-FIN-2',
+            'remote_type' => 'utility',
+            'amount' => 30,
+            'status' => 'failed',
+            'payment_status' => 'refunded',
+            'wallet_debited' => false,
+        ]);
         $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson('/api/admin/finance-statistics')
             ->assertOk()
             ->assertJsonPath('shop_revenue', 150)
             ->assertJsonPath('shop_paid_orders', 1)
             ->assertJsonPath('shop_delivery_fees', 25)
-            ->assertJsonPath('shop_pending_orders', 0);
+            ->assertJsonPath('shop_pending_orders', 0)
+            ->assertJsonPath('service_revenue', 200)
+            ->assertJsonPath('service_paid_orders', 1)
+            ->assertJsonPath('service_refunded_orders', 1);
 
         $this->get('/admin/statistics')
             ->assertOk()
-            ->assertSee('Shop finance')
+            ->assertSee('service finance')
+            ->assertSee('Service revenue')
             ->assertSee('Combined revenue');
     }
 }

@@ -25,6 +25,7 @@
 
                         <form action="{{ route('services.waec.store', $item) }}" method="POST" class="mt-3 flex items-end gap-2">
                             @csrf
+                                    <input type="hidden" name="request_token" value="{{ (string) \Illuminate\Support\Str::uuid() }}">
                             <div>
                                 <label for="quantity-{{ $item->id }}" class="block text-xs font-bold uppercase tracking-wide text-muted">Quantity</label>
                                 <input id="quantity-{{ $item->id }}" name="quantity" type="number" min="1" max="10" value="1" required class="mt-1 h-11 w-24 rounded-control border border-line px-3 text-sm">

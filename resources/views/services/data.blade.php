@@ -58,6 +58,7 @@
 
                                 <form action="{{ route('services.data.store', $item) }}" method="POST" class="mt-auto flex flex-col gap-2 pt-3 sm:flex-row">
                                     @csrf
+                                    <input type="hidden" name="request_token" value="{{ (string) \Illuminate\Support\Str::uuid() }}">
                                     <label for="beneficiary-{{ $item->id }}" class="sr-only">Phone number</label>
                                     <input id="beneficiary-{{ $item->id }}" name="beneficiary" type="tel" required placeholder="0244000000" class="h-11 min-w-0 flex-1 rounded-control border border-line px-3 text-sm">
                                     <x-ui.button type="submit" size="sm" class="w-full sm:w-auto">Buy</x-ui.button>

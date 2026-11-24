@@ -55,8 +55,8 @@
         <div class="admin-card p-6 border border-line/50 bg-surface mb-10">
             <div class="flex flex-wrap items-end justify-between gap-3">
                 <div>
-                    <h3 class="text-lg font-black text-brand-navy">Shop finance</h3>
-                    <p class="text-xs text-muted mt-1">Product sales use the same account and finance dashboard as data.</p>
+                    <h3 class="text-lg font-black text-brand-navy">Shop &amp; service finance</h3>
+                    <p class="text-xs text-muted mt-1">Shop orders and provider-backed services share the same finance dashboard as data.</p>
                 </div>
                 <a href="{{ route('admin.shop') }}" class="text-sm font-bold text-brand-navy underline underline-offset-4">Manage catalog</a>
             </div>
@@ -78,10 +78,21 @@
                     <p class="text-[10px] font-black uppercase tracking-wider text-muted">Delivery fees</p>
                     <p class="mt-1 text-xl font-black text-brand-navy" x-text="'GHS ' + Number(data.shop_delivery_fees || 0).toFixed(2)"></p>
                 </div>
-            </div>
+                <div class="rounded-control border border-line bg-surface-muted p-4">
+                    <p class="text-[10px] font-black uppercase tracking-wider text-muted">Service revenue</p>
+                    <p class="mt-1 text-xl font-black text-brand-navy" x-text="'GHS ' + Number(data.service_revenue || 0).toFixed(2)"></p>
+                </div>
+                <div class="rounded-control border border-line bg-surface-muted p-4">
+                    <p class="text-[10px] font-black uppercase tracking-wider text-muted">Paid service orders</p>
+                    <p class="mt-1 text-xl font-black text-brand-navy" x-text="data.service_paid_orders || 0"></p>
+                </div>
+                <div class="rounded-control border border-line bg-surface-muted p-4">
+                    <p class="text-[10px] font-black uppercase tracking-wider text-muted">Refunded service orders</p>
+                    <p class="mt-1 text-xl font-black text-brand-navy" x-text="data.service_refunded_orders || 0"></p>
+                </div>            </div>
 
             <div class="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-control border border-line bg-surface px-4 py-3">
-                <span class="text-sm font-bold text-brand-navy">Combined revenue (data sales + shop sales)</span>
+                <span class="text-sm font-bold text-brand-navy">Combined revenue (data + shop + services)</span>
                 <span class="text-lg font-extrabold text-brand-navy" x-text="'GHS ' + Number(data.combined_revenue || 0).toFixed(2)"></span>
             </div>
 
@@ -108,7 +119,29 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+            <div class="mt-6 overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b border-line bg-surface-muted">
+                            <th class="px-4 py-3 text-xs font-black uppercase tracking-wider text-muted">Date</th>
+                            <th class="px-4 py-3 text-xs font-black uppercase tracking-wider text-muted text-right">Paid service orders</th>
+                            <th class="px-4 py-3 text-xs font-black uppercase tracking-wider text-muted text-right">Service revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="row in (data.service_daily_breakdown || [])" :key="row.date">
+                            <tr class="border-b border-line">
+                                <td class="px-4 py-3 font-bold text-brand-navy" x-text="row.date"></td>
+                                <td class="px-4 py-3 text-right font-black text-brand-navy" x-text="row.orders_count"></td>
+                                <td class="px-4 py-3 text-right font-bold text-brand-navy" x-text="'GHS ' + Number(row.amount || 0).toFixed(2)"></td>
+                            </tr>
+                        </template>
+                        <tr x-show="!(data.service_daily_breakdown && data.service_daily_breakdown.length)">
+                            <td colspan="3" class="px-4 py-8 text-center text-sm font-bold text-muted">No service sales in this period</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>        </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
             <!-- Manual payments -->

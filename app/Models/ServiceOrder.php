@@ -12,6 +12,7 @@ class ServiceOrder extends Model
     protected $fillable = [
         'user_id',
         'reference',
+        'idempotency_key',
         'remote_type',
         'catalog_item_id',
         'plan_code',

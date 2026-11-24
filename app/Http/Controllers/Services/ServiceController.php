@@ -14,6 +14,8 @@ use App\Services\Patupaa\PatupaaSettings;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -94,7 +96,7 @@ class ServiceController extends Controller
             'quantity' => 1,
         ];
 
-        return $this->place(fn () => $orders->purchase($request->user(), $item, $payload, (float) $item->price));
+        return $this->place(fn (string $token) => $orders->purchase($request->user(), $item, $payload, (float) $item->price, $token));
     }
 
     public function storeWaec(Request $request, PatupaaCatalogItem $item, PatupaaOrderService $orders): RedirectResponse
@@ -113,7 +115,7 @@ class ServiceController extends Controller
 
         $amount = round((float) $item->price * (int) $data['quantity'], 2);
 
-        return $this->place(fn () => $orders->purchase($request->user(), $item, $payload, $amount));
+        return $this->place(fn (string $token) => $orders->purchase($request->user(), $item, $payload, $amount, $token));
     }
 
     public function storeUtility(Request $request, PatupaaCatalogItem $item, PatupaaOrderService $orders): RedirectResponse
@@ -136,7 +138,7 @@ class ServiceController extends Controller
             'address' => $data['address'] ?? null,
         ];
 
-        return $this->place(fn () => $orders->purchase($request->user(), $item, $payload, (float) $data['amount']));
+        return $this->place(fn (string $token) => $orders->purchase($request->user(), $item, $payload, (float) $data['amount'], $token));
     }
 
     public function storeSubscriptions(Request $request, PatupaaCatalogItem $item, PatupaaOrderService $orders): RedirectResponse
@@ -171,7 +173,7 @@ class ServiceController extends Controller
             $payload['terms_accepted'] = true;
         }
 
-        return $this->place(fn () => $orders->purchase($request->user(), $item, $payload, (float) $item->price));
+        return $this->place(fn (string $token) => $orders->purchase($request->user(), $item, $payload, (float) $item->price, $token));
     }
 
     public function storeAfa(Request $request, PatupaaOrderService $orders): RedirectResponse
@@ -194,7 +196,7 @@ class ServiceController extends Controller
             'town' => $data['town'],
         ];
 
-        return $this->place(fn () => $orders->purchaseAfa($request->user(), $payload, PatupaaSettings::afaPrice()));
+        return $this->place(fn (string $token) => $orders->purchaseAfa($request->user(), $payload, PatupaaSettings::afaPrice(), $token));
     }
 
     public function lookupUtility(Request $request, PatupaaClient $client): JsonResponse
@@ -279,15 +281,40 @@ class ServiceController extends Controller
 
     private function place(callable $callback): RedirectResponse
     {
+        $token = trim((string) request()->input('request_token', ''));
+
+        if ($token === '') {
+            $token = (string) Str::uuid();
+        }
+
+        $existing = ServiceOrder::query()
+            ->where('user_id', auth()->id())
+            ->where('idempotency_key', $token)
+            ->first();
+
+        if ($existing !== null) {
+            return redirect()
+                ->route('services.orders.show', $existing->reference)
+                ->with('status', 'This request was already submitted.');
+        }
+
+        $lock = Cache::lock('service-order:'.auth()->id().':'.$token, 15);
+
+        if (! $lock->get()) {
+            return back()->withInput()->with('warning', 'This request is already processing. Check your service orders in a moment.');
+        }
+
         try {
             /** @var ServiceOrder $order */
-            $order = $callback();
+            $order = $callback($token);
 
             return redirect()
                 ->route('services.orders.show', $order->reference)
                 ->with('status', 'Order '.$order->reference.' submitted.');
         } catch (PatupaaException $exception) {
             return back()->withInput()->with('warning', $this->publicMessage($exception->getMessage()));
+        } finally {
+            $lock->release();
         }
     }
 }

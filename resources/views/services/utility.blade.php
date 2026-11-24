@@ -54,6 +54,7 @@
 
                         <form action="{{ route('services.utility.store', $item) }}" method="POST" class="mt-3 space-y-2">
                             @csrf
+                                    <input type="hidden" name="request_token" value="{{ (string) \Illuminate\Support\Str::uuid() }}">
                             <div class="flex gap-2">
                                 <input name="beneficiary" type="text" x-model="customer" required placeholder="{{ $item->meta['customer_label'] ?? 'Customer number' }}" class="h-11 min-w-0 flex-1 rounded-control border border-line px-3 text-sm">
                                 <button type="button" @click="lookup()" :disabled="looking || !customer" class="min-h-11 rounded-control border border-line px-3 text-sm font-bold text-brand-navy hover:bg-surface-muted disabled:opacity-60" x-text="looking ? '...' : 'Verify'"></button>

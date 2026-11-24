@@ -35,6 +35,7 @@
 
                         <form action="{{ route('services.subscriptions.store', $item) }}" method="POST" class="mt-3 space-y-2">
                             @csrf
+                                    <input type="hidden" name="request_token" value="{{ (string) \Illuminate\Support\Str::uuid() }}">
                             <input name="recipient_email" type="email" required placeholder="Recipient email" class="h-11 w-full rounded-control border border-line px-3 text-sm">
                             @if ($gift && !empty($gift['region_code']))
                                 <label class="flex items-start gap-2 text-xs text-muted">

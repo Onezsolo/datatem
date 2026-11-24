@@ -81,6 +81,7 @@
 
                 <h2 class="mt-8 text-lg font-extrabold text-brand-navy">Payment</h2>
                 <input type="hidden" name="payment_method" value="wallet">
+                <input type="hidden" name="checkout_token" value="{{ (string) \Illuminate\Support\Str::uuid() }}">
                 <div class="mt-3 rounded-card border border-line bg-surface-muted p-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <p class="text-sm font-bold text-brand-navy">Wallet balance</p>

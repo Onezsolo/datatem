@@ -110,6 +110,7 @@ class CheckoutService
 
             $order = Order::create([
                 'user_id' => $user->id,
+                'idempotency_key' => $data['idempotency_key'] ?? null,
                 'customer_name' => (string) $data['customer_name'],
                 'customer_phone' => $this->normalisePhone((string) $data['customer_phone']),
                 'customer_email' => $data['customer_email'] ?? null,

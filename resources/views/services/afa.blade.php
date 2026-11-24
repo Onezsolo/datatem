@@ -17,6 +17,7 @@
             <div class="grid gap-6 lg:grid-cols-[1fr_20rem]">
                 <form action="{{ route('services.afa.store') }}" method="POST" class="rounded-card border border-line bg-surface p-5">
                     @csrf
+                                    <input type="hidden" name="request_token" value="{{ (string) \Illuminate\Support\Str::uuid() }}">
                     <div class="grid gap-4 sm:grid-cols-2">
                         <div class="sm:col-span-2">
                             <label for="full_name" class="block text-sm font-bold text-brand-navy">Full name</label>

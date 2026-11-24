@@ -242,6 +242,39 @@ class AdminController extends Controller
             }
         }
 
+        $serviceRevenue = 0.0;
+        $servicePaidOrders = 0;
+        $serviceRefundedOrders = 0;
+        $serviceDaily = collect();
+
+        if (Schema::hasTable('service_orders')) {
+            try {
+                $paidServices = \App\Models\ServiceOrder::query()
+                    ->where('payment_status', 'paid')
+                    ->whereNotIn('status', ['failed', 'refunded', 'cancelled'])
+                    ->whereBetween('created_at', [$dateFrom, $dateTo]);
+
+                $serviceRevenue = (float) (clone $paidServices)->sum('amount');
+                $servicePaidOrders = (int) (clone $paidServices)->count();
+
+                $serviceRefundedOrders = (int) \App\Models\ServiceOrder::query()
+                    ->where('payment_status', 'refunded')
+                    ->whereBetween('created_at', [$dateFrom, $dateTo])
+                    ->count();
+
+                $serviceDaily = \App\Models\ServiceOrder::query()
+                    ->where('payment_status', 'paid')
+                    ->whereNotIn('status', ['failed', 'refunded', 'cancelled'])
+                    ->whereBetween('created_at', [$dateFrom, $dateTo])
+                    ->selectRaw('DATE(created_at) as date, COUNT(*) as orders_count, COALESCE(SUM(amount), 0) as amount')
+                    ->groupBy('date')
+                    ->orderBy('date')
+                    ->get();
+            } catch (\Throwable $e) {
+                // Service tables unavailable; keep zeroed metrics.
+            }
+        }
+
         return response()->json([
             'date_from' => $dateFrom->toDateString(),
             'date_to' => $dateTo->toDateString(),
@@ -260,7 +293,11 @@ class AdminController extends Controller
             'shop_paid_orders' => $shopPaidOrders,
             'shop_pending_orders' => $shopPendingOrders,
             'shop_delivery_fees' => round($shopDeliveryFees, 2),
-            'combined_revenue' => round($amountSpent + $shopRevenue, 2),
+            'service_revenue' => round($serviceRevenue, 2),
+            'service_paid_orders' => $servicePaidOrders,
+            'service_refunded_orders' => $serviceRefundedOrders,
+            'service_daily_breakdown' => $serviceDaily,
+            'combined_revenue' => round($amountSpent + $shopRevenue + $serviceRevenue, 2),
             'shop_daily_breakdown' => $shopDaily,
             'daily_breakdown' => $dailyBreakdown,
         ]);
@@ -1249,20 +1286,35 @@ class AdminController extends Controller
      */
     public function approveTopup($id)
     {
-        $topup = Topup::with('user')->findOrFail($id);
-        if ($topup->status !== 'pending') {
+        $result = DB::transaction(function () use ($id): array {
+            $topup = Topup::query()->lockForUpdate()->findOrFail($id);
+
+            if ($topup->status !== 'pending') {
+                return ['error' => 'already_processed'];
+            }
+
+            $user = User::query()->lockForUpdate()->find($topup->user_id);
+
+            if (! $user) {
+                return ['error' => 'user_missing'];
+            }
+
+            $user->update(['balance' => round((float) $user->balance + (float) $topup->amount, 2)]);
+            $topup->update(['status' => 'approved']);
+
+            return ['topup' => $topup, 'user' => $user];
+        });
+
+        if (($result['error'] ?? null) === 'already_processed') {
             return response()->json(['error' => 'Topup already processed.'], 400);
         }
 
-        $user = $topup->user;
-        if (!$user) {
+        if (($result['error'] ?? null) === 'user_missing') {
             return response()->json(['error' => 'User not found.'], 404);
         }
 
-        $user->balance = (float) $user->balance + (float) $topup->amount;
-        $user->save();
-        $topup->status = 'approved';
-        $topup->save();
+        $user = $result['user'];
+        $topup = $result['topup'];
 
         NotifyService::notifyUserTopupCompleted($user, $topup);
         NotifyService::admins(

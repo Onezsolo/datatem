@@ -20,7 +20,7 @@ final class PatupaaOrderService
     /**
      * @param  array<string, mixed>  $payload
      */
-    public function purchase(User $user, PatupaaCatalogItem $item, array $payload, float $amount): ServiceOrder
+    public function purchase(User $user, PatupaaCatalogItem $item, array $payload, float $amount, string $idempotencyKey = ''): ServiceOrder
     {
         if (! PatupaaSettings::enabled($item->remote_type)) {
             throw ValidationException::withMessages(['service' => 'This service is currently unavailable.']);
@@ -52,7 +52,7 @@ final class PatupaaOrderService
 
         $reference = 'SVC-'.Str::upper(Str::random(10));
 
-        $order = DB::transaction(function () use ($user, $item, $payload, $amount, $reference): ServiceOrder {
+        $order = DB::transaction(function () use ($user, $item, $payload, $amount, $reference, $idempotencyKey): ServiceOrder {
             $locked = User::query()->lockForUpdate()->findOrFail($user->id);
             $balance = (float) $locked->balance;
 
@@ -67,6 +67,7 @@ final class PatupaaOrderService
             return ServiceOrder::create([
                 'user_id' => $locked->id,
                 'reference' => $reference,
+                'idempotency_key' => $idempotencyKey !== '' ? $idempotencyKey : null,
                 'remote_type' => $item->remote_type,
                 'catalog_item_id' => $item->id,
                 'plan_code' => $item->plan_code,
@@ -82,7 +83,7 @@ final class PatupaaOrderService
         });
 
         try {
-            $remote = $this->client->post('/orders', $payload, $reference);
+            $remote = $this->client->post('/orders', $payload, $idempotencyKey !== '' ? $idempotencyKey : $reference);
 
             $order->update([
                 'remote_reference' => $remote['reference'] ?? null,
@@ -101,7 +102,7 @@ final class PatupaaOrderService
     /**
      * @param  array<string, mixed>  $payload
      */
-    public function purchaseAfa(User $user, array $payload, float $amount): ServiceOrder
+    public function purchaseAfa(User $user, array $payload, float $amount, string $idempotencyKey = ''): ServiceOrder
     {
         if (! PatupaaSettings::enabled('afa')) {
             throw ValidationException::withMessages(['service' => 'AFA registration is currently unavailable.']);
@@ -117,7 +118,7 @@ final class PatupaaOrderService
 
         $reference = 'AFA-'.Str::upper(Str::random(10));
 
-        $order = DB::transaction(function () use ($user, $payload, $amount, $reference): ServiceOrder {
+        $order = DB::transaction(function () use ($user, $payload, $amount, $reference, $idempotencyKey): ServiceOrder {
             $locked = User::query()->lockForUpdate()->findOrFail($user->id);
             $balance = (float) $locked->balance;
 
@@ -132,6 +133,7 @@ final class PatupaaOrderService
             return ServiceOrder::create([
                 'user_id' => $locked->id,
                 'reference' => $reference,
+                'idempotency_key' => $idempotencyKey !== '' ? $idempotencyKey : null,
                 'remote_type' => 'afa',
                 'plan_code' => null,
                 'beneficiary' => $payload['phone'] ?? null,
@@ -146,7 +148,7 @@ final class PatupaaOrderService
         });
 
         try {
-            $remote = $this->client->post('/afa', $payload, $reference);
+            $remote = $this->client->post('/afa', $payload, $idempotencyKey !== '' ? $idempotencyKey : $reference);
 
             $order->update([
                 'remote_reference' => $remote['registration_reference'] ?? $remote['order_reference'] ?? null,
