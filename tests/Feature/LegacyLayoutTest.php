@@ -6,9 +6,9 @@ use Tests\TestCase;
 
 class LegacyLayoutTest extends TestCase
 {
-    public function test_member_pages_use_compiled_assets_instead_of_cdns(): void
+    public function test_admin_pages_use_compiled_assets_instead_of_cdns(): void
     {
-        $response = $this->get('/dashboard');
+        $response = $this->get('/admin/dashboard');
 
         $response->assertOk()
             ->assertSee('build/assets', false)

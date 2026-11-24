@@ -1,16 +1,12 @@
-@extends('layouts.app')
-
-@section('content')
-@section('title', 'Top Up')
-
+<x-layouts.member title="Top Up">
 <style>
-.topup-page { font-family: 'Outfit', sans-serif; }
+.topup-page { font-family: inherit; }
 .topup-page .amount-btn { background: #f1f5f9; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; transition: all 0.2s; }
 .topup-page .amount-btn:hover { background: #e2e8f0; color: #0f172a; }
-.topup-page .amount-btn.active { background: #0891b2; border-color: #0891b2; color: white; }
+.topup-page .amount-btn.active { background: var(--color-brand-navy); border-color: var(--color-brand-navy); color: white; }
 .topup-page .method-card { border: 2px solid #e2e8f0; transition: all 0.2s; }
 .topup-page .method-card:hover { border-color: #cbd5e1; }
-.topup-page .method-card.selected { border-color: #0891b2; background: rgba(8, 145, 178, 0.06); }
+.topup-page .method-card.selected { border-color: var(--color-brand-navy); background: rgba(0, 21, 52, 0.06); }
 </style>
 <div class="topup-page min-h-screen bg-gray-50 py-8 md:py-12" x-data="topupPage()" x-init="init()">
     <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,7 +33,7 @@
                     </div>
                     <div class="relative">
                         <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-semibold">GH₵</span>
-                        <input type="number" x-model="amount" min="5" step="0.01" placeholder="Min 5" class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-cyan-500 text-gray-900 font-semibold">
+                        <input type="number" x-model="amount" min="5" step="0.01" placeholder="Min 5" class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-brand-navy text-gray-900 font-semibold">
                         <p class="mt-1.5 text-xs text-gray-500">Minimum GH₵ 5.00</p>
                     </div>
                 </div>
@@ -47,7 +43,7 @@
                     <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">2. Payment method</h3>
                     <div class="space-y-3">
                         <label class="flex items-center p-4 rounded-xl cursor-pointer method-card" :class="method === 'automated' ? 'selected' : ''">
-                            <input type="radio" name="payment" x-model="method" value="automated" class="w-4 h-4 text-cyan-600 border-slate-300 focus:ring-cyan-500">
+                            <input type="radio" name="payment" x-model="method" value="automated" class="w-4 h-4 text-brand-navy border-slate-300 focus:ring-brand-navy">
                             <div class="ml-4 flex items-center gap-3">
                                 <div class="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-slate-600">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -60,7 +56,7 @@
                         </label>
                         @if(!empty($manual_topup_enabled))
                         <label class="flex items-center p-4 rounded-xl cursor-pointer method-card" :class="method === 'manual' ? 'selected' : ''">
-                            <input type="radio" name="payment" x-model="method" value="manual" class="w-4 h-4 text-cyan-600 border-slate-300 focus:ring-cyan-500">
+                            <input type="radio" name="payment" x-model="method" value="manual" class="w-4 h-4 text-brand-navy border-slate-300 focus:ring-brand-navy">
                             <div class="ml-4 flex items-center gap-3">
                                 <div class="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-slate-600">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
@@ -78,7 +74,7 @@
                 <!-- Manual instructions -->
                 <div x-show="method === 'manual'" x-transition x-cloak class="mb-8 p-6 bg-slate-50 rounded-xl border border-slate-200">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="w-10 h-10 bg-cyan-100 text-cyan-600 rounded-lg flex items-center justify-center">
+                        <div class="w-10 h-10 bg-line text-brand-navy rounded-lg flex items-center justify-center">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </div>
                         <h4 class="font-bold text-gray-900">Deposit instructions</h4>
@@ -96,7 +92,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Transaction ID / Reference <span class="text-amber-600">(required)</span></label>
-                        <input type="text" x-model="manualReference" placeholder="Enter reference from your payment" class="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 focus:outline-none focus:border-cyan-500 text-gray-900 font-medium placeholder-gray-400">
+                        <input type="text" x-model="manualReference" placeholder="Enter reference from your payment" class="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 focus:outline-none focus:border-brand-navy text-gray-900 font-medium placeholder-gray-400">
                     </div>
                 </div>
 
@@ -107,16 +103,16 @@
                     <div class="flex justify-between text-sm text-gray-600 mb-1"><span>Fee (3%)</span><span x-text="'GH₵ ' + (((parseFloat(amount) || 0) * 0.03).toFixed(2))"></span></div>
                     <div class="flex justify-between font-bold text-gray-900 pt-3 mt-2 border-t border-slate-200">
                         <span>Total to pay</span>
-                        <span class="text-cyan-600" x-text="'GH₵ ' + (((parseFloat(amount) || 0) * 1.03).toFixed(2))"></span>
+                        <span class="text-brand-navy" x-text="'GH₵ ' + (((parseFloat(amount) || 0) * 1.03).toFixed(2))"></span>
                     </div>
                     <div class="mt-5 pt-4 border-t border-slate-200">
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Paystack reference</label>
                         <div class="flex gap-2">
                             <input type="text" x-model="lastReference" placeholder="e.g. TUP-XXXXXXXXXXXX"
-                                   class="flex-1 px-4 py-3 rounded-xl bg-white border border-slate-200 focus:outline-none focus:border-cyan-500 text-gray-900 font-medium placeholder-gray-400">
+                                   class="flex-1 px-4 py-3 rounded-xl bg-white border border-slate-200 focus:outline-none focus:border-brand-navy text-gray-900 font-medium placeholder-gray-400">
                             <button @click="checkPaystackStatus()"
                                     :disabled="checkingStatus || !lastReference.trim()"
-                                    class="px-4 py-3 rounded-xl bg-cyan-600 text-white font-semibold hover:bg-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+                                    class="px-4 py-3 rounded-xl bg-brand-navy text-white font-semibold hover:bg-brand-navy-soft disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
                                 <span x-show="!checkingStatus">Check status</span>
                                 <span x-show="checkingStatus">Checking...</span>
                             </button>
@@ -128,7 +124,7 @@
                 <div class="pt-6 border-t border-slate-200">
                     <button @click="method === 'automated' ? startPaystack() : submitManual()"
                             :disabled="loading || (method === 'manual' && !manualReference.trim())"
-                            class="w-full py-3.5 rounded-xl bg-cyan-500 text-white font-semibold hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                            class="w-full py-3.5 rounded-xl bg-brand-navy text-white font-semibold hover:bg-brand-navy disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                         <span x-show="!loading" x-text="method === 'automated' ? 'Pay with MoMo' : (manualReference.trim() ? 'Submit reference' : 'Enter reference above')"></span>
                         <span x-show="loading" class="inline-flex items-center justify-center gap-2">
                             <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
@@ -268,4 +264,4 @@ function topupPage() {
     };
 }
 </script>
-@endsection
+</x-layouts.member>

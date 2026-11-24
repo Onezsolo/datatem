@@ -1,10 +1,6 @@
-@extends('layouts.app')
-
-@section('content')
-@section('title', 'Support')
-
+<x-layouts.public title="Support">
 <style>
-.support-page { font-family: 'Outfit', sans-serif; }
+.support-page { font-family: inherit; }
 </style>
 <div class="support-page min-h-screen bg-gray-50 py-8 md:py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,12 +15,12 @@
         <div class="flex flex-wrap justify-center gap-4 mb-8">
             @if(!empty($support_email))
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 min-w-[240px]">
-                <div class="w-12 h-12 bg-cyan-100 text-cyan-600 rounded-xl flex items-center justify-center mb-4">
+                <div class="w-12 h-12 bg-line text-brand-navy rounded-xl flex items-center justify-center mb-4">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                 </div>
                 <h3 class="text-lg font-bold text-gray-900 mb-1">Email Us</h3>
                 <p class="text-gray-500 text-sm mb-3">We usually reply within 2 hours.</p>
-                <a href="mailto:{{ e($support_email) }}" class="text-cyan-600 font-semibold hover:underline text-sm">{{ e($support_email) }}</a>
+                <a href="mailto:{{ e($support_email) }}" class="text-brand-navy font-semibold hover:underline text-sm">{{ e($support_email) }}</a>
             </div>
             @endif
             @if(!empty($support_whatsapp_url))
@@ -48,7 +44,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Subject</label>
-                            <select class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-cyan-500 font-medium text-gray-900 text-sm">
+                            <select class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-brand-navy font-medium text-gray-900 text-sm">
                                 <option>General Inquiry</option>
                                 <option>Top-up Issue</option>
                                 <option>Bundle Purchase Error</option>
@@ -57,17 +53,17 @@
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Order ID (optional)</label>
-                            <input type="text" placeholder="#12345" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-cyan-500 font-medium text-gray-900 placeholder-gray-400 text-sm">
+                            <input type="text" placeholder="#12345" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-brand-navy font-medium text-gray-900 placeholder-gray-400 text-sm">
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Your message</label>
-                        <textarea rows="5" placeholder="How can we help you?" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-cyan-500 font-medium text-gray-900 placeholder-gray-400 resize-none text-sm"></textarea>
+                        <textarea rows="5" placeholder="How can we help you?" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-brand-navy font-medium text-gray-900 placeholder-gray-400 resize-none text-sm"></textarea>
                     </div>
-                    <button type="button" class="px-6 py-3 rounded-xl font-semibold bg-cyan-500 text-white hover:bg-cyan-600 transition-colors text-sm">Submit ticket</button>
+                    <button type="button" class="px-6 py-3 rounded-xl font-semibold bg-brand-navy text-white hover:bg-brand-navy transition-colors text-sm">Submit ticket</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-@endsection
+</x-layouts.public>

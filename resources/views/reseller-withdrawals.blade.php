@@ -1,9 +1,7 @@
-@extends('layouts.app')
-@section('title', 'Reseller withdrawals')
-@section('content')
-<div class="min-h-screen bg-gray-50 py-8 md:py-12 font-[Outfit,sans-serif]" x-data="resellerWithdrawalsPage()" x-init="init()">
+<x-layouts.member title="Reseller withdrawals">
+<div class="min-h-screen bg-gray-50 py-8 md:py-12 font-sans" x-data="resellerWithdrawalsPage()" x-init="init()">
     <div class="max-w-lg mx-auto px-4">
-        <a href="/reseller" class="text-cyan-600 font-semibold hover:text-cyan-700 mb-6 inline-flex items-center text-sm">
+        <a href="/reseller" class="text-brand-navy font-semibold hover:text-brand-navy-soft mb-6 inline-flex items-center text-sm">
             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Back to reseller
         </a>
@@ -37,15 +35,15 @@
                 <div x-show="!hasPending" class="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-2">Amount (GHS)</label>
-                        <input type="number" step="0.01" min="0" x-model.number="amount" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-cyan-500 outline-none font-medium text-gray-900">
+                        <input type="number" step="0.01" min="0" x-model.number="amount" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-navy outline-none font-medium text-gray-900">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-2">Mobile money number</label>
                         <input type="text" inputmode="tel" autocomplete="tel" x-model="momoNumber" placeholder="e.g. 0241234567 or 233241234567"
-                               class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-cyan-500 outline-none font-medium text-gray-900">
+                               class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-navy outline-none font-medium text-gray-900">
                         <p class="text-xs text-gray-500 mt-1.5">Ghana MoMo: use your registered number (0XXXXXXXXX or 233XXXXXXXXX).</p>
                     </div>
-                    <button type="button" @click="submit()" :disabled="submitting" class="w-full py-3 rounded-xl font-semibold bg-cyan-500 text-white hover:bg-cyan-600 disabled:opacity-50 text-sm">
+                    <button type="button" @click="submit()" :disabled="submitting" class="w-full py-3 rounded-xl font-semibold bg-brand-navy text-white hover:bg-brand-navy disabled:opacity-50 text-sm">
                         <span x-text="submitting ? 'Submitting…' : 'Request withdrawal'"></span>
                     </button>
                 </div>
@@ -184,4 +182,4 @@ function resellerWithdrawalsPage() {
     };
 }
 </script>
-@endsection
+</x-layouts.member>

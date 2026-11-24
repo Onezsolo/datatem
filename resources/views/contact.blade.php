@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<x-layouts.public title="Contact">
 <div class="bg-slate-50 py-20 min-h-screen">
     <div class="max-w-4xl mx-auto px-6">
         <div class="glass p-12 rounded-[40px] shadow-2xl border border-slate-200/50">
@@ -48,4 +46,4 @@
         </div>
     </div>
 </div>
-@endsection
+</x-layouts.public>

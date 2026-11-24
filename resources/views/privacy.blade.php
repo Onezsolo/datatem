@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<x-layouts.public title="Privacy">
 <div class="bg-slate-50 py-24 min-h-screen">
     <div class="max-w-5xl mx-auto px-6">
         <div class="relative mb-16 overflow-hidden p-16 rounded-[48px] bg-slate-900 text-white shadow-3xl">
@@ -45,4 +43,4 @@
         </div>
     </div>
 </div>
-@endsection
+</x-layouts.public>

@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<x-layouts.member title="Notifications">
 <div class="min-h-screen bg-slate-50 py-12" x-data="notificationsPage()" x-init="init()">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
@@ -130,4 +128,4 @@ function notificationsPage() {
     };
 }
 </script>
-@endsection
+</x-layouts.member>

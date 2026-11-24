@@ -1,10 +1,6 @@
-@extends('layouts.app')
-
-@section('content')
-@section('title', 'Profile')
-
+<x-layouts.member title="Profile">
 <style>
-.profile-page { font-family: 'Outfit', sans-serif; }
+.profile-page { font-family: inherit; }
 </style>
 <div class="profile-page min-h-screen bg-gray-50 py-8 md:py-12" x-data="profilePage()" x-init="init()">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -13,7 +9,7 @@
             <div class="lg:w-72 flex-shrink-0">
                 <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
                     <div class="flex items-center gap-4 mb-6">
-                        <div class="w-12 h-12 bg-cyan-500 text-white rounded-xl flex items-center justify-center text-lg font-bold" x-text="user.full_name ? user.full_name.charAt(0) : 'U'"></div>
+                        <div class="w-12 h-12 bg-brand-navy text-white rounded-xl flex items-center justify-center text-lg font-bold" x-text="user.full_name ? user.full_name.charAt(0) : 'U'"></div>
                         <div class="min-w-0">
                             <h2 class="font-bold text-gray-900 truncate" x-text="user.full_name"></h2>
                             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Active Account</p>
@@ -21,11 +17,11 @@
                     </div>
 
                     <nav class="space-y-1">
-                        <button @click="activeSection = 'personal'" :class="activeSection === 'personal' ? 'bg-cyan-50 text-cyan-600' : 'text-gray-600 hover:bg-slate-50'" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all text-sm">
+                        <button @click="activeSection = 'personal'" :class="activeSection === 'personal' ? 'bg-surface-muted text-brand-navy' : 'text-gray-600 hover:bg-slate-50'" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all text-sm">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                             <span>Personal Info</span>
                         </button>
-                        <button @click="activeSection = 'security'" :class="activeSection === 'security' ? 'bg-cyan-50 text-cyan-600' : 'text-gray-600 hover:bg-slate-50'" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all text-sm">
+                        <button @click="activeSection = 'security'" :class="activeSection === 'security' ? 'bg-surface-muted text-brand-navy' : 'text-gray-600 hover:bg-slate-50'" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all text-sm">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                             <span>Security</span>
                         </button>
@@ -60,7 +56,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div>
                                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Full Name</label>
-                                <input type="text" x-model="user.full_name" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-cyan-500 font-medium text-gray-900 text-sm">
+                                <input type="text" x-model="user.full_name" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-brand-navy font-medium text-gray-900 text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Email</label>
@@ -70,18 +66,18 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div>
                                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Phone</label>
-                                <input type="tel" x-model="user.phone" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-cyan-500 font-medium text-gray-900 text-sm">
+                                <input type="tel" x-model="user.phone" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-brand-navy font-medium text-gray-900 text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Account Tier</label>
-                                <div class="px-4 py-3 rounded-xl bg-cyan-50 border border-cyan-200 font-semibold text-cyan-700 flex items-center justify-between text-sm">
+                                <div class="px-4 py-3 rounded-xl bg-surface-muted border border-cyan-200 font-semibold text-brand-navy-soft flex items-center justify-between text-sm">
                                     <span>Premium User</span>
                                     <svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a.75.75 0 01.742-.147 12.35 12.35 0 003.991 0 .75.75 0 01.742.147l4.5 4.5a.75.75 0 01.072 1.012l-6 8a.75.75 0 01-1.2 0l-6-8a.75.75 0 01.072-1.012l4.5-4.5z" clip-rule="evenodd"/></svg>
                                 </div>
                             </div>
                         </div>
                         <div class="pt-5 border-t border-slate-100 flex justify-end">
-                            <button type="submit" class="px-6 py-3 rounded-xl font-semibold bg-cyan-500 text-white hover:bg-cyan-600 transition-colors text-sm">Save changes</button>
+                            <button type="submit" class="px-6 py-3 rounded-xl font-semibold bg-brand-navy text-white hover:bg-brand-navy transition-colors text-sm">Save changes</button>
                         </div>
                     </form>
                 </div>
@@ -94,19 +90,19 @@
                     <form @submit.prevent="changePassword" class="space-y-5">
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Current Password</label>
-                            <input type="password" x-model="security.current_password" placeholder="••••••••" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-cyan-500 font-medium text-sm" required>
+                            <input type="password" x-model="security.current_password" placeholder="••••••••" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-brand-navy font-medium text-sm" required>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">New Password</label>
-                            <input type="password" x-model="security.password" placeholder="Min. 6 characters" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-cyan-500 font-medium text-sm" required minlength="6">
+                            <input type="password" x-model="security.password" placeholder="Min. 6 characters" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-brand-navy font-medium text-sm" required minlength="6">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Confirm New Password</label>
-                            <input type="password" x-model="security.password_confirmation" placeholder="Confirm new password" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-cyan-500 font-medium text-sm" required minlength="6">
+                            <input type="password" x-model="security.password_confirmation" placeholder="Confirm new password" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-brand-navy font-medium text-sm" required minlength="6">
                         </div>
                         <p x-show="securityError" x-text="securityError" class="text-red-600 font-semibold text-sm"></p>
                         <div class="pt-5 flex justify-end">
-                            <button type="submit" :disabled="securityLoading" class="px-6 py-3 rounded-xl font-semibold bg-cyan-500 text-white hover:bg-cyan-600 disabled:opacity-50 transition-colors text-sm">Update password</button>
+                            <button type="submit" :disabled="securityLoading" class="px-6 py-3 rounded-xl font-semibold bg-brand-navy text-white hover:bg-brand-navy disabled:opacity-50 transition-colors text-sm">Update password</button>
                         </div>
                     </form>
                 </div>
@@ -329,4 +325,4 @@ function profilePage() {
     };
 }
 </script>
-@endsection
+</x-layouts.member>

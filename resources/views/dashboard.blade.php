@@ -1,17 +1,13 @@
-@extends('layouts.app')
-
-@section('title', 'Dashboard')
-
-@section('content')
+<x-layouts.member title="Dashboard">
 
 <style>
-.dash-board { font-family: 'Outfit', sans-serif; }
+.dash-board { font-family: inherit; }
 .dash-board .dash-hero { background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%); }
 .dash-board .dash-card { background: #ffffff; border: 1px solid #e2e8f0; }
-.dash-board .dash-accent { color: #0891b2; }
-.dash-board .dash-glow { box-shadow: 0 4px 24px -4px rgba(8, 145, 178, 0.15); }
+.dash-board .dash-accent { color: var(--color-brand-navy); }
+.dash-board .dash-glow { box-shadow: 0 4px 24px -4px rgba(0, 21, 52, 0.15); }
 .dash-board .dash-pill { background: #f1f5f9; border: 1px solid #e2e8f0; }
-.dash-board .dash-pill:hover { background: rgba(8, 145, 178, 0.08); border-color: rgba(8, 145, 178, 0.35); }
+.dash-board .dash-pill:hover { background: rgba(0, 21, 52, 0.08); border-color: rgba(0, 21, 52, 0.35); }
 .dash-board .dash-pkg { border-left: 3px solid; }
 .dash-board .dash-pkg.mtn { border-color: #eab308; }
 .dash-board .dash-pkg.at { border-color: #a855f7; }
@@ -23,7 +19,7 @@
         <div x-show="showPopup" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
         <div x-show="showPopup" x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="relative w-full max-w-md bg-white border border-slate-200 rounded-2xl p-8 shadow-2xl">
             <div class="text-center">
-                <div class="inline-flex w-16 h-16 rounded-xl bg-cyan-100 text-cyan-600 items-center justify-center mb-6 border border-cyan-200">
+                <div class="inline-flex w-16 h-16 rounded-xl bg-line text-brand-navy items-center justify-center mb-6 border border-cyan-200">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
                 </div>
                 <h2 class="text-2xl font-bold text-gray-900 mb-2">You're in</h2>
@@ -67,7 +63,7 @@
         <div x-show="$store.auth.user && $store.auth.user.affiliate_system_enabled" x-transition class="mb-8 p-5 rounded-2xl dash-card border-cyan-200">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-cyan-100 text-cyan-600 flex items-center justify-center shrink-0">
+                    <div class="w-12 h-12 rounded-xl bg-line text-brand-navy flex items-center justify-center shrink-0">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                     </div>
                     <div>
@@ -79,7 +75,7 @@
                 <div class="flex flex-wrap gap-2">
                     <a :href="whatsAppShareUrl" target="_blank" rel="noopener noreferrer" class="dash-pill px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:text-gray-900 inline-flex items-center gap-2">WhatsApp</a>
                     <a :href="telegramShareUrl" target="_blank" rel="noopener noreferrer" class="dash-pill px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:text-gray-900 inline-flex items-center gap-2">Telegram</a>
-                    <a href="/referral" class="dash-pill px-4 py-2.5 rounded-lg text-sm font-medium text-cyan-600 hover:text-cyan-700 inline-flex items-center gap-2">My link</a>
+                    <a href="/referral" class="dash-pill px-4 py-2.5 rounded-lg text-sm font-medium text-brand-navy hover:text-brand-navy-soft inline-flex items-center gap-2">My link</a>
                 </div>
             </div>
         </div>
@@ -99,26 +95,26 @@
                 <p class="text-xl font-bold text-gray-900 tabular-nums" x-text="stats.totalOrders || 0"></p>
             </div>
             <div class="dash-card rounded-xl p-5 col-span-2 lg:col-span-1 flex flex-col justify-center">
-                <a href="/topup" class="inline-flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-cyan-100 text-cyan-700 font-semibold text-sm border border-cyan-200 hover:bg-cyan-200 transition-colors">Add funds</a>
+                <a href="/topup" class="inline-flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-line text-brand-navy-soft font-semibold text-sm border border-cyan-200 hover:bg-cyan-200 transition-colors">Add funds</a>
             </div>
         </div>
 
         <!-- Quick actions: pill row -->
         <nav class="flex flex-wrap gap-2 mb-10">
             <a href="/bundles" class="dash-pill px-5 py-3 rounded-xl font-medium text-sm text-gray-700 hover:text-gray-900 inline-flex items-center gap-2 transition-colors">
-                <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                <svg class="w-5 h-5 text-brand-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                 Buy Data
             </a>
             <a href="/orders" class="dash-pill px-5 py-3 rounded-xl font-medium text-sm text-gray-700 hover:text-gray-900 inline-flex items-center gap-2 transition-colors">
-                <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                <svg class="w-5 h-5 text-brand-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                 Orders
             </a>
             <a href="/topup" class="dash-pill px-5 py-3 rounded-xl font-medium text-sm text-gray-700 hover:text-gray-900 inline-flex items-center gap-2 transition-colors">
-                <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <svg class="w-5 h-5 text-brand-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 Top up
             </a>
             <a href="/support" class="dash-pill px-5 py-3 rounded-xl font-medium text-sm text-gray-700 hover:text-gray-900 inline-flex items-center gap-2 transition-colors">
-                <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                <svg class="w-5 h-5 text-brand-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                 Support
             </a>
         </nav>
@@ -127,7 +123,7 @@
         <section class="mb-12">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-lg font-semibold text-gray-900">Popular packages</h2>
-                <a href="/bundles" class="text-sm font-medium text-cyan-600 hover:text-cyan-700">View all</a>
+                <a href="/bundles" class="text-sm font-medium text-brand-navy hover:text-brand-navy-soft">View all</a>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="space-y-3">
@@ -198,8 +194,8 @@
                 </div>
                 <div class="p-6">
                     <label class="block text-gray-500 text-xs font-medium uppercase tracking-wider mb-2">Mobile number</label>
-                    <input type="tel" x-model="orderBeneficiary" placeholder="0551234567" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-cyan-500 font-medium">
-                    <button @click="submitOrder()" :disabled="orderSubmitting" type="button" class="w-full mt-4 py-3.5 rounded-xl bg-cyan-500 text-white font-semibold hover:bg-cyan-600 disabled:opacity-50 transition-opacity">
+                    <input type="tel" x-model="orderBeneficiary" placeholder="0551234567" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-navy font-medium">
+                    <button @click="submitOrder()" :disabled="orderSubmitting" type="button" class="w-full mt-4 py-3.5 rounded-xl bg-brand-navy text-white font-semibold hover:bg-brand-navy disabled:opacity-50 transition-opacity">
                         <span x-text="orderSubmitting ? 'Processing…' : 'Place order'"></span>
                     </button>
                     <button @click="showOrderModal = false" type="button" class="w-full mt-3 py-2 text-gray-500 text-sm hover:text-gray-700">Cancel</button>
@@ -287,4 +283,4 @@ function userDashboard() {
     };
 }
 </script>
-@endsection
+</x-layouts.member>

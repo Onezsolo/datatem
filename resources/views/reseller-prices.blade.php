@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<x-layouts.member title="Reseller prices">
 <div class="min-h-screen bg-slate-50 py-12" x-data="resellerPricesPage()" x-init="init()">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <a href="/reseller" class="text-primary-600 font-bold hover:underline mb-6 block flex items-center">
@@ -174,4 +172,4 @@ function resellerPricesPage() {
     };
 }
 </script>
-@endsection
+</x-layouts.member>

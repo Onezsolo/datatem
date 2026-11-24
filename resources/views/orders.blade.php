@@ -1,13 +1,9 @@
-@extends('layouts.app')
-
-@section('content')
-@section('title', 'Orders')
-
+<x-layouts.member title="Orders">
 <style>
-.orders-page { font-family: 'Outfit', sans-serif; }
+.orders-page { font-family: inherit; }
 .orders-page .filter-tab { background: #f1f5f9; border: 1px solid #e2e8f0; color: #64748b; font-weight: 600; transition: all 0.2s; }
 .orders-page .filter-tab:hover { background: #e2e8f0; color: #0f172a; }
-.orders-page .filter-tab.active { background: #0891b2; border-color: #0891b2; color: white; }
+.orders-page .filter-tab.active { background: var(--color-brand-navy); border-color: var(--color-brand-navy); color: white; }
 </style>
 <div class="orders-page min-h-screen bg-gray-50 py-8 md:py-12" x-data="transactionHistory()" x-init="init()">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -17,7 +13,7 @@
                 <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Transaction history</h1>
             </div>
             <button @click="exportTransactions()" 
-                    class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-gray-700 hover:bg-slate-50 hover:border-cyan-200 hover:text-cyan-700 transition-colors shadow-sm w-full sm:w-auto">
+                    class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-gray-700 hover:bg-slate-50 hover:border-cyan-200 hover:text-brand-navy-soft transition-colors shadow-sm w-full sm:w-auto">
                 <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 Export
             </button>
@@ -64,7 +60,7 @@
                                             </div>
                                         </template>
                                         <template x-if="transaction.type === 'topup'">
-                                            <div class="w-10 h-10 bg-cyan-100 text-cyan-600 rounded-lg flex items-center justify-center shrink-0">
+                                            <div class="w-10 h-10 bg-line text-brand-navy rounded-lg flex items-center justify-center shrink-0">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                             </div>
                                         </template>
@@ -89,7 +85,7 @@
                                     }" class="inline-block px-3 py-1.5 rounded-lg text-xs font-semibold uppercase" x-text="transaction.status"></span>
                                 </td>
                                 <td class="px-5 py-4 text-right">
-                                    <button @click="openReceipt(transaction)" class="p-2 rounded-lg text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors">
+                                    <button @click="openReceipt(transaction)" class="p-2 rounded-lg text-gray-500 hover:text-brand-navy hover:bg-surface-muted transition-colors">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                     </button>
                                 </td>
@@ -99,7 +95,7 @@
                         <template x-if="loading">
                             <tr>
                                 <td colspan="6" class="px-5 py-16 text-center">
-                                    <div class="animate-spin w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full mx-auto mb-3"></div>
+                                    <div class="animate-spin w-8 h-8 border-2 border-brand-navy border-t-transparent rounded-full mx-auto mb-3"></div>
                                     <p class="text-gray-500 font-medium text-sm">Loading...</p>
                                 </td>
                             </tr>
@@ -124,9 +120,9 @@
                     <span x-text="pagination.total ? ((pagination.current_page - 1) * pagination.per_page + 1) : 0"></span>–<span x-text="Math.min(pagination.current_page * pagination.per_page, pagination.total)"></span> of <span x-text="pagination.total"></span>
                 </p>
                 <div class="flex items-center gap-2">
-                    <button @click="goToPage(pagination.current_page - 1)" :disabled="pagination.current_page <= 1" class="px-3 py-2 rounded-lg text-sm font-semibold border border-slate-200 text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white hover:border-cyan-200 hover:text-cyan-700 transition-colors">Previous</button>
+                    <button @click="goToPage(pagination.current_page - 1)" :disabled="pagination.current_page <= 1" class="px-3 py-2 rounded-lg text-sm font-semibold border border-slate-200 text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white hover:border-cyan-200 hover:text-brand-navy-soft transition-colors">Previous</button>
                     <span class="text-sm font-medium text-gray-600 px-2" x-text="pagination.current_page + ' / ' + (pagination.last_page || 1)"></span>
-                    <button @click="goToPage(pagination.current_page + 1)" :disabled="pagination.current_page >= pagination.last_page" class="px-3 py-2 rounded-lg text-sm font-semibold border border-slate-200 text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white hover:border-cyan-200 hover:text-cyan-700 transition-colors">Next</button>
+                    <button @click="goToPage(pagination.current_page + 1)" :disabled="pagination.current_page >= pagination.last_page" class="px-3 py-2 rounded-lg text-sm font-semibold border border-slate-200 text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white hover:border-cyan-200 hover:text-brand-navy-soft transition-colors">Next</button>
                 </div>
             </div>
         </div>
@@ -209,7 +205,7 @@
                         </template>
                     </div>
 
-                    <button @click="receiptOpen = false" class="w-full mt-4 py-3.5 rounded-xl bg-cyan-500 text-white font-semibold hover:bg-cyan-600 transition-colors">
+                    <button @click="receiptOpen = false" class="w-full mt-4 py-3.5 rounded-xl bg-brand-navy text-white font-semibold hover:bg-brand-navy transition-colors">
                         Close
                     </button>
                 </div>
@@ -243,8 +239,8 @@
                         <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </div>
-                        <div class="inline-flex items-baseline rounded-xl bg-cyan-100 px-4 py-2.5 border border-cyan-200">
-                            <span class="text-2xl sm:text-3xl font-bold text-cyan-700">₵1.00</span>
+                        <div class="inline-flex items-baseline rounded-xl bg-line px-4 py-2.5 border border-cyan-200">
+                            <span class="text-2xl sm:text-3xl font-bold text-brand-navy-soft">₵1.00</span>
                         </div>
                     </div>
                     <h2 id="invite-earn-title" class="text-xl font-bold text-gray-900 mb-2">Invite & Earn</h2>
@@ -254,7 +250,7 @@
                             <svg class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 0 5.414 0 12.05c0 2.123.551 4.2 1.6 6.04L0 24l6.101-1.601A11.77 11.77 0 0012.05 24.1c6.636 0 12.05-5.414 12.05-12.05 0-3.212-1.25-6.231-3.513-8.5zm-.002 0z"/></svg>
                             Share on WhatsApp
                         </a>
-                        <a href="/referral" class="inline-flex items-center justify-center w-full py-3 rounded-xl font-semibold bg-slate-100 text-gray-700 hover:bg-cyan-50 hover:text-cyan-700 hover:border-cyan-200 border border-transparent transition-colors text-sm">My referral link</a>
+                        <a href="/referral" class="inline-flex items-center justify-center w-full py-3 rounded-xl font-semibold bg-slate-100 text-gray-700 hover:bg-surface-muted hover:text-brand-navy-soft hover:border-cyan-200 border border-transparent transition-colors text-sm">My referral link</a>
                         <button @click="closeInviteEarn()" class="text-gray-400 font-medium text-sm hover:text-gray-600 py-2">Maybe later</button>
                     </div>
                 </div>
@@ -380,4 +376,4 @@ function transactionHistory() {
     }
 }
 </script>
-@endsection
+</x-layouts.member>

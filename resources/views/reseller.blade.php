@@ -1,3 +1,4 @@
+<x-layouts.member title="Reseller">
 @php
     $networkLogos = [
         'MTN' => asset('assets/mtn.jpg'),
@@ -5,18 +6,13 @@
         'AirtelTigo' => asset('assets/airtelTigo.png'),
         'Telecel' => asset('assets/telecel.png'),
     ];
-    $cardBgClasses = ['MTN' => 'bg-mtn-base', 'AT' => 'bg-airteltigo-base', 'AirtelTigo' => 'bg-airteltigo-base', 'Telecel' => 'bg-telecel-base'];
+    $cardBgClasses = ['MTN' => 'bg-mtn', 'AT' => 'bg-airteltigo', 'AirtelTigo' => 'bg-airteltigo', 'Telecel' => 'bg-telecel'];
 @endphp
-@extends('layouts.app')
-
-@section('content')
-@section('title', 'Reseller')
-
 <style>
-.reseller-page { font-family: 'Outfit', sans-serif; }
+.reseller-page { font-family: inherit; }
 .reseller-page .filter-pill { background: #f1f5f9; border: 1px solid #e2e8f0; color: #64748b; font-weight: 600; transition: all 0.2s; }
 .reseller-page .filter-pill:hover { background: #e2e8f0; color: #0f172a; }
-.reseller-page .filter-pill.active { background: #0891b2; border-color: #0891b2; color: white; }
+.reseller-page .filter-pill.active { background: var(--color-brand-navy); border-color: var(--color-brand-navy); color: white; }
 .reseller-page .card-mtn { border-left-color: #eab308; }
 .reseller-page .card-at { border-left-color: #a855f7; }
 .reseller-page .card-telecel { border-left-color: #ef4444; }
@@ -25,7 +21,7 @@
      data-network-logos='@json($networkLogos)'
      data-card-bg='@json($cardBgClasses)'>
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <a href="/dashboard" class="text-cyan-600 font-semibold hover:text-cyan-700 mb-6 inline-flex items-center text-sm">
+        <a href="/dashboard" class="text-brand-navy font-semibold hover:text-brand-navy-soft mb-6 inline-flex items-center text-sm">
             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Back to Dashboard
         </a>
@@ -73,9 +69,9 @@
                 <h2 class="text-lg font-bold text-gray-900 mb-1" x-text="request && request.status === 'rejected' ? 'Submit a new request' : 'Request reseller status'"></h2>
                 <p class="text-gray-500 text-sm mb-4">Tell us why you want to become a reseller (optional). We'll review shortly.</p>
                 <textarea x-model="message" rows="3" placeholder="e.g. I run a small shop and would like to sell data bundles..."
-                          class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-cyan-500 font-medium text-gray-900 resize-none text-sm"></textarea>
+                          class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-brand-navy font-medium text-gray-900 resize-none text-sm"></textarea>
                 <button type="button" @click="submitRequest()" :disabled="submitting"
-                        class="mt-4 px-6 py-3 rounded-xl font-semibold bg-cyan-500 text-white hover:bg-cyan-600 disabled:opacity-50 transition-colors text-sm">
+                        class="mt-4 px-6 py-3 rounded-xl font-semibold bg-brand-navy text-white hover:bg-brand-navy disabled:opacity-50 transition-colors text-sm">
                     <span x-show="!submitting">Submit request</span>
                     <span x-show="submitting">Submitting…</span>
                 </button>
@@ -95,7 +91,7 @@
                 </div>
                 <h2 class="text-lg font-bold text-gray-900 mb-1">Request not approved</h2>
                 <p class="text-gray-500 text-sm mb-4">You can submit a new request above or contact support.</p>
-                <a href="/support" class="inline-flex items-center px-5 py-2.5 rounded-xl font-semibold bg-slate-100 text-gray-700 hover:bg-cyan-50 hover:text-cyan-700 hover:border-cyan-200 border border-transparent transition-colors text-sm">Contact support</a>
+                <a href="/support" class="inline-flex items-center px-5 py-2.5 rounded-xl font-semibold bg-slate-100 text-gray-700 hover:bg-surface-muted hover:text-brand-navy-soft hover:border-cyan-200 border border-transparent transition-colors text-sm">Contact support</a>
             </div>
         </div>
 
@@ -120,7 +116,7 @@
                             <div class="flex items-center gap-2 flex-wrap">
                                 <span class="text-gray-500 text-sm shrink-0">{{ url('/store') }}/</span>
                                 <input type="text" x-model="storeSlug" placeholder="iksoft"
-                                       class="flex-1 min-w-[120px] px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-cyan-500 font-medium text-gray-900 bg-white text-sm"
+                                       class="flex-1 min-w-[120px] px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-navy font-medium text-gray-900 bg-white text-sm"
                                        @input="storeSlug = $event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '')">
                             </div>
                             <p class="text-xs text-gray-500 mt-1">Letters, numbers and hyphens only.</p>
@@ -130,19 +126,19 @@
                         <span class="w-7 h-7 rounded-lg bg-amber-200 text-amber-800 font-bold text-sm flex items-center justify-center shrink-0">2</span>
                         <div class="flex-1">
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Store name</label>
-                            <input type="text" x-model="storeName" placeholder="e.g. IkSoft Data" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-cyan-500 font-medium text-gray-900 bg-white text-sm">
+                            <input type="text" x-model="storeName" placeholder="e.g. IkSoft Data" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-navy font-medium text-gray-900 bg-white text-sm">
                         </div>
                     </div>
                     <div class="flex gap-3">
                         <span class="w-7 h-7 rounded-lg bg-amber-200 text-amber-800 font-bold text-sm flex items-center justify-center shrink-0">3</span>
                         <div class="flex-1">
                             <label class="block text-xs font-semibold text-gray-600 mb-1">WhatsApp (for customer support)</label>
-                            <input type="text" x-model="storeWhatsapp" placeholder="e.g. 0551234567" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-cyan-500 font-medium text-gray-900 bg-white text-sm">
+                            <input type="text" x-model="storeWhatsapp" placeholder="e.g. 0551234567" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-navy font-medium text-gray-900 bg-white text-sm">
                         </div>
                     </div>
                     <div class="pt-2">
                         <button type="button" @click="saveStoreSetup()" :disabled="savingSetup"
-                                class="px-6 py-3 rounded-xl font-semibold bg-cyan-500 text-white hover:bg-cyan-600 disabled:opacity-50 transition-colors text-sm">
+                                class="px-6 py-3 rounded-xl font-semibold bg-brand-navy text-white hover:bg-brand-navy disabled:opacity-50 transition-colors text-sm">
                             <span x-text="savingSetup ? 'Saving…' : 'Save and go live'"></span>
                         </button>
                         <p class="text-xs text-gray-500 mt-2">Then your store link will work and you can set prices.</p>
@@ -165,21 +161,21 @@
                     </div>
                     <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 col-span-2 sm:col-span-1">
                         <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Wallet (buy data)</p>
-                        <p class="text-xl font-bold text-cyan-700">GH₵ <span x-text="typeof walletBalance === 'number' ? walletBalance.toFixed(2) : '0.00'"></span></p>
+                        <p class="text-xl font-bold text-brand-navy-soft">GH₵ <span x-text="typeof walletBalance === 'number' ? walletBalance.toFixed(2) : '0.00'"></span></p>
                         <p class="text-xs font-semibold text-emerald-600 mt-2">Withdrawable profit: GH₵ <span x-text="typeof withdrawableBalance === 'number' ? withdrawableBalance.toFixed(2) : '0.00'"></span></p>
-                        <a href="/reseller/withdrawals" class="text-xs font-semibold text-cyan-600 hover:underline mt-2 inline-block">Withdraw earnings →</a>
+                        <a href="/reseller/withdrawals" class="text-xs font-semibold text-brand-navy hover:underline mt-2 inline-block">Withdraw earnings →</a>
                     </div>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                    <a href="/reseller/prices" class="inline-flex items-center px-5 py-2.5 rounded-xl font-semibold bg-cyan-500 text-white hover:bg-cyan-600 transition-colors text-sm">Set prices</a>
+                    <a href="/reseller/prices" class="inline-flex items-center px-5 py-2.5 rounded-xl font-semibold bg-brand-navy text-white hover:bg-brand-navy transition-colors text-sm">Set prices</a>
                     <a href="/reseller/withdrawals" class="inline-flex items-center px-5 py-2.5 rounded-xl font-semibold bg-white border border-slate-200 text-gray-700 hover:bg-slate-50 hover:border-emerald-200 hover:text-emerald-700 transition-colors text-sm">Withdraw earnings</a>
-                    <a :href="storeUrl" target="_blank" class="inline-flex items-center px-5 py-2.5 rounded-xl font-semibold bg-white border border-slate-200 text-gray-700 hover:bg-slate-50 hover:border-cyan-200 hover:text-cyan-700 transition-colors text-sm">Open store</a>
+                    <a :href="storeUrl" target="_blank" class="inline-flex items-center px-5 py-2.5 rounded-xl font-semibold bg-white border border-slate-200 text-gray-700 hover:bg-slate-50 hover:border-cyan-200 hover:text-brand-navy-soft transition-colors text-sm">Open store</a>
                 </div>
             </div>
 
-            <div class="p-4 bg-cyan-50 border border-cyan-200 rounded-xl">
-                <p class="text-xs font-semibold text-cyan-700 uppercase tracking-wider mb-1">Your store link — share with customers</p>
-                <a :href="storeUrl" target="_blank" class="text-base font-bold text-cyan-600 break-all hover:underline" x-text="storeUrl"></a>
+            <div class="p-4 bg-surface-muted border border-cyan-200 rounded-xl">
+                <p class="text-xs font-semibold text-brand-navy-soft uppercase tracking-wider mb-1">Your store link — share with customers</p>
+                <a :href="storeUrl" target="_blank" class="text-base font-bold text-brand-navy break-all hover:underline" x-text="storeUrl"></a>
             </div>
 
             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
@@ -257,7 +253,7 @@
                                 <div class="text-sm text-gray-500 mb-2">Base: GH₵ <span x-text="pkg.base_price.toFixed(2)"></span></div>
                                 <div class="font-bold text-gray-900 mb-1">Your price: GH₵ <span x-text="pkg.selling_price.toFixed(2)"></span></div>
                                 <p class="text-xs font-semibold mb-4" :class="pkg.your_profit > 0 ? 'text-emerald-600' : 'text-gray-500'" x-text="pkg.your_profit > 0 ? ('Profit: GH₵ ' + pkg.your_profit.toFixed(2)) : 'Same as base'"></p>
-                                <a href="/reseller/prices" class="mt-auto pt-3 border-t border-slate-100 inline-flex items-center justify-center py-2 rounded-lg bg-cyan-50 text-cyan-600 font-semibold text-sm hover:bg-cyan-100 transition-colors">Set prices</a>
+                                <a href="/reseller/prices" class="mt-auto pt-3 border-t border-slate-100 inline-flex items-center justify-center py-2 rounded-lg bg-surface-muted text-brand-navy font-semibold text-sm hover:bg-line transition-colors">Set prices</a>
                             </div>
                         </div>
                     </template>
@@ -477,4 +473,4 @@ function resellerPage() {
     };
 }
 </script>
-@endsection
+</x-layouts.member>

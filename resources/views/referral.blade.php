@@ -1,14 +1,10 @@
-@extends('layouts.app')
-
-@section('content')
-@section('title', 'Referral')
-
+<x-layouts.member title="Referral">
 <style>
-.referral-page { font-family: 'Outfit', sans-serif; }
+.referral-page { font-family: inherit; }
 </style>
 <div class="referral-page min-h-screen bg-gray-50 py-8 md:py-12" x-data="referralPage()" x-init="init()">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <a href="/dashboard" class="text-cyan-600 font-semibold hover:text-cyan-700 mb-6 inline-flex items-center text-sm">
+        <a href="/dashboard" class="text-brand-navy font-semibold hover:text-brand-navy-soft mb-6 inline-flex items-center text-sm">
             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Back to Dashboard
         </a>
@@ -21,7 +17,7 @@
 
         <template x-if="loading && !affiliate && !error">
             <div class="bg-white p-12 rounded-xl border border-slate-200 shadow-sm text-center">
-                <div class="animate-spin w-10 h-10 border-2 border-cyan-500 border-t-transparent rounded-full mx-auto"></div>
+                <div class="animate-spin w-10 h-10 border-2 border-brand-navy border-t-transparent rounded-full mx-auto"></div>
                 <p class="mt-4 font-medium text-gray-500 text-sm">Loading...</p>
             </div>
         </template>
@@ -47,7 +43,7 @@
                         <h2 class="text-base font-bold text-gray-900 mb-4">Your referral link</h2>
                         <div class="flex flex-col sm:flex-row gap-3">
                             <input type="text" readonly :value="referralUrl" class="flex-1 min-w-0 px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 font-mono text-sm font-medium text-gray-900">
-                            <button type="button" @click="copyCode()" class="px-5 py-3 rounded-xl font-semibold bg-cyan-500 text-white hover:bg-cyan-600 transition-colors text-sm shrink-0">
+                            <button type="button" @click="copyCode()" class="px-5 py-3 rounded-xl font-semibold bg-brand-navy text-white hover:bg-brand-navy transition-colors text-sm shrink-0">
                                 <span x-text="copied ? 'Copied!' : 'Copy link'"></span>
                             </button>
                         </div>
@@ -61,7 +57,7 @@
                         </div>
                         <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 min-w-[160px]">
                             <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Balance</p>
-                            <p class="text-xl font-bold text-cyan-600 mt-0.5 whitespace-nowrap" x-text="'GH₵ ' + (affiliate.balance != null ? Number(affiliate.balance).toFixed(2) : '0.00')"></p>
+                            <p class="text-xl font-bold text-brand-navy mt-0.5 whitespace-nowrap" x-text="'GH₵ ' + (affiliate.balance != null ? Number(affiliate.balance).toFixed(2) : '0.00')"></p>
                         </div>
                         <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 min-w-[160px]">
                             <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Earned</p>
@@ -85,10 +81,10 @@
                     <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
                         <div class="flex-1 min-w-0">
                             <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Amount (GH₵)</label>
-                            <input type="number" x-model="withdrawAmount" step="0.01" :min="min_withdraw" placeholder="0.00" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-cyan-500 font-medium text-gray-900 text-sm">
+                            <input type="number" x-model="withdrawAmount" step="0.01" :min="min_withdraw" placeholder="0.00" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-brand-navy font-medium text-gray-900 text-sm">
                             <p class="mt-1 text-xs text-red-600" x-show="withdrawError" x-text="withdrawError"></p>
                         </div>
-                        <button type="button" @click="submitWithdraw()" :disabled="withdrawLoading" class="px-5 py-3 rounded-xl font-semibold bg-cyan-500 text-white hover:bg-cyan-600 disabled:opacity-50 transition-colors text-sm shrink-0">
+                        <button type="button" @click="submitWithdraw()" :disabled="withdrawLoading" class="px-5 py-3 rounded-xl font-semibold bg-brand-navy text-white hover:bg-brand-navy disabled:opacity-50 transition-colors text-sm shrink-0">
                             <span x-text="withdrawLoading ? 'Submitting...' : 'Submit request'"></span>
                         </button>
                     </div>
@@ -226,4 +222,4 @@ function referralPage() {
     };
 }
 </script>
-@endsection
+</x-layouts.member>
