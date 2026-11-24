@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Payment received</title>
+</head>
+<body style="margin:0;padding:24px;background:#f4f4f4;font-family:Arial,sans-serif;color:#0b0b0b;">
+    <div style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #e2e4e8;border-radius:12px;padding:24px;">
+        <p style="margin:0 0 8px;color:#b0202d;font-size:12px;font-weight:700;">{{ \App\Support\Brand::name() }}</p>
+        <h1 style="margin:0 0 12px;color:#001534;font-size:22px;">Payment received</h1>
+        <p style="margin:0 0 12px;">Hello {{ $order->customer_name }}, we have received payment for order {{ $order->order_number }}.</p>
+        <p style="margin:0 0 12px;"><strong>Total paid:</strong> {{ $order->currency }} {{ number_format((float) $order->total, 2) }}</p>
+        <p style="margin:0 0 12px;">We will notify you when your order is packed and shipped.</p>
+        <p style="margin:0;color:#5a6270;font-size:13px;">Track your order from the storefront using your order number and phone number.</p>
+    </div>
+</body>
+</html>

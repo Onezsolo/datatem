@@ -1,6 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Shop\CartController as ShopCartController;
+use App\Http\Controllers\Shop\CatalogController as ShopCatalogController;
+use App\Http\Controllers\Shop\CheckoutController as ShopCheckoutController;
+use App\Http\Controllers\Shop\HomeController as ShopHomeController;
+use App\Http\Controllers\Shop\OrderController as ShopOrderController;
+use App\Http\Controllers\Shop\PaymentController as ShopPaymentController;
+use App\Http\Controllers\Shop\PaystackWebhookController as ShopPaystackWebhookController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -108,6 +115,14 @@ Route::get('/terms', function () {
     return view('terms');
 })->name('legal.terms');
 
+Route::get('/returns', function () {
+    return view('shop.legal.returns');
+})->name('legal.returns');
+
+Route::get('/contact', function () {
+    return view('shop.legal.contact');
+})->name('legal.contact');
+
 Route::get('/maintenance', function () {
     return view('maintenance');
 })->name('maintenance');
@@ -115,6 +130,33 @@ Route::get('/maintenance', function () {
 if (! app()->environment('production')) {
     Route::view('/design-system', 'design-system')->name('design-system');
 }
+
+// Shop (guest checkout, physical goods) — wired into the data system.
+Route::prefix('shop')->name('shop.')->group(function () {
+    Route::get('/', ShopHomeController::class)->name('index');
+    Route::get('/search', [ShopCatalogController::class, 'search'])->name('search');
+    Route::get('/category/{category:slug}', [ShopCatalogController::class, 'category'])->name('categories.show');
+    Route::get('/product/{product:slug}', [ShopCatalogController::class, 'product'])->name('products.show');
+    Route::view('/more', 'shop.more')->name('more');
+
+    Route::get('/cart', [ShopCartController::class, 'show'])->name('cart.show');
+    Route::post('/cart/items', [ShopCartController::class, 'add'])->name('cart.items.store');
+    Route::patch('/cart/items/{item}', [ShopCartController::class, 'update'])->name('cart.items.update');
+    Route::delete('/cart/items/{item}', [ShopCartController::class, 'remove'])->name('cart.items.destroy');
+    Route::delete('/cart', [ShopCartController::class, 'clear'])->name('cart.clear');
+
+    Route::get('/checkout', [ShopCheckoutController::class, 'show'])->name('checkout.show');
+    Route::post('/checkout', [ShopCheckoutController::class, 'store'])->name('checkout.store');
+
+    Route::get('/track', [ShopOrderController::class, 'trackForm'])->name('track');
+    Route::post('/track', [ShopOrderController::class, 'track'])->middleware('throttle:10,1')->name('track.lookup');
+    Route::get('/orders/{order:order_number}', [ShopOrderController::class, 'show'])->middleware('signed')->name('orders.show');
+
+    Route::get('/payments/callback', [ShopPaymentController::class, 'callback'])->name('payments.callback');
+    Route::get('/payments/{order:order_number}', [ShopPaymentController::class, 'pay'])->middleware('signed')->name('payments.pay');
+
+    Route::post('/webhooks/paystack', ShopPaystackWebhookController::class)->name('webhooks.paystack');
+});
 
 // Admin Routes
 Route::prefix('admin')->group(function () {
