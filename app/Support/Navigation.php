@@ -148,7 +148,7 @@ final class Navigation
      */
     public static function admin(): array
     {
-        return [
+        $groups = [
             'Overview' => array_map(fn (array $item) => self::item($item), [
                 ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'pattern' => 'admin/dashboard', 'icon' => 'home'],
                 ['label' => 'Shop catalog', 'route' => 'admin.shop', 'pattern' => 'admin/shop', 'icon' => 'bag'],
@@ -177,6 +177,15 @@ final class Navigation
                 ['label' => 'Settings', 'route' => 'admin.settings', 'pattern' => 'admin/settings', 'icon' => 'grid'],
             ]),
         ];
+
+        if (auth()->check() && auth()->user()->isDeveloper()) {
+            $groups['Developer'] = array_map(fn (array $item) => self::item($item), [
+                ['label' => 'Developer console', 'route' => 'developer.dashboard', 'pattern' => 'developer', 'icon' => 'grid'],
+                ['label' => 'Template licenses', 'route' => 'developer.licenses', 'pattern' => 'developer/licenses', 'icon' => 'check'],
+            ]);
+        }
+
+        return $groups;
     }
 
     /**

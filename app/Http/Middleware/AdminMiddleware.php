@@ -15,12 +15,12 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->role === \App\Models\User::ROLE_ADMIN) {
+        if (auth()->check() && in_array(auth()->user()->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_DEVELOPER], true)) {
             return $next($request);
         }
 
         // Check for JWT auth as well if it's an API request or uses 'api' guard
-        if (auth('api')->check() && auth('api')->user()->role === \App\Models\User::ROLE_ADMIN) {
+        if (auth('api')->check() && in_array(auth('api')->user()->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_DEVELOPER], true)) {
             return $next($request);
         }
 

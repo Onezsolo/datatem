@@ -218,6 +218,15 @@ Route::prefix('services')->name('services.')->group(function () {
     });
 });
 
+// Developer console (template licensing and distribution)
+Route::prefix('developer')->name('developer.')->middleware(['jwt.cookie', 'web.auth', 'developer'])->group(function () {
+    Route::get('/', [\App\Http\Controllers\DeveloperController::class, 'dashboard'])->name('dashboard');
+    Route::get('/licenses', [\App\Http\Controllers\DeveloperController::class, 'licenses'])->name('licenses');
+    Route::post('/licenses', [\App\Http\Controllers\DeveloperController::class, 'issue'])->name('licenses.issue');
+    Route::post('/licenses/{license}/revoke', [\App\Http\Controllers\DeveloperController::class, 'revoke'])->name('licenses.revoke');
+    Route::post('/licenses/{license}/reinstate', [\App\Http\Controllers\DeveloperController::class, 'reinstate'])->name('licenses.reinstate');
+    Route::post('/deployment-license', [\App\Http\Controllers\DeveloperController::class, 'setDeploymentLicense'])->name('deployment-license');
+});
 // Admin Routes
 Route::prefix('admin')->middleware(['jwt.cookie', 'admin.web'])->group(function () {
     Route::get('/', function () {

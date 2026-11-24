@@ -85,3 +85,14 @@ php artisan view:cache
 - **System design:** Admin → Settings → System design offers five WCAG-checked palettes (Navy & Gold, Emerald & Brass, Graphite & Ember, Ocean & Steel, Plum & Rose). The selection is stored in settings and applied through CSS variables on every layout.
 - **Service sources:** Admin → Services → Provider sources lets you add/edit/delete compatible API sources, choose which services each source serves, pick the default, and sync each source independently. Credentials are encrypted at rest and keys are masked in the UI. The default source is bootstrapped from `PATUPAA_API_*`; `php artisan db:seed --class=ServiceProviderSeeder` attaches legacy catalog rows to it.
 - **Accounting safety:** Catalog items and orders record their source; purchases debit the wallet and call only the item’s source; duplicate submits are blocked by idempotency keys and locks.
+## Developer account and template licensing
+
+- Create or rotate the developer account:
+
+```powershell
+php artisan template:dev-account dev@yourdomain.com --password="StrongPassword" --name="Template Developer"
+```
+
+- For fresh installs set `SEED_DEVELOPER_EMAIL`, `SEED_DEVELOPER_PASSWORD`, `SEED_DEVELOPER_NAME`, `SEED_DEVELOPER_PHONE` before running `php artisan db:seed`.
+- The developer signs in and lands on `/developer`: issue license keys to clients (client, email, domain, agreement reference, expiry, notes), revoke/reinstate them, and record the deployment license for this installation. Keys are stored hashed and shown only once.
+- Developers can also open the admin console and its settings/services pages. Licensing is administrative tracking for your agreements; it does not hard-lock the application — add an enforcement policy in your agreement if required.

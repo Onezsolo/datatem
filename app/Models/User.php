@@ -13,6 +13,7 @@ class User extends Authenticatable implements JWTSubject
 
     public const ROLE_USER = 'user';
     public const ROLE_ADMIN = 'admin';
+    public const ROLE_DEVELOPER = 'developer';
 
     /**
      * The attributes that are mass assignable.
@@ -81,6 +82,16 @@ class User extends Authenticatable implements JWTSubject
     public function isAdmin(): bool
     {
         return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isDeveloper(): bool
+    {
+        return $this->role === self::ROLE_DEVELOPER;
+    }
+
+    public function hasAdminAccess(): bool
+    {
+        return in_array($this->role, [self::ROLE_ADMIN, self::ROLE_DEVELOPER], true);
     }
 
     /**

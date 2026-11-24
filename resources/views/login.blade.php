@@ -23,7 +23,7 @@
                         const redirectParam = new URLSearchParams(window.location.search).get('redirect');
                         const target = redirectParam && redirectParam.startsWith('/') && !redirectParam.startsWith('//')
                             ? redirectParam
-                            : (data.user.role === 'admin' ? '/admin/dashboard' : '/dashboard');
+                            : (data.user.role === 'developer' ? '/developer' : (data.user.role === 'admin' ? '/admin/dashboard' : '/dashboard'));
                         window.location.href = target;
                     } else {
                         this.error = data.error || 'Invalid credentials';

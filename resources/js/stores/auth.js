@@ -89,7 +89,7 @@ export function createAuthStore() {
                     this.getStorage().setItem('user', JSON.stringify(updatedUser));
                     this.scheduleRefresh();
 
-                    if (updatedUser.role !== 'admin' && window.location.pathname.startsWith('/admin')) {
+                    if (!['admin', 'developer'].includes(updatedUser.role) && window.location.pathname.startsWith('/admin')) {
                         window.location.href = '/dashboard';
                     }
                 } else if (response.status === 401) {

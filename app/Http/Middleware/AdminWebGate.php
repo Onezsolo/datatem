@@ -16,7 +16,7 @@ class AdminWebGate
             return redirect()->guest(route('login', ['redirect' => $request->fullUrl()]));
         }
 
-        if (($user->role ?? null) !== 'admin') {
+        if (! in_array($user->role ?? null, ['admin', 'developer'], true)) {
             abort(403, 'Admin access only.');
         }
 

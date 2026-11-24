@@ -659,3 +659,9 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Feature toggles now adapt navigation: member sidebar gains Cart under Services and bottom navigation becomes Home / Super Mall / Cart / Profile when Mall is the only customer module (Bundles only when data is enabled). Shop orders + Wallet remain visible when enabled.
 - /dashboard redirects to the Super Mall when only shop modules are on; public home hides data sections/buttons and shows the mall hero/cards; footer/hero links are feature-gated. Admin Settings > Features has one-click Mall only and Enable all presets.
 - Regression tests: mall-only sidebar/bottom nav, home copy without data sections, dashboard redirect.
+
+### Developer account and template licensing
+
+- New developer role with 	emplate:dev-account artisan command (email/password/name/phone), env seeding via SEED_DEVELOPER_*, and access to both /developer and the admin console.
+- 	emplate_licenses table + developer console: issue licenses (client, email, domain, agreement reference, expiry, notes) with hashed keys shown once, revoke/reinstate, and set the deployment license for the installation. Dashboard shows license/module/admin stats and quick links to settings, service sources and shop.
+- Tests cover command seeding, access control, key issue/revoke/reinstate, expiry, deployment license validation and admin access.
