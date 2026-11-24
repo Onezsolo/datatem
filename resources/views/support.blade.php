@@ -1,4 +1,4 @@
-<x-layouts.public title="Support">
+<x-layouts.member title="Support">
 <style>
 .support-page { font-family: inherit; }
 </style>
@@ -66,4 +66,4 @@
         </div>
     </div>
 </div>
-</x-layouts.public>
+</x-layouts.member>

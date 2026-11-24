@@ -61,12 +61,11 @@
 
     <section class="container-page py-10 sm:py-12" aria-labelledby="quick-actions-heading">
         <h2 id="quick-actions-heading" class="text-xl font-extrabold tracking-tight text-brand-navy">Start here</h2>
-        <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
             @foreach ([
                 ['Buy data', 'Pick a bundle for your network', route('bundles'), 'phone'],
                 ['Top up wallet', 'Pay with Paystack or manual transfer', route('topup'), 'cart'],
                 ['Shop products', 'Everyday items delivered to you', url('/shop'), 'bag'],
-                ['Support', 'Talk to us on WhatsApp or phone', route('support'), 'help'],
             ] as [$label, $description, $href, $icon])
                 <x-ui.card :href="$href" padding="sm" class="h-full hover:bg-surface-muted">
                     <span class="inline-flex h-10 w-10 items-center justify-center rounded-control bg-brand-navy text-brand-yellow">

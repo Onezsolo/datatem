@@ -14,7 +14,7 @@ class PageSmokeTest extends TestCase
 
     public function test_public_pages_render(): void
     {
-        foreach (['/', '/bundles', '/login', '/signup', '/support'] as $uri) {
+        foreach (['/', '/bundles', '/login', '/signup'] as $uri) {
             $this->get($uri)->assertOk();
         }
     }

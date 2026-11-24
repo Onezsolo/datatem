@@ -1,0 +1,112 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\PatupaaCatalogItem;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
+use Tests\TestCase;
+
+class AdminServicesTest extends TestCase
+{
+    use RefreshDatabase;
+
+    private function admin(): User
+    {
+        return User::create([
+            'full_name' => 'Services Admin',
+            'email' => 'services-admin@example.com',
+            'phone' => '0244000070',
+            'password' => bcrypt('password'),
+            'role' => 'admin',
+        ]);
+    }
+
+    private function token(User $admin): string
+    {
+        return $this->postJson('/api/auth/login', [
+            'login' => $admin->email,
+            'password' => 'password',
+        ])->assertOk()->json('access_token');
+    }
+
+    public function test_services_catalog_page_renders_in_admin_shell(): void
+    {
+        $this->actingAs($this->admin())
+            ->get('/admin/services')
+            ->assertOk()
+            ->assertSee('Services catalog')
+            ->assertSee('Sync from PATUPAA')
+            ->assertSee('Admin navigation');
+    }
+
+    public function test_admin_can_toggle_items_and_service_switches(): void
+    {
+        config([
+            'services.patupaa.api_key' => 'pk_test',
+            'services.patupaa.api_secret' => 'sk_test',
+            'services.patupaa.base_url' => 'https://patupaa.test/api/v1',
+        ]);
+
+        $item = PatupaaCatalogItem::create([
+            'remote_type' => 'data_bundle',
+            'remote_id' => '1',
+            'name' => 'MTN 1GB',
+            'price' => 5.20,
+            'remote_enabled' => true,
+            'admin_enabled' => true,
+        ]);
+
+        $headers = ['Authorization' => 'Bearer '.$this->token($this->admin())];
+
+        $this->withHeaders($headers)
+            ->getJson('/api/admin/services')
+            ->assertOk()
+            ->assertJsonPath('items.total', 1)
+            ->assertJsonPath('configured', true);
+
+        $this->withHeaders($headers)
+            ->putJson('/api/admin/services/catalog/'.$item->id, ['admin_enabled' => false])
+            ->assertOk()
+            ->assertJsonPath('item.admin_enabled', false);
+
+        $this->assertFalse($item->fresh()->admin_enabled);
+
+        $this->withHeaders($headers)
+            ->putJson('/api/admin/services/toggles', ['toggles' => ['waec' => false, 'utility' => true]])
+            ->assertOk()
+            ->assertJsonPath('toggles.waec', false);
+    }
+
+    public function test_admin_sync_endpoint_returns_summary(): void
+    {
+        config([
+            'services.patupaa.api_key' => 'pk_test',
+            'services.patupaa.api_secret' => 'sk_test',
+            'services.patupaa.base_url' => 'https://patupaa.test/api/v1',
+        ]);
+
+        Http::fake(function ($request) {
+            $payload = str_contains($request->url(), '/utility-services')
+                ? [['key' => 'ecg', 'name' => 'ECG Prepaid', 'fee' => '2.00']]
+                : [];
+
+            return Http::response(['success' => true, 'data' => $payload]);
+        });
+
+        $headers = ['Authorization' => 'Bearer '.$this->token($this->admin())];
+
+        $this->withHeaders($headers)
+            ->postJson('/api/admin/services/sync')
+            ->assertOk()
+            ->assertJsonPath('summary.utility.synced', 1);
+
+        $this->assertSame(1, PatupaaCatalogItem::query()->where('remote_type', 'utility')->count());
+    }
+
+    public function test_services_admin_api_requires_authentication(): void
+    {
+        $this->getJson('/api/admin/services')->assertUnauthorized();
+    }
+}

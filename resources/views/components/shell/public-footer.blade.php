@@ -29,7 +29,6 @@
                     <li><a class="hover:text-white" href="{{ route('bundles') }}">Data bundles</a></li>
                     <li><a class="hover:text-white" href="{{ url('/shop') }}">Products</a></li>
                     <li><a class="hover:text-white" href="{{ route('store.landing') }}">Reseller stores</a></li>
-                    <li><a class="hover:text-white" href="{{ route('support') }}">Support</a></li>
                 </ul>
             </div>
 

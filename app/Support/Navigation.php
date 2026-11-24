@@ -14,9 +14,8 @@ final class Navigation
         return array_map(fn (array $item) => self::item($item), [
             ['label' => 'Home', 'route' => 'home', 'pattern' => 'home'],
             ['label' => 'Shop', 'url' => url('/shop'), 'pattern' => 'shop*'],
-            ['label' => 'Bundles', 'route' => 'bundles', 'pattern' => 'bundles'],
+            ['label' => 'Bundles', 'route' => 'services.data', 'pattern' => 'services/data'],
             ['label' => 'Stores', 'route' => 'store.landing', 'pattern' => 'store*'],
-            ['label' => 'Support', 'route' => 'support', 'pattern' => 'support'],
         ]);
     }
 
@@ -29,12 +28,19 @@ final class Navigation
             'Overview' => array_map(fn (array $item) => self::item($item), [
                 ['label' => 'Dashboard', 'url' => url('/dashboard'), 'pattern' => 'dashboard', 'icon' => 'home'],
                 ['label' => 'Shop', 'url' => url('/shop'), 'pattern' => 'shop*', 'icon' => 'bag'],
-                ['label' => 'Buy data', 'route' => 'bundles', 'pattern' => 'bundles', 'icon' => 'phone'],
             ]),
             'Orders' => array_map(fn (array $item) => self::item($item), [
                 ['label' => 'Orders', 'route' => 'orders.index', 'pattern' => 'orders', 'icon' => 'truck'],
                 ['label' => 'Shop orders', 'route' => 'orders.shop', 'pattern' => 'orders/shop', 'icon' => 'bag'],
                 ['label' => 'Wallet', 'route' => 'topup', 'pattern' => 'topup*', 'icon' => 'cart'],
+                ['label' => 'Service orders', 'route' => 'services.orders', 'pattern' => 'services/orders', 'icon' => 'grid'],
+            ]),
+            'Services' => array_map(fn (array $item) => self::item($item), [
+                ['label' => 'Data bundles', 'route' => 'services.data', 'pattern' => 'services/data', 'icon' => 'phone'],
+                ['label' => 'WAEC PINs', 'route' => 'services.waec', 'pattern' => 'services/waec', 'icon' => 'check'],
+                ['label' => 'Utility bills', 'route' => 'services.utility', 'pattern' => 'services/utility', 'icon' => 'grid'],
+                ['label' => 'Subscriptions', 'route' => 'services.subscriptions', 'pattern' => 'services/subscriptions', 'icon' => 'bag'],
+                ['label' => 'AFA registration', 'route' => 'services.afa', 'pattern' => 'services/afa', 'icon' => 'help'],
             ]),
             'Data earnings' => array_map(fn (array $item) => self::item($item), [
                 ['label' => 'Data referral', 'route' => 'referral', 'pattern' => 'referral', 'icon' => 'check'],
@@ -73,6 +79,7 @@ final class Navigation
             ]),
             'Data' => array_map(fn (array $item) => self::item($item), [
                 ['label' => 'Bundles', 'route' => 'admin.packages', 'pattern' => 'admin/packages', 'icon' => 'phone'],
+                ['label' => 'Services', 'route' => 'admin.services', 'pattern' => 'admin/services', 'icon' => 'grid'],
                 ['label' => 'Data orders', 'route' => 'admin.orders', 'pattern' => 'admin/orders', 'icon' => 'truck'],
                 ['label' => 'Top-ups', 'route' => 'admin.topups', 'pattern' => 'admin/topups', 'icon' => 'cart'],
             ]),

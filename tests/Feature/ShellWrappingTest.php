@@ -26,7 +26,7 @@ class ShellWrappingTest extends TestCase
     {
         $this->actingMember();
 
-        foreach (['/dashboard', '/orders', '/topup', '/referral', '/reseller', '/reseller/prices', '/reseller/withdrawals', '/profile', '/notifications'] as $uri) {
+        foreach (['/dashboard', '/orders', '/topup', '/referral', '/reseller', '/reseller/prices', '/reseller/withdrawals', '/profile', '/notifications', '/support'] as $uri) {
             $response = $this->get($uri);
 
             $response->assertOk()
@@ -39,7 +39,7 @@ class ShellWrappingTest extends TestCase
 
     public function test_public_pages_render_inside_public_shell(): void
     {
-        foreach (['/support', '/privacy', '/terms', '/maintenance', '/forgot-password'] as $uri) {
+        foreach (['/privacy', '/terms', '/maintenance', '/forgot-password'] as $uri) {
             $response = $this->get($uri);
 
             $response->assertOk()

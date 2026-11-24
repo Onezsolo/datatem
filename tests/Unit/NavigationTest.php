@@ -11,7 +11,7 @@ class NavigationTest extends TestCase
     {
         $items = Navigation::public();
 
-        $this->assertCount(5, $items);
+        $this->assertCount(4, $items);
 
         foreach ($items as $item) {
             $this->assertNotSame('', $item['label']);
@@ -24,7 +24,7 @@ class NavigationTest extends TestCase
     {
         $groups = Navigation::member();
 
-        $this->assertSame(['Overview', 'Orders', 'Data earnings', 'Account'], array_keys($groups));
+        $this->assertSame(['Overview', 'Orders', 'Services', 'Data earnings', 'Account'], array_keys($groups));
 
         $count = 0;
 
@@ -35,7 +35,7 @@ class NavigationTest extends TestCase
             }
         }
 
-        $this->assertSame(11, $count);
+        $this->assertSame(17, $count);
 
         $labels = collect($groups)->flatten(1)->pluck('label');
         $this->assertTrue($labels->contains('Orders'));

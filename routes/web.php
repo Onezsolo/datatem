@@ -8,6 +8,7 @@ use App\Http\Controllers\Shop\HomeController as ShopHomeController;
 use App\Http\Controllers\Shop\OrderController as ShopOrderController;
 use App\Http\Controllers\Shop\PaymentController as ShopPaymentController;
 use App\Http\Controllers\Shop\PaystackWebhookController as ShopPaystackWebhookController;
+use App\Http\Controllers\Services\ServiceController as ServicesController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -49,7 +50,7 @@ Route::get('/support', function () {
         'support_whatsapp_url' => $supportWhatsappUrl ?: null,
         'support_whatsapp_display' => $contactPhone ?: null,
     ]);
-})->name('support');
+})->middleware('web.auth')->name('support');
 
 Route::get('/forgot-password', function () {
     return view('forgot-password');
@@ -193,6 +194,26 @@ Route::prefix('shop')->name('shop.')->middleware('jwt.cookie')->group(function (
 
     Route::post('/webhooks/paystack', ShopPaystackWebhookController::class)->name('webhooks.paystack');
 });
+// PATUPAA services (data, WAEC, utility, subscriptions, AFA) - login required.
+Route::prefix('services')->name('services.')->group(function () {
+    Route::get('/', [ServicesController::class, 'hub'])->name('index');
+    Route::get('/data', [ServicesController::class, 'data'])->name('data');
+    Route::get('/waec', [ServicesController::class, 'waec'])->name('waec');
+    Route::get('/utility', [ServicesController::class, 'utility'])->name('utility');
+    Route::get('/subscriptions', [ServicesController::class, 'subscriptions'])->name('subscriptions');
+    Route::get('/afa', [ServicesController::class, 'afa'])->name('afa');
+
+    Route::middleware('web.auth')->group(function () {
+        Route::post('/data/{item}', [ServicesController::class, 'storeData'])->name('data.store');
+        Route::post('/waec/{item}', [ServicesController::class, 'storeWaec'])->name('waec.store');
+        Route::post('/utility/lookup', [ServicesController::class, 'lookupUtility'])->name('utility.lookup');
+        Route::post('/utility/{item}', [ServicesController::class, 'storeUtility'])->name('utility.store');
+        Route::post('/subscriptions/{item}', [ServicesController::class, 'storeSubscriptions'])->name('subscriptions.store');
+        Route::post('/afa', [ServicesController::class, 'storeAfa'])->name('afa.store');
+        Route::get('/orders', [ServicesController::class, 'orders'])->name('orders');
+        Route::get('/orders/{reference}', [ServicesController::class, 'orderShow'])->name('orders.show');
+    });
+});
 
 // Admin Routes
 Route::prefix('admin')->middleware(['jwt.cookie', 'admin.web'])->group(function () {
@@ -219,6 +240,10 @@ Route::prefix('admin')->middleware(['jwt.cookie', 'admin.web'])->group(function 
     Route::get('/shop', function () {
         return view('admin.shop');
     })->name('admin.shop');
+
+    Route::get('/services', function () {
+        return view('admin.services');
+    })->name('admin.services');
 
     Route::get('/topups', function () {
         return view('admin.topups');

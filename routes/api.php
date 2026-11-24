@@ -102,6 +102,12 @@ Route::group([
     Route::put('/shop/delivery', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'updateDeliverySettings']);
     Route::get('/shop/orders', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'orders']);
     Route::put('/shop/orders/{order}/status', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'updateOrderStatus']);
+
+    // PATUPAA services catalog and availability
+    Route::get('/services', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'index']);
+    Route::put('/services/toggles', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'updateToggles']);
+    Route::post('/services/sync', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'sync']);
+    Route::put('/services/catalog/{item}', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'updateItem']);
     Route::get('/topups', [\App\Http\Controllers\AdminController::class, 'getTopups']);    Route::post('/topups/{id}/approve', [\App\Http\Controllers\AdminController::class, 'approveTopup']);
     Route::post('/payments/{reference}/verify-paystack', [\App\Http\Controllers\AdminController::class, 'verifyPaystackPayment']);
     Route::get('/payments', [\App\Http\Controllers\AdminController::class, 'getPayments']);

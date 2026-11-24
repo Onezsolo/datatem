@@ -628,3 +628,10 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Home stays public outside login: authenticated users can view the landing page (no redirect); the CTA switches to Welcome back with Dashboard (admin-aware) and Shop. Login/signup still land on the dashboard after signing in.
 
 - Fixed the refresh loop: /login and /signup no longer server-redirect authenticated visitors (dashboard's client guard sent them back, causing ping-pong). Authenticated login/signup pages now self-heal via POST /auth/session-token (new endpoint using the r2b cookie session), store the JWT in localStorage and redirect once; if minting fails the page stays put instead of looping.
+
+### PATUPAA services integration (data, WAEC, utility, subscriptions, AFA)
+
+- API client PatupaaClient (X-API-Key/X-API-Secret, envelope + error handling, idempotency headers) with config services.patupaa (PATUPAA_API_BASE_URL, PATUPAA_API_KEY, PATUPAA_API_SECRET).
+- Catalog mirror patupaa_catalog_items + PatupaaCatalogSync: data bundles, airtime/digital products, WAEC products, utility services; items missing at PATUPAA are marked emote_enabled = false; admin manual override (dmin_enabled) and global per-service switches + AFA price are enforced together. Admin console: /admin/services with sync, switches, AFA price and per-item on/off.
+- Wallet-paid service orders (service_orders) through PatupaaOrderService: debit before API submit, auto-refund and failed/refunded status when PATUPAA rejects or errors; order pages under /services/orders.
+- Customer pages (public browsing, login to buy): /services hub, /services/data, /services/waec, /services/utility (with account lookup), /services/subscriptions (gift cards region/terms + shared accounts), /services/afa. Data navigation now points to the PATUPAA data channel; shop remains fully local.

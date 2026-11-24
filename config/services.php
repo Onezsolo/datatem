@@ -41,6 +41,13 @@ return [
         'secret_key' => env('PAYSTACK_SECRET_KEY', ''),
     ],
 
+    'patupaa' => [
+        'base_url' => env('PATUPAA_API_BASE_URL', 'https://patupaa.com/api/v1'),
+        'api_key' => env('PATUPAA_API_KEY', ''),
+        'api_secret' => env('PATUPAA_API_SECRET', ''),
+        'timeout' => (int) env('PATUPAA_API_TIMEOUT', 25),
+    ],
+
     'mnotify' => [
         'api_key' => trim((string) env('MNOTIFY_API_KEY', '')),
         'sender_id' => trim((string) env('MNOTIFY_SENDER_ID', 'gabbyshub')),
