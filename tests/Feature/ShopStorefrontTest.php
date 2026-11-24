@@ -34,6 +34,8 @@ class ShopStorefrontTest extends TestCase
 
     public function test_shop_home_lists_seeded_catalogue(): void
     {
+        $this->actingAs($this->shopper());
+
         $this->get('/shop')
             ->assertOk()
             ->assertSee('Shop by category')
@@ -42,14 +44,19 @@ class ShopStorefrontTest extends TestCase
 
     public function test_product_page_renders(): void
     {
+        $this->actingAs($this->shopper());
+
         $this->get('/shop/product/samsung-galaxy-a56')
             ->assertOk()
             ->assertSee('Samsung Galaxy A56')
             ->assertSee('Add to cart');
     }
 
-    public function test_guest_cannot_add_to_cart_or_open_checkout(): void
+    public function test_guest_cannot_browse_shop_or_checkout(): void
     {
+        $this->get('/shop')->assertRedirectContains('/login');
+        $this->get('/shop/product/samsung-galaxy-a56')->assertRedirectContains('/login');
+
         $product = Product::query()->where('slug', 'samsung-galaxy-a56')->firstOrFail();
 
         $this->post('/shop/cart/items', ['product_id' => $product->id, 'quantity' => 1])
@@ -140,6 +147,8 @@ class ShopStorefrontTest extends TestCase
 
     public function test_track_form_and_more_page_render(): void
     {
+        $this->actingAs($this->shopper());
+
         $this->get('/shop/track')->assertOk()->assertSee('Track an order');
         $this->get('/shop/more')->assertOk();
     }

@@ -42,15 +42,15 @@ Route::get('/forgot-password', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-});
+})->middleware('web.auth');
 
 Route::get('/orders', function () {
     return view('orders');
-})->name('orders.index');
+})->middleware('web.auth')->name('orders.index');
 
 Route::get('/orders/shop', function () {
     return view('shop-orders');
-})->middleware('jwt.cookie')->name('orders.shop');
+})->middleware(['jwt.cookie', 'web.auth'])->name('orders.shop');
 
 Route::get('/topup', function () {
     $manualNumber = \App\Services\SettingsService::get('manual_payment_mobile_money', '0241234567');
@@ -61,35 +61,35 @@ Route::get('/topup', function () {
         'manual_payment_name' => $manualName,
         'manual_topup_enabled' => $manualTopupEnabled,
     ]);
-})->name('topup');
+})->middleware('web.auth')->name('topup');
 
 Route::get('/topup/callback', [\App\Http\Controllers\TopUpController::class, 'callback'])->name('topup.callback');
 
 Route::get('/notifications', function () {
     return view('notifications');
-})->name('notifications');
+})->middleware('web.auth')->name('notifications');
 
 Route::get('/profile', function () {
     return view('profile', [
         'deliveryZones' => \App\Shop\Services\ShopSettings::deliveryZones(),
     ]);
-})->name('profile');
+})->middleware('web.auth')->name('profile');
 
 Route::get('/referral', function () {
     return view('referral');
-})->name('referral');
+})->middleware('web.auth')->name('referral');
 
 Route::get('/reseller', function () {
     return view('reseller');
-})->name('reseller');
+})->middleware('web.auth')->name('reseller');
 
 Route::get('/reseller/prices', function () {
     return view('reseller-prices');
-})->name('reseller.prices');
+})->middleware('web.auth')->name('reseller.prices');
 
 Route::get('/reseller/withdrawals', function () {
     return view('reseller-withdrawals');
-})->name('reseller.withdrawals');
+})->middleware('web.auth')->name('reseller.withdrawals');
 
 Route::get('/store', function () {
     return view('store-landing');
@@ -138,7 +138,7 @@ if (! app()->environment('production')) {
 }
 
 // Shop (guest checkout, physical goods) — wired into the data system.
-Route::prefix('shop')->name('shop.')->middleware('jwt.cookie')->group(function () {
+Route::prefix('shop')->name('shop.')->middleware(['jwt.cookie', 'web.auth'])->group(function () {
     Route::get('/', ShopHomeController::class)->name('index');
     Route::get('/search', [ShopCatalogController::class, 'search'])->name('search');
     Route::get('/category/{category:slug}', [ShopCatalogController::class, 'category'])->name('categories.show');

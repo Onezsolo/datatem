@@ -590,3 +590,10 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Shop no longer behaves as guest: cart, checkout and wallet payment require the r2b login (auth middleware redirects guests to login); guest wording removed.
 - Cart is shop-only: header cart link/badge renders only inside `/shop*`; data flows never touch the cart.
 - Top up before purchase: checkout is wallet-only. The order and wallet debit happen in one transaction; insufficient balance blocks the order with a Top up CTA (Paystack shop checkout removed).
+
+### Unified sidebar and enforced login (latest)
+
+- Business name default set to `DEV ESCCAY TEMPLATE` (SettingsService fallback, `.env`, `.env.example`).
+- Shop pages now render inside the member shell, so data and shop share the same sidebar, topbar and bottom navigation; cart link/badge appears in the member topbar only on `/shop*`.
+- Login is enforced server-side for the whole shop and member area (`web.auth` on `/shop/*`, dashboard, orders, shop orders, topup, referral, reseller, profile, notifications).
+- `JwtFromCookie` is appended to the global web stack so the `auth_token` cookie authenticates every web request (browser + curl), with `auth_token` excluded from cookie encryption.

@@ -1,4 +1,4 @@
-<x-layouts.public title="Track an order" description="Track a shop order with your order number and phone number.">
+<x-layouts.member title="Track an order" description="Track a shop order with your order number and phone number.">
     <div class="container-page py-10">
         <div class="mx-auto max-w-xl">
             <h1 class="text-3xl font-extrabold tracking-tight text-brand-navy">Track your order</h1>
@@ -36,4 +36,4 @@
             </p>
         </div>
     </div>
-</x-layouts.public>
+</x-layouts.member>

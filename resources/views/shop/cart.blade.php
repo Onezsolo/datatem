@@ -1,4 +1,4 @@
-<x-layouts.public title="Your cart">
+<x-layouts.member title="Your cart">
     <div class="container-page py-8">
         <div class="flex flex-wrap items-end justify-between gap-3">
             <div>
@@ -92,4 +92,4 @@
             </div>
         @endif
     </div>
-</x-layouts.public>
+</x-layouts.member>

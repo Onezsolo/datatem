@@ -1,4 +1,4 @@
-<x-layouts.public title="Offline" description="You are offline.">
+<x-layouts.member title="Offline" description="You are offline.">
     <div class="container-page py-16">
         <div class="mx-auto max-w-xl rounded-card border border-line bg-surface-muted p-8 text-center">
             <h1 class="text-2xl font-extrabold text-brand-navy">You are offline</h1>
@@ -12,4 +12,4 @@
             <p class="mt-4 text-xs text-muted">Reconnect and refresh to see current prices and stock.</p>
         </div>
     </div>
-</x-layouts.public>
+</x-layouts.member>

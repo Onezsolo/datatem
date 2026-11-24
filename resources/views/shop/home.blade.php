@@ -1,11 +1,11 @@
-<x-layouts.public title="Shop home" description="Shop home essentials, phones, appliances and more from {{ \App\Support\Brand::name() }} with guest checkout.">
+<x-layouts.member title="Shop home" description="Shop home essentials, phones, appliances and more from {{ \App\Support\Brand::name() }} with guest checkout.">
     <x-shop.hero-carousel />
 
     <section id="categories" class="container-page py-10" aria-labelledby="categories-title">
         <div class="flex flex-wrap items-end justify-between gap-3">
             <div>
                 <h2 id="categories-title" class="text-2xl font-extrabold tracking-tight text-brand-navy">Shop by category</h2>
-                <p class="mt-1 text-sm text-muted">Find what you need without creating an account.</p>
+                <p class="mt-1 text-sm text-muted">Find what you need from your account.</p>
             </div>
         </div>
 
@@ -95,4 +95,4 @@
             </section>
         @endif
     @endforeach
-</x-layouts.public>
+</x-layouts.member>

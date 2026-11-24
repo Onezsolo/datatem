@@ -28,7 +28,7 @@ class JwtFromCookie
                     Auth::setUser($user);
                 }
             } catch (\Throwable) {
-                // Invalid or expired token — do not set user
+                // Invalid or expired token - do not set user
             }
         }
 

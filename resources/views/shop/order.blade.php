@@ -1,4 +1,4 @@
-<x-layouts.public :title="'Order '.$order->order_number">
+<x-layouts.member :title="'Order '.$order->order_number">
     @php
         $statusVariant = match ($order->status) {
             \App\Shop\Models\Order::STATUS_PAID, \App\Shop\Models\Order::STATUS_PROCESSING => 'info',
@@ -110,4 +110,4 @@
             </aside>
         </div>
     </div>
-</x-layouts.public>
+</x-layouts.member>

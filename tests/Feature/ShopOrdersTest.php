@@ -15,7 +15,14 @@ class ShopOrdersTest extends TestCase
 
     public function test_shop_orders_page_renders_in_member_shell(): void
     {
-        $this->get('/orders/shop')
+        $user = User::create([
+            'full_name' => 'Orders User',
+            'email' => 'orders-page@example.com',
+            'phone' => '0244000041',
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->actingAs($user)->get('/orders/shop')
             ->assertOk()
             ->assertSee('Shop orders')
             ->assertSee('Member navigation');

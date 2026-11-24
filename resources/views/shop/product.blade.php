@@ -1,4 +1,4 @@
-<x-layouts.public :title="$product->name" :description="$product->short_description">
+<x-layouts.member :title="$product->name" :description="$product->short_description">
     <div class="container-page py-8">
         <nav aria-label="Breadcrumb" class="text-sm text-muted">
             <ol class="flex flex-wrap items-center gap-2">
@@ -120,4 +120,4 @@
             </section>
         @endif
     </div>
-</x-layouts.public>
+</x-layouts.member>

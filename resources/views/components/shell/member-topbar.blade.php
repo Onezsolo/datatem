@@ -1,3 +1,11 @@
+@php
+    $memberCartUrl = request()->is('shop*') && \Illuminate\Support\Facades\Route::has('shop.cart.show') ? route('shop.cart.show') : null;
+    $memberCartCount = 0;
+
+    if ($memberCartUrl && \Illuminate\Support\Facades\Schema::hasTable('shop_carts')) {
+        $memberCartCount = app(\App\Shop\Services\CartService::class)->count(request());
+    }
+@endphp
 @props(['title' => null])
 
 <header class="sticky top-0 z-40 border-b border-line bg-surface">
@@ -23,6 +31,19 @@
         <div class="ms-auto flex items-center gap-2">
             <span class="hidden text-sm font-bold text-brand-navy sm:inline" x-data x-cloak x-text="'GHS ' + Number($store.auth.user.balance || 0).toFixed(2)"></span>
 
+            @if ($memberCartUrl)
+                <a
+                    href="{{ $memberCartUrl }}"
+                    class="inline-flex min-h-10 items-center gap-1.5 rounded-control border border-line px-3 text-sm font-bold text-brand-navy hover:bg-surface-muted"
+                    aria-label="Cart, {{ $memberCartCount }} {{ \Illuminate\Support\Str::plural('item', $memberCartCount) }}"
+                >
+                    <x-ui.icon name="cart" :size="16" />
+                    <span class="hidden sm:inline">Cart</span>
+                    @if ($memberCartCount > 0)
+                        <span class="inline-flex min-h-5 min-w-5 items-center justify-center rounded-control bg-brand-red-strong px-1 text-xs font-bold text-white" aria-hidden="true">{{ $memberCartCount }}</span>
+                    @endif
+                </a>
+            @endif
             <a href="{{ route('notifications') }}" class="inline-flex h-10 w-10 items-center justify-center rounded-control border border-line text-brand-navy hover:bg-surface-muted" aria-label="Notifications">
                 <x-ui.icon name="more" :size="18" />
             </a>
