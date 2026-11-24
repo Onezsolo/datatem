@@ -128,3 +128,6 @@ The developer catalog follows the structure used by established template provide
 - **License tiers:** each product has **Standard** (1 deployment, 180 days support, no resale) and **Extended** (unlimited deployments under agreement, 365 days support, resale/client billing allowed) pricing in `config/template_products.php`.
 - **Licensing:** issuing from a product/tier stores product key, tier, price, deployments allowed and support end date on the license; admins cannot access the developer catalog or license tools.
 - **Delivery:** "Create client package" snapshots the product into Template packages for applying on client deployments, followed by deployment license and handover.
+### Service sources are a developer page
+
+Provider sources, service switches and AFA pricing live at **`/developer/services`** in the developer console. The admin **Services** page (`/admin/services`) now contains only the catalog mirror (search, sync, per-item availability) and never exposes provider credentials or global service switches.

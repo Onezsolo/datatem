@@ -53,10 +53,10 @@ class AdminServicesTest extends TestCase
             ->assertDontSee('Provider sources');
     }
 
-    public function test_developer_sees_provider_sources_on_services_page(): void
+    public function test_developer_sees_provider_sources_on_developer_page(): void
     {
         $this->actingAs($this->developer())
-            ->get('/admin/services')
+            ->get('/developer/services')
             ->assertOk()
             ->assertSee('Provider sources')
             ->assertSee('Service availability');
@@ -159,5 +159,17 @@ class AdminServicesTest extends TestCase
     public function test_services_admin_api_requires_authentication(): void
     {
         $this->getJson('/api/admin/services')->assertUnauthorized();
+    }
+    public function test_service_source_settings_are_only_in_the_developer_console(): void
+    {
+        $admin = $this->admin();
+
+        $this->actingAs($admin)->get('/developer/services')->assertForbidden();
+
+        $this->actingAs($this->developer())
+            ->get('/admin/services')
+            ->assertOk()
+            ->assertDontSee('Provider sources')
+            ->assertDontSee('Service availability');
     }
 }

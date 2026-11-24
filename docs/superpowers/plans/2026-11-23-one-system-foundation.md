@@ -696,3 +696,8 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Modeled after standard template marketplaces: category/version, highlights, live preview, docs link, feature matrix, includes, support/update policy, changelog and per-product paths.
 - Standard and Extended license tiers per product with prices, deployment limits, resale rights and support windows; issuing a license records product/tier/price/deployments/support end.
 - Tests cover catalog structure, tier pricing and license field persistence; local migration applied.
+
+### Service sources moved out of the admin business page
+
+- The developer Setup link now opens /developer/services (service availability, AFA price, provider sources) inside the developer console; /admin/services is catalog-only for admins (provider sections hidden, provider APIs remain developer-only).
+- Regression test asserts admins cannot open the developer service page and the admin services page never shows provider settings.

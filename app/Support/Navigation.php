@@ -158,7 +158,7 @@ final class Navigation
                     ['label' => 'Licenses', 'route' => 'developer.licenses', 'pattern' => 'developer/licenses', 'icon' => 'check'],
                 ]),
                 'Setup' => array_map(fn (array $item) => self::item($item), [
-                    ['label' => 'Service sources', 'route' => 'admin.services', 'pattern' => 'admin/services', 'icon' => 'grid'],
+                    ['label' => 'Service sources', 'route' => 'developer.services', 'pattern' => 'developer/services', 'icon' => 'grid'],
                     ['label' => 'Template settings', 'route' => 'admin.settings', 'pattern' => 'admin/settings', 'icon' => 'help'],
                 ]),
             ];

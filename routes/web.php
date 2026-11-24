@@ -230,6 +230,10 @@ Route::prefix('developer')->name('developer.')->middleware(['jwt.cookie', 'web.a
     Route::get('/products/{product}', [\App\Http\Controllers\DeveloperController::class, 'productShow'])->name('products.show');
     Route::get('/products/{product}/preview', [\App\Http\Controllers\DeveloperController::class, 'productPreview'])->name('products.preview');
     Route::post('/products/{product}/package', [\App\Http\Controllers\DeveloperController::class, 'productPackage'])->name('products.package');
+    Route::get('/services', function () {
+        return view('admin.services', ['module' => 'providers']);
+    })->name('services');
+
     Route::get('/packages', [\App\Http\Controllers\DeveloperController::class, 'packages'])->name('packages');
     Route::post('/packages', [\App\Http\Controllers\DeveloperController::class, 'storePackage'])->name('packages.store');
     Route::post('/packages/{package}/apply', [\App\Http\Controllers\DeveloperController::class, 'applyPackage'])->name('packages.apply');

@@ -1,19 +1,22 @@
-<x-layouts.admin title="Services">
+@php($providerMode = ($module ?? 'catalog') === 'providers')
+<x-layouts.admin :title="$providerMode ? 'Service sources' : 'Services catalog'">
 <div class="min-h-screen bg-surface-muted py-8" x-data="servicesAdmin()" x-init="init()">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <header class="flex flex-wrap items-end justify-between gap-4">
             <div>
-                <a href="/admin/dashboard" class="text-sm font-semibold text-brand-navy">Admin</a>
-                <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy">Services catalog</h1>
-                <p class="mt-1 text-sm text-muted">Provider catalog mirror: data, subscriptions, WAEC, utility and AFA. Turn items off here or let provider sync disable them.</p>
+                <a href="{{ $providerMode ? '/developer' : '/admin/dashboard' }}" class="text-sm font-semibold text-brand-navy">{{ $providerMode ? 'Developer' : 'Admin' }}</a>
+                <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy">{{ $providerMode ? 'Service sources' : 'Services catalog' }}</h1>
+                <p class="mt-1 text-sm text-muted">{{ $providerMode ? 'Developer-only source credentials, service switches and AFA pricing.' : 'Provider catalog mirror: data, subscriptions, WAEC, utility and AFA. Turn items off here or let provider sync disable them.' }}</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
                 <span class="inline-flex min-h-8 items-center rounded-control px-2.5 text-xs font-bold" :class="configured ? 'bg-brand-yellow text-brand-navy' : 'bg-surface text-brand-red-strong border border-brand-red-strong'" x-text="configured ? 'Provider API connected' : 'Provider API not configured'"></span>
-                <button type="button" @click="syncNow()" :disabled="syncing" class="min-h-10 rounded-control bg-brand-yellow px-4 text-sm font-bold text-brand-navy hover:bg-brand-yellow-strong disabled:opacity-60" x-text="syncing ? 'Syncing...' : 'Sync from provider'"></button>
+                @unless ($providerMode)
+                    <button type="button" @click="syncNow()" :disabled="syncing" class="min-h-10 rounded-control bg-brand-yellow px-4 text-sm font-bold text-brand-navy hover:bg-brand-yellow-strong disabled:opacity-60" x-text="syncing ? 'Syncing...' : 'Sync from provider'"></button>
+                @endunless
             </div>
         </header>
 
-        @if (auth()->user()?->isDeveloper())
+        @if ($providerMode)
         <section class="mt-6 rounded-card border border-line bg-surface p-5">
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
@@ -84,6 +87,7 @@
 
         @endif
 
+        @if (! $providerMode)
         <div class="mt-6 overflow-hidden rounded-card border border-line bg-surface">
             <div class="flex flex-wrap items-center gap-3 border-b border-line p-4">
                 <div class="min-w-0 flex-1">
@@ -140,6 +144,8 @@
             </div>
             <p x-show="!loading && items.length === 0" class="p-6 text-sm text-muted">No catalog items yet. Run a provider sync.</p>
         </div>
+
+        @endif
 
         <div x-show="providerModal" x-cloak class="fixed inset-0 z-[125] overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="provider-modal-title">
             <div class="fixed inset-0 bg-brand-navy/60" @click="providerModal = false"></div>
