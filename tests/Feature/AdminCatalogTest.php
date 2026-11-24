@@ -206,4 +206,46 @@ class AdminCatalogTest extends TestCase
         $this->assertSame('tema', ShopSettings::defaultZone());
         $this->assertSame(5.0, ShopSettings::serviceCharge());
     }
+
+    public function test_admin_can_upload_multiple_photos_and_choose_the_primary(): void
+    {
+        Storage::fake('public');
+
+        $headers = ['Authorization' => 'Bearer '.$this->adminToken()];
+
+        $category = \App\Shop\Models\Category::create(['name' => 'Home', 'slug' => 'home-photos']);
+        $product = \App\Shop\Models\Product::create([
+            'category_id' => $category->id,
+            'name' => 'Photo Product',
+            'slug' => 'photo-product',
+            'price' => 100,
+            'sku' => 'DT-PHOTO-1',
+            'stock_quantity' => 2,
+        ]);
+
+        $first = $this->withHeaders($headers)
+            ->post('/api/admin/shop/products/'.$product->id.'/images', [
+                'image' => \Illuminate\Http\UploadedFile::fake()->image('first.jpg', 600, 600),
+            ])
+            ->assertCreated()
+            ->json('image');
+
+        $second = $this->withHeaders($headers)
+            ->post('/api/admin/shop/products/'.$product->id.'/images', [
+                'image' => \Illuminate\Http\UploadedFile::fake()->image('second.jpg', 600, 600),
+            ])
+            ->assertCreated()
+            ->json('image');
+
+        $this->assertTrue((bool) $first['is_primary']);
+        $this->assertFalse((bool) $second['is_primary']);
+
+        $this->withHeaders($headers)
+            ->putJson('/api/admin/shop/images/'.$second['id'].'/primary')
+            ->assertOk()
+            ->assertJsonPath('image.is_primary', true);
+
+        $this->assertTrue(\App\Shop\Models\ProductImage::findOrFail($second['id'])->is_primary);
+        $this->assertFalse(\App\Shop\Models\ProductImage::findOrFail($first['id'])->is_primary);
+    }
 }

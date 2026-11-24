@@ -176,6 +176,22 @@ class AdminCatalogController
         return response()->json(['image' => $image], 201);
     }
 
+    public function setPrimaryImage(Request $request, ProductImage $image): JsonResponse
+    {
+        $product = $image->product;
+
+        if ($product === null) {
+            abort(404);
+        }
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($product, $image): void {
+            $product->images()->update(['is_primary' => false]);
+            $image->update(['is_primary' => true]);
+        });
+
+        return response()->json(['image' => $image->refresh()]);
+    }
+
     public function destroyImage(ProductImage $image): JsonResponse
     {
         Storage::disk('public')->delete($image->path);

@@ -95,6 +95,7 @@ Route::group([
     Route::post('/shop/products/{product}/stock', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'adjustStock']);
     Route::post('/shop/products/{product}/images', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'uploadImage']);
     Route::delete('/shop/images/{image}', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'destroyImage']);
+    Route::put('/shop/images/{image}/primary', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'setPrimaryImage']);
     Route::post('/shop/products/{product}/variants', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'storeVariant']);
     Route::put('/shop/variants/{variant}', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'updateVariant']);
     Route::delete('/shop/variants/{variant}', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'destroyVariant']);

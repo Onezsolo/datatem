@@ -138,3 +138,6 @@ Provider sources, service switches and AFA pricing live at **`/developer/service
 - Authorization is server-side throughout: member routes require the authenticated web session, `/admin/*` and admin APIs are admin-only, developer tools and service management live under `/developer` with a developer role. Client-side hiding is never the only protection.
 - Legacy shop admin tables/columns (`shop_admins`, `shop_admin_audit_logs`, `admin_id` on inventory/notes) were removed; admin identity is the unified `users.role` model. Dead legacy views (`bundles`, classic `layouts/app`) were deleted.
 - Service management APIs live at `/api/developer/services` (developer token only); the old `/api/admin/services` path is gone.
+## Product photos
+
+Admin → Shop catalog → **Edit** on a product → **Images**: upload one or more photos (JPG/PNG/WebP, max 5MB each), delete photos, or set any photo as **primary**. The primary photo is used on shop cards and the product page; the admin product table shows the current primary thumbnail. Files are stored under `storage/app/public/product-images` and served through the `storage` link.

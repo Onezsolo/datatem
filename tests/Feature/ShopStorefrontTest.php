@@ -213,4 +213,25 @@ class ShopStorefrontTest extends TestCase
         $this->assertSame('10.00', (string) $affiliate->fresh()->balance);
         $this->assertSame('20.00', (string) $affiliate->fresh()->total_earned);
     }
+
+    public function test_product_page_shows_the_primary_photo(): void
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+
+        $product = Product::query()->where('slug', 'samsung-galaxy-a56')->firstOrFail();
+
+        \Illuminate\Support\Facades\Storage::disk('public')->put('product-images/samsung.jpg', 'fake');
+
+        $image = \App\Shop\Models\ProductImage::create([
+            'product_id' => $product->id,
+            'path' => 'product-images/samsung.jpg',
+            'alt_text' => 'Samsung Galaxy A56',
+            'is_primary' => true,
+            'sort_order' => 1,
+        ]);
+
+        $this->get('/shop/product/samsung-galaxy-a56')
+            ->assertOk()
+            ->assertSee('storage/'.$image->path, false);
+    }
 }

@@ -1,4 +1,8 @@
 <x-layouts.shop :title="$product->name" :description="$product->short_description">
+    @php
+        $mainImage = $product->primaryImage ?? $product->images->first();
+        $otherImages = $mainImage ? $product->images->where('id', '!==', $mainImage->id) : collect();
+    @endphp
     <div class="container-page py-8">
         <nav aria-label="Breadcrumb" class="text-sm text-muted">
             <ol class="flex flex-wrap items-center gap-2">
@@ -12,13 +16,13 @@
 
         <div class="mt-6 grid gap-8 lg:grid-cols-2">
             <div>
-                @if ($product->images->isNotEmpty())
+                @if ($mainImage)
                     <div class="overflow-hidden rounded-card border border-line bg-surface-muted">
-                        <img src="{{ asset('storage/'.$product->images->first()->path) }}" alt="{{ $product->images->first()->alt_text ?: $product->name }}" class="h-80 w-full object-cover sm:h-96">
+                        <img src="{{ asset('storage/'.$mainImage->path) }}" alt="{{ $mainImage->alt_text ?: $product->name }}" class="h-80 w-full object-cover sm:h-96">
                     </div>
-                    @if ($product->images->count() > 1)
+                    @if ($otherImages->isNotEmpty())
                         <div class="mt-3 grid grid-cols-4 gap-2">
-                            @foreach ($product->images->skip(1)->take(4) as $image)
+                            @foreach ($otherImages->take(4) as $image)
                                 <img src="{{ asset('storage/'.$image->path) }}" alt="{{ $image->alt_text ?: $product->name }}" class="h-20 w-full rounded-control border border-line object-cover">
                             @endforeach
                         </div>

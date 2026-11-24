@@ -27,6 +27,7 @@
                 <table class="w-full min-w-[720px] text-left text-sm">
                     <thead class="border-b border-line bg-surface-muted">
                         <tr>
+                            <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Photo</th>
                             <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Product</th>
                             <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Category</th>
                             <th class="px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted">Price</th>
@@ -38,6 +39,12 @@
                     <tbody class="divide-y divide-line">
                         <template x-for="product in products" :key="product.id">
                             <tr>
+                                <td class="px-4 py-3">
+                                    <template x-if="product.primary_image">
+                                        <img :src="'/storage/' + product.primary_image.path" alt="" class="h-10 w-10 rounded-control border border-line object-cover">
+                                    </template>
+                                    <span x-show="!product.primary_image" class="inline-flex h-10 w-10 items-center justify-center rounded-control border border-line bg-surface-muted text-[0.625rem] font-semibold text-muted">No photo</span>
+                                </td>
                                 <td class="px-4 py-3">
                                     <p class="font-bold text-brand-navy" x-text="product.name"></p>
                                     <p class="text-xs text-muted" x-text="product.sku"></p>
@@ -230,7 +237,9 @@
                     <div class="mt-2 flex flex-wrap items-center gap-2">
                         <template x-for="image in (productForm.images || [])" :key="image.id">
                             <div class="relative">
-                                <img :src="'/storage/' + image.path" :alt="image.alt_text || productForm.name" class="h-16 w-16 rounded-control border border-line object-cover">
+                                <img :src="'/storage/' + image.path" :alt="image.alt_text || productForm.name" class="h-16 w-16 rounded-control border object-cover" :class="image.is_primary ? 'border-brand-yellow ring-2 ring-brand-yellow/40' : 'border-line'">
+                                <span x-show="image.is_primary" class="absolute -left-1 -top-1 inline-flex min-h-5 items-center rounded-control bg-brand-yellow px-1.5 text-[0.5625rem] font-bold text-brand-navy">Primary</span>
+                                <button type="button" x-show="!image.is_primary" @click="setPrimaryImage(image)" class="absolute inset-x-0 bottom-0 rounded-b-control bg-brand-navy/85 py-0.5 text-[0.5625rem] font-bold text-white">Make primary</button>
                                 <button type="button" @click="deleteImage(image)" class="absolute -right-1 -top-1 inline-flex h-6 w-6 items-center justify-center rounded-control bg-brand-red-strong text-white" aria-label="Delete image">
                                     <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                 </button>
@@ -239,9 +248,10 @@
                         <p x-show="!(productForm.images || []).length" class="text-sm text-muted">No images yet.</p>
                     </div>
                     <label class="mt-3 inline-flex min-h-10 cursor-pointer items-center rounded-control border border-line px-3 text-sm font-bold text-brand-navy hover:bg-surface-muted">
-                        Upload image
-                        <input type="file" accept="image/png,image/jpeg,image/webp" class="sr-only" @change="uploadImage($event)">
+                        Upload photos
+                        <input type="file" accept="image/png,image/jpeg,image/webp" multiple class="sr-only" @change="uploadImage($event)">
                     </label>
+                    <p class="mt-1 text-xs text-muted">JPG, PNG or WebP up to 5MB. The first photo becomes primary; use Make primary to switch.</p>
                 </div>
 
                 <div x-show="productForm.id" class="mt-5 border-t border-line pt-4">
@@ -450,30 +460,42 @@ function shopAdmin() {
         },
 
         async uploadImage(event) {
-            const file = event.target.files && event.target.files[0];
-            if (!file || !this.productForm.id) return;
-
-            const form = new FormData();
-            form.append('image', file);
-            form.append('alt_text', this.productForm.name || '');
+            const files = Array.from(event.target.files || []);
+            if (files.length === 0 || !this.productForm.id) return;
 
             try {
-                const response = await fetch('/api/admin/shop/products/' + this.productForm.id + '/images', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer ' + this.$store.auth.token,
-                        'Accept': 'application/json'
-                    },
-                    body: form
-                });
-                const data = await response.json().catch(() => ({}));
-                if (!response.ok) throw new Error(data.message || 'Upload failed.');
+                for (const file of files) {
+                    const form = new FormData();
+                    form.append('image', file);
+                    form.append('alt_text', this.productForm.name || '');
+
+                    const response = await fetch('/api/admin/shop/products/' + this.productForm.id + '/images', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer ' + this.$store.auth.token,
+                            'Accept': 'application/json'
+                        },
+                        body: form
+                    });
+                    const data = await response.json().catch(() => ({}));
+                    if (!response.ok) throw new Error(data.message || 'Upload failed.');
+                }
+
                 await this.refreshProduct();
-                window.showAlert('Image uploaded.');
+                window.showAlert(files.length + ' photo(s) uploaded.');
             } catch (error) {
                 window.showAlert(error.message);
             } finally {
                 event.target.value = '';
+            }
+        },
+
+        async setPrimaryImage(image) {
+            try {
+                await this.api('/api/admin/shop/images/' + image.id + '/primary', { method: 'PUT' });
+                await this.refreshProduct();
+            } catch (error) {
+                window.showAlert(error.message);
             }
         },
 
