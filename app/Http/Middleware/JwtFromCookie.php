@@ -17,11 +17,6 @@ class JwtFromCookie
 
     public function handle(Request $request, Closure $next): Response
     {
-        // Admin area uses session-only auth; do not overwrite with JWT
-        if ($request->is('admin') || $request->is('admin/*')) {
-            return $next($request);
-        }
-
         $token = $request->cookie(self::COOKIE_NAME);
 
         if ($token && ! $request->header('Authorization')) {

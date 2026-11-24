@@ -1,8 +1,4 @@
-@extends('layouts.app')
-
-@section('title', 'Shop catalog')
-
-@section('content')
+<x-layouts.admin title="Shop catalog">
 <div class="admin-page min-h-screen bg-surface-muted py-8" x-data="shopAdmin()" x-init="init()">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <header class="flex flex-wrap items-end justify-between gap-4">
@@ -554,4 +550,4 @@ function shopAdmin() {
     };
 }
 </script>
-@endsection
+</x-layouts.admin>

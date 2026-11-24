@@ -38,6 +38,14 @@ class AdminCatalogTest extends TestCase
 
     public function test_admin_shop_page_renders(): void
     {
+        $this->actingAs(User::create([
+            'full_name' => 'Shop Admin',
+            'email' => 'shop-admin@example.com',
+            'phone' => '0244000020',
+            'password' => bcrypt('password'),
+            'role' => 'admin',
+        ]));
+
         $this->get('/admin/shop')
             ->assertOk()
             ->assertSee('Shop catalog')

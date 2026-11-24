@@ -13,7 +13,7 @@
         <header class="text-center mb-8">
             <p class="text-muted text-sm font-semibold uppercase tracking-wider mb-1">Top Up</p>
             <h1 class="text-2xl md:text-3xl font-bold text-brand-navy">Add funds to your wallet</h1>
-            <p class="mt-2 text-muted font-medium">Pay with MoMo or manual deposit. Min GH₵ 5.</p>
+            <p class="mt-2 text-muted font-medium">Pay with MoMo or manual deposit. Min GHS 5.</p>
         </header>
 
         <div x-show="successMsg" x-transition class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-card font-semibold text-sm" x-text="successMsg"></div>
@@ -25,16 +25,16 @@
                 <div class="mb-8">
                     <h3 class="text-sm font-semibold text-muted uppercase tracking-wider mb-3">1. Amount</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4">
-                        <button @click="amount = 5" :class="amount === 5 ? 'amount-btn active' : 'amount-btn'" class="py-3 rounded-card text-sm">GH₵ 5</button>
-                        <button @click="amount = 20" :class="amount === 20 ? 'amount-btn active' : 'amount-btn'" class="py-3 rounded-card text-sm">GH₵ 20</button>
-                        <button @click="amount = 50" :class="amount === 50 ? 'amount-btn active' : 'amount-btn'" class="py-3 rounded-card text-sm">GH₵ 50</button>
-                        <button @click="amount = 100" :class="amount === 100 ? 'amount-btn active' : 'amount-btn'" class="py-3 rounded-card text-sm">GH₵ 100</button>
+                        <button @click="amount = 5" :class="amount === 5 ? 'amount-btn active' : 'amount-btn'" class="py-3 rounded-card text-sm">GHS 5</button>
+                        <button @click="amount = 20" :class="amount === 20 ? 'amount-btn active' : 'amount-btn'" class="py-3 rounded-card text-sm">GHS 20</button>
+                        <button @click="amount = 50" :class="amount === 50 ? 'amount-btn active' : 'amount-btn'" class="py-3 rounded-card text-sm">GHS 50</button>
+                        <button @click="amount = 100" :class="amount === 100 ? 'amount-btn active' : 'amount-btn'" class="py-3 rounded-card text-sm">GHS 100</button>
                         <button @click="amount = 0" :class="amount === 0 ? 'amount-btn active' : 'amount-btn'" class="py-3 rounded-card text-sm col-span-2 sm:col-span-1">Custom</button>
                     </div>
                     <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted font-semibold">GH₵</span>
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted font-semibold">GHS</span>
                         <input type="number" x-model="amount" min="5" step="0.01" placeholder="Min 5" class="w-full pl-12 pr-4 py-3 rounded-card bg-surface-muted border border-line focus:outline-none focus:border-brand-navy text-brand-navy font-semibold">
-                        <p class="mt-1.5 text-xs text-muted">Minimum GH₵ 5.00</p>
+                        <p class="mt-1.5 text-xs text-muted">Minimum GHS 5.00</p>
                     </div>
                 </div>
 
@@ -79,7 +79,7 @@
                         </div>
                         <h4 class="font-bold text-brand-navy">Deposit instructions</h4>
                     </div>
-                    <p class="text-muted text-sm mb-4">Send <span class="font-bold text-brand-navy" x-text="'GH₵ ' + amount"></span> to the details below, then enter your transaction reference.</p>
+                    <p class="text-muted text-sm mb-4">Send <span class="font-bold text-brand-navy" x-text="'GHS ' + amount"></span> to the details below, then enter your transaction reference.</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                         <div class="p-4 bg-surface rounded-lg border border-line">
                             <p class="text-xs font-semibold text-muted uppercase tracking-wider mb-1">Number</p>
@@ -99,11 +99,11 @@
                 <!-- Summary (automated) -->
                 <div x-show="method === 'automated'" class="mb-8 p-5 bg-surface-muted rounded-card border border-line">
                     <p class="text-xs font-semibold text-muted uppercase tracking-wider mb-3">Summary</p>
-                    <div class="flex justify-between text-sm text-muted mb-1"><span>Amount to wallet</span><span x-text="'GH₵ ' + (parseFloat(amount) || 0).toFixed(2)"></span></div>
-                    <div class="flex justify-between text-sm text-muted mb-1"><span>Fee (3%)</span><span x-text="'GH₵ ' + (((parseFloat(amount) || 0) * 0.03).toFixed(2))"></span></div>
+                    <div class="flex justify-between text-sm text-muted mb-1"><span>Amount to wallet</span><span x-text="'GHS ' + (parseFloat(amount) || 0).toFixed(2)"></span></div>
+                    <div class="flex justify-between text-sm text-muted mb-1"><span>Fee (3%)</span><span x-text="'GHS ' + (((parseFloat(amount) || 0) * 0.03).toFixed(2))"></span></div>
                     <div class="flex justify-between font-bold text-brand-navy pt-3 mt-2 border-t border-line">
                         <span>Total to pay</span>
-                        <span class="text-brand-navy" x-text="'GH₵ ' + (((parseFloat(amount) || 0) * 1.03).toFixed(2))"></span>
+                        <span class="text-brand-navy" x-text="'GHS ' + (((parseFloat(amount) || 0) * 1.03).toFixed(2))"></span>
                     </div>
                     <div class="mt-5 pt-4 border-t border-line">
                         <label class="block text-xs font-semibold text-muted uppercase tracking-wider mb-2">Paystack reference</label>
@@ -159,7 +159,7 @@ function topupPage() {
             const error = params.get('error');
             const amount = params.get('amount');
             if (success === '1') {
-                this.successMsg = amount ? 'Your wallet has been credited with GH₵ ' + amount + '. Thank you!' : 'Payment successful. Your wallet has been credited.';
+                this.successMsg = amount ? 'Your wallet has been credited with GHS ' + amount + '. Thank you!' : 'Payment successful. Your wallet has been credited.';
                 history.replaceState({}, '', window.location.pathname);
             }
             if (error) {
@@ -176,7 +176,7 @@ function topupPage() {
             }
             const amt = parseFloat(this.amount) || 0;
             if (amt < 5) {
-                this.errorMsg = 'Minimum deposit is GH₵ 5.00.';
+                this.errorMsg = 'Minimum deposit is GHS 5.00.';
                 return;
             }
             this.loading = true;
@@ -242,7 +242,7 @@ function topupPage() {
                 }
                 const amount = parseFloat(data.amount || 0);
                 this.successMsg = amount > 0
-                    ? `Payment confirmed. Your wallet has been credited with GH₵ ${amount.toFixed(2)}.`
+                    ? `Payment confirmed. Your wallet has been credited with GHS ${amount.toFixed(2)}.`
                     : (data.message || 'Payment confirmed and wallet credited.');
                 localStorage.removeItem('last_topup_reference');
             } catch (e) {

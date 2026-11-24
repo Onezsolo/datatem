@@ -163,7 +163,7 @@ Route::prefix('shop')->name('shop.')->middleware('jwt.cookie')->group(function (
 });
 
 // Admin Routes
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware(['jwt.cookie', 'admin.web'])->group(function () {
     Route::get('/', function () {
         return view('admin.dashboard'); // Let Alpine handling the redirect if needed, or just show dashboard
     });

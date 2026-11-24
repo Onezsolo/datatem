@@ -153,16 +153,16 @@
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     <div class="bg-surface rounded-card border border-line shadow-none p-5">
                         <p class="text-xs font-semibold text-muted uppercase tracking-wider mb-1">Total sales</p>
-                        <p class="text-xl font-bold text-brand-navy">GH₵ <span x-text="totalSales.toFixed(2)"></span></p>
+                        <p class="text-xl font-bold text-brand-navy">GHS <span x-text="totalSales.toFixed(2)"></span></p>
                     </div>
                     <div class="bg-surface rounded-card border border-line shadow-none p-5">
                         <p class="text-xs font-semibold text-muted uppercase tracking-wider mb-1">Total profit</p>
-                        <p class="text-xl font-bold text-emerald-600">GH₵ <span x-text="totalProfit.toFixed(2)"></span></p>
+                        <p class="text-xl font-bold text-emerald-600">GHS <span x-text="totalProfit.toFixed(2)"></span></p>
                     </div>
                     <div class="bg-surface rounded-card border border-line shadow-none p-5 col-span-2 sm:col-span-1">
                         <p class="text-xs font-semibold text-muted uppercase tracking-wider mb-1">Wallet (buy data)</p>
-                        <p class="text-xl font-bold text-brand-navy-soft">GH₵ <span x-text="typeof walletBalance === 'number' ? walletBalance.toFixed(2) : '0.00'"></span></p>
-                        <p class="text-xs font-semibold text-emerald-600 mt-2">Withdrawable profit: GH₵ <span x-text="typeof withdrawableBalance === 'number' ? withdrawableBalance.toFixed(2) : '0.00'"></span></p>
+                        <p class="text-xl font-bold text-brand-navy-soft">GHS <span x-text="typeof walletBalance === 'number' ? walletBalance.toFixed(2) : '0.00'"></span></p>
+                        <p class="text-xs font-semibold text-emerald-600 mt-2">Withdrawable profit: GHS <span x-text="typeof withdrawableBalance === 'number' ? withdrawableBalance.toFixed(2) : '0.00'"></span></p>
                         <a href="/reseller/withdrawals" class="text-xs font-semibold text-brand-navy hover:underline mt-2 inline-block">Withdraw earnings →</a>
                     </div>
                 </div>
@@ -201,8 +201,8 @@
                                     <td class="px-5 py-3 text-sm font-medium text-muted" x-text="sale.created_at ? new Date(sale.created_at).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short', hour12: true }) : '—'"></td>
                                     <td class="px-5 py-3 font-mono text-sm font-medium text-ink" x-text="sale.reference || '—'"></td>
                                     <td class="px-5 py-3 font-medium text-brand-navy" x-text="sale.beneficiary || '—'"></td>
-                                    <td class="px-5 py-3 font-medium text-brand-navy">GH₵ <span x-text="Number(sale.amount).toFixed(2)"></span></td>
-                                    <td class="px-5 py-3 font-bold text-emerald-600">GH₵ <span x-text="Number(sale.reseller_profit).toFixed(2)"></span></td>
+                                    <td class="px-5 py-3 font-medium text-brand-navy">GHS <span x-text="Number(sale.amount).toFixed(2)"></span></td>
+                                    <td class="px-5 py-3 font-bold text-emerald-600">GHS <span x-text="Number(sale.reseller_profit).toFixed(2)"></span></td>
                                     <td class="px-5 py-3">
                                         <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold"
                                               :class="{
@@ -250,9 +250,9 @@
                                     <span class="text-[10px] font-bold uppercase tracking-wider text-muted bg-gray-100 px-2 py-0.5 rounded" x-text="pkg.volume_gb"></span>
                                 </div>
                                 <h3 class="text-base font-bold text-brand-navy mb-2" x-text="pkg.network + ' ' + pkg.volume_gb"></h3>
-                                <div class="text-sm text-muted mb-2">Base: GH₵ <span x-text="pkg.base_price.toFixed(2)"></span></div>
-                                <div class="font-bold text-brand-navy mb-1">Your price: GH₵ <span x-text="pkg.selling_price.toFixed(2)"></span></div>
-                                <p class="text-xs font-semibold mb-4" :class="pkg.your_profit > 0 ? 'text-emerald-600' : 'text-muted'" x-text="pkg.your_profit > 0 ? ('Profit: GH₵ ' + pkg.your_profit.toFixed(2)) : 'Same as base'"></p>
+                                <div class="text-sm text-muted mb-2">Base: GHS <span x-text="pkg.base_price.toFixed(2)"></span></div>
+                                <div class="font-bold text-brand-navy mb-1">Your price: GHS <span x-text="pkg.selling_price.toFixed(2)"></span></div>
+                                <p class="text-xs font-semibold mb-4" :class="pkg.your_profit > 0 ? 'text-emerald-600' : 'text-muted'" x-text="pkg.your_profit > 0 ? ('Profit: GHS ' + pkg.your_profit.toFixed(2)) : 'Same as base'"></p>
                                 <a href="/reseller/prices" class="mt-auto pt-3 border-t border-line inline-flex items-center justify-center py-2 rounded-lg bg-surface-muted text-brand-navy font-semibold text-sm hover:bg-line transition-colors">Set prices</a>
                             </div>
                         </div>

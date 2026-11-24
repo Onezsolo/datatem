@@ -15,6 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'jwt.cookie' => \App\Http\Middleware\JwtFromCookie::class,
+            'admin.web' => \App\Http\Middleware\AdminWebGate::class,
+        ]);
+        $middleware->encryptCookies(except: [
+            'auth_token',
         ]);
         $middleware->validateCsrfTokens(except: [
             'shop/webhooks/paystack',

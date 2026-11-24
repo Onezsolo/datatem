@@ -1,7 +1,5 @@
-@extends('layouts.app')
-
-@section('content')
-<div class="admin-page min-h-screen bg-gray-50 py-8" x-data="adminNotificationsPage()" x-init="init()">
+<x-layouts.admin title="Notifications">
+<div class="admin-page min-h-screen bg-surface-muted py-8" x-data="adminNotificationsPage()" x-init="init()">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <a href="/admin/dashboard" class="admin-back mb-6 inline-flex items-center text-sm">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
@@ -10,10 +8,10 @@
 
         <div class="mb-10">
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-bold text-slate-900">My Notifications</h2>
+                <h2 class="text-xl font-bold text-brand-navy">My Notifications</h2>
                 <div class="flex items-center gap-3">
-                    <button x-show="notifications.length > 0 && unreadCount > 0" @click="markAllRead()" class="text-sm font-semibold text-cyan-600 hover:underline">Mark all read</button>
-                    <button @click="fetchNotifications()" class="text-sm font-bold text-slate-500 hover:text-slate-700 flex items-center">
+                    <button x-show="notifications.length > 0 && unreadCount > 0" @click="markAllRead()" class="text-sm font-semibold text-brand-navy hover:underline">Mark all read</button>
+                    <button @click="fetchNotifications()" class="text-sm font-bold text-muted hover:text-ink flex items-center">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                         Refresh
                     </button>
@@ -21,27 +19,27 @@
             </div>
 
             <div x-show="notificationsLoading" class="text-center py-8">
-                <div class="animate-spin w-8 h-8 border-4 border-cyan-600 border-t-transparent rounded-full mx-auto mb-2"></div>
-                <p class="text-slate-500 text-sm font-bold">Loading...</p>
+                <div class="animate-spin w-8 h-8 border-4 border-brand-yellow border-t-transparent rounded-full mx-auto mb-2"></div>
+                <p class="text-muted text-sm font-bold">Loading...</p>
             </div>
 
-            <div x-show="!notificationsLoading && notifications.length === 0" class="bg-white rounded-2xl border border-slate-200 p-8 text-center">
-                <p class="text-slate-500 font-medium">No notifications yet. Data orders, topups, and complaints will appear here.</p>
+            <div x-show="!notificationsLoading && notifications.length === 0" class="bg-surface rounded-card border border-line p-8 text-center">
+                <p class="text-muted font-medium">No notifications yet. Data orders, topups, and complaints will appear here.</p>
             </div>
 
             <div x-show="!notificationsLoading && notifications.length > 0" class="space-y-3">
                 <template x-for="n in notifications" :key="n.id">
-                    <div @click="openNotification(n)" :class="n.read_at ? 'bg-white border-slate-100' : 'bg-cyan-50/50 border-cyan-100'" class="p-5 rounded-2xl border shadow-sm flex items-start space-x-4 cursor-pointer hover:shadow-md transition-all">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                    <div @click="openNotification(n)" :class="n.read_at ? 'bg-surface border-line' : 'bg-surface-muted/50 border-cyan-100'" class="p-5 rounded-card border shadow-none flex items-start space-x-4 cursor-pointer hover:shadow-none transition-all">
+                        <div class="w-10 h-10 rounded-card flex items-center justify-center flex-shrink-0"
                              :class="{ 'bg-emerald-100 text-emerald-600': n.type === 'success', 'bg-amber-100 text-amber-600': n.type === 'warning', 'bg-purple-100 text-purple-600': n.type === 'info', 'bg-rose-100 text-rose-600': n.type === 'critical' }">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h3 class="font-bold text-slate-900" x-text="n.title"></h3>
-                            <p class="text-sm text-slate-600 mt-0.5" x-text="n.message"></p>
-                            <span class="text-xs text-slate-400 mt-1 block" x-text="n.created_at_human"></span>
+                            <h3 class="font-bold text-brand-navy" x-text="n.title"></h3>
+                            <p class="text-sm text-muted mt-0.5" x-text="n.message"></p>
+                            <span class="text-xs text-muted mt-1 block" x-text="n.created_at_human"></span>
                         </div>
-                        <span x-show="!n.read_at" class="w-2 h-2 bg-cyan-500 rounded-full flex-shrink-0 mt-2"></span>
+                        <span x-show="!n.read_at" class="w-2 h-2 bg-surface-muted0 rounded-full flex-shrink-0 mt-2"></span>
                     </div>
                 </template>
             </div>
@@ -49,67 +47,67 @@
 
         <!-- System Alerts (broadcast) -->
         <div class="text-center mb-8">
-            <h1 class="text-4xl font-black text-slate-900 tracking-tight">System <span class="gradient-text">Alerts</span></h1>
-            <p class="text-slate-500 mt-2 font-medium">Broadcast important updates to all platform users.</p>
+            <h1 class="text-4xl font-black text-brand-navy tracking-tight">System <span class="text-brand-navy">Alerts</span></h1>
+            <p class="text-muted mt-2 font-medium">Broadcast important updates to all platform users.</p>
         </div>
 
         <div class="admin-card p-8">
             <form @submit.prevent="send" class="space-y-6">
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Alert Title</label>
-                    <input type="text" x-model="title" required placeholder="e.g. System Maintenance" class="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200 focus:border-cyan-500 outline-none transition-all font-medium text-slate-900">
+                    <label class="block text-sm font-bold text-ink mb-2">Alert Title</label>
+                    <input type="text" x-model="title" required placeholder="e.g. System Maintenance" class="w-full px-6 py-4 rounded-card bg-surface border border-line focus:border-brand-navy outline-none transition-all font-medium text-brand-navy">
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Message Body</label>
-                    <textarea x-model="message" required rows="4" placeholder="Type your broadcast message here..." class="w-full px-6 py-4 rounded-2xl bg-white border border-slate-200 focus:border-cyan-500 outline-none transition-all font-medium text-slate-900"></textarea>
+                    <label class="block text-sm font-bold text-ink mb-2">Message Body</label>
+                    <textarea x-model="message" required rows="4" placeholder="Type your broadcast message here..." class="w-full px-6 py-4 rounded-card bg-surface border border-line focus:border-brand-navy outline-none transition-all font-medium text-brand-navy"></textarea>
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Channels</label>
-                    <p class="text-xs text-slate-500 mb-2">Choose how to deliver: in-app notification, email, and/or SMS.</p>
+                    <label class="block text-sm font-bold text-ink mb-2">Channels</label>
+                    <p class="text-xs text-muted mb-2">Choose how to deliver: in-app notification, email, and/or SMS.</p>
                     <div class="flex flex-wrap gap-3">
                         <label class="inline-flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" x-model="channels.in_app" class="rounded border-slate-300 text-cyan-600 focus:ring-cyan-500">
-                            <span class="font-medium text-slate-700">In-app</span>
+                            <input type="checkbox" x-model="channels.in_app" class="rounded border-slate-300 text-brand-navy focus:ring-brand-navy">
+                            <span class="font-medium text-ink">In-app</span>
                         </label>
                         <label class="inline-flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" x-model="channels.email" class="rounded border-slate-300 text-cyan-600 focus:ring-cyan-500">
-                            <span class="font-medium text-slate-700">Email</span>
+                            <input type="checkbox" x-model="channels.email" class="rounded border-slate-300 text-brand-navy focus:ring-brand-navy">
+                            <span class="font-medium text-ink">Email</span>
                         </label>
                         <label class="inline-flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" x-model="channels.sms" class="rounded border-slate-300 text-cyan-600 focus:ring-cyan-500">
-                            <span class="font-medium text-slate-700">SMS</span>
+                            <input type="checkbox" x-model="channels.sms" class="rounded border-slate-300 text-brand-navy focus:ring-brand-navy">
+                            <span class="font-medium text-ink">SMS</span>
                         </label>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Send to</label>
+                    <label class="block text-sm font-bold text-ink mb-2">Send to</label>
                     <div class="flex flex-wrap gap-4 mb-3">
                         <label class="inline-flex items-center gap-2 cursor-pointer">
-                            <input type="radio" x-model="audience" value="all" class="text-cyan-600 focus:ring-cyan-500">
-                            <span class="font-medium text-slate-700">All users</span>
+                            <input type="radio" x-model="audience" value="all" class="text-brand-navy focus:ring-brand-navy">
+                            <span class="font-medium text-ink">All users</span>
                         </label>
                         <label class="inline-flex items-center gap-2 cursor-pointer">
-                            <input type="radio" x-model="audience" value="resellers" class="text-cyan-600 focus:ring-cyan-500">
-                            <span class="font-medium text-slate-700">Resellers only</span>
+                            <input type="radio" x-model="audience" value="resellers" class="text-brand-navy focus:ring-brand-navy">
+                            <span class="font-medium text-ink">Resellers only</span>
                         </label>
                         <label class="inline-flex items-center gap-2 cursor-pointer">
-                            <input type="radio" x-model="audience" value="users" class="text-cyan-600 focus:ring-cyan-500">
-                            <span class="font-medium text-slate-700">Selected users</span>
+                            <input type="radio" x-model="audience" value="users" class="text-brand-navy focus:ring-brand-navy">
+                            <span class="font-medium text-ink">Selected users</span>
                         </label>
                     </div>
                     <div x-show="audience === 'users'" class="mt-2">
-                        <select x-model="userIds" multiple class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-cyan-500 outline-none font-medium text-slate-900" style="min-height: 120px;">
+                        <select x-model="userIds" multiple class="w-full px-4 py-3 rounded-card border border-line focus:border-brand-navy outline-none font-medium text-brand-navy" style="min-height: 120px;">
                             <template x-for="u in recipientList" :key="u.id">
                                 <option :value="u.id" x-text="u.full_name + ' (' + (u.email || u.phone || '') + ')'"></option>
                             </template>
                         </select>
-                        <p class="text-xs text-slate-500 mt-1">Hold Ctrl/Cmd to select multiple.</p>
+                        <p class="text-xs text-muted mt-1">Hold Ctrl/Cmd to select multiple.</p>
                     </div>
                 </div>
-                <div x-show="sendError" class="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm" x-text="sendError"></div>
-                <div x-show="sendSuccess" class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm" x-text="sendSuccess"></div>
+                <div x-show="sendError" class="p-3 rounded-card bg-red-50 border border-red-200 text-red-700 text-sm" x-text="sendError"></div>
+                <div x-show="sendSuccess" class="p-3 rounded-card bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm" x-text="sendSuccess"></div>
                 <div class="pt-6">
-                    <button type="submit" :disabled="loading" class="w-full btn-admin-primary py-4 rounded-xl flex items-center justify-center gap-2 disabled:opacity-70">
+                    <button type="submit" :disabled="loading" class="w-full btn-admin-primary py-4 rounded-card flex items-center justify-center gap-2 disabled:opacity-70">
                         <span x-text="loading ? 'Sending...' : 'Send Announcement'"></span>
                         <svg x-show="!loading" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.167H3.38a1.345 1.345 0 01-1.35-1.108l-.51-4.139a1.345 1.345 0 011.057-1.479l7.332-1.294a1.76 1.76 0 011.883 1.536zm0 0l6.27-6.27m0 0a2.09 2.09 0 112.956 2.956L14 8.27m6.27-6.27L20 8.27M13 19.27h.01"/></svg>
                     </button>
@@ -273,4 +271,4 @@ function adminNotificationsPage() {
     };
 }
 </script>
-@endsection
+</x-layouts.admin>

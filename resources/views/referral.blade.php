@@ -57,15 +57,15 @@
                         </div>
                         <div class="p-4 rounded-card bg-surface-muted border border-line min-w-[160px]">
                             <p class="text-[10px] font-semibold text-muted uppercase tracking-wider">Balance</p>
-                            <p class="text-xl font-bold text-brand-navy mt-0.5 whitespace-nowrap" x-text="'GH₵ ' + (affiliate.balance != null ? Number(affiliate.balance).toFixed(2) : '0.00')"></p>
+                            <p class="text-xl font-bold text-brand-navy mt-0.5 whitespace-nowrap" x-text="'GHS ' + (affiliate.balance != null ? Number(affiliate.balance).toFixed(2) : '0.00')"></p>
                         </div>
                         <div class="p-4 rounded-card bg-surface-muted border border-line min-w-[160px]">
                             <p class="text-[10px] font-semibold text-muted uppercase tracking-wider">Earned</p>
-                            <p class="text-xl font-bold text-brand-navy mt-0.5 whitespace-nowrap" x-text="'GH₵ ' + (affiliate.total_earned != null ? Number(affiliate.total_earned).toFixed(2) : '0.00')"></p>
+                            <p class="text-xl font-bold text-brand-navy mt-0.5 whitespace-nowrap" x-text="'GHS ' + (affiliate.total_earned != null ? Number(affiliate.total_earned).toFixed(2) : '0.00')"></p>
                         </div>
                         <div class="p-4 rounded-card bg-surface-muted border border-line min-w-[160px]">
                             <p class="text-[10px] font-semibold text-muted uppercase tracking-wider">Withdrawn</p>
-                            <p class="text-xl font-bold text-brand-navy mt-0.5 whitespace-nowrap" x-text="'GH₵ ' + (affiliate.total_withdrawn != null ? Number(affiliate.total_withdrawn).toFixed(2) : '0.00')"></p>
+                            <p class="text-xl font-bold text-brand-navy mt-0.5 whitespace-nowrap" x-text="'GHS ' + (affiliate.total_withdrawn != null ? Number(affiliate.total_withdrawn).toFixed(2) : '0.00')"></p>
                         </div>
                         <div class="p-4 rounded-card bg-surface-muted border border-line min-w-[160px] col-span-2 lg:col-span-1 flex flex-col justify-center">
                             <p class="text-[10px] font-semibold text-muted uppercase tracking-wider">Status</p>
@@ -77,10 +77,10 @@
                 <!-- Request withdrawal -->
                 <div class="bg-surface rounded-card border border-line shadow-none p-6" x-show="affiliate.status === 'approved'">
                     <h2 class="text-base font-bold text-brand-navy mb-1">Request withdrawal</h2>
-                    <p class="text-sm text-muted mb-4">Minimum GH₵ <span x-text="min_withdraw != null ? Number(min_withdraw).toFixed(2) : '50.00'"></span>. A fee may apply.</p>
+                    <p class="text-sm text-muted mb-4">Minimum GHS <span x-text="min_withdraw != null ? Number(min_withdraw).toFixed(2) : '50.00'"></span>. A fee may apply.</p>
                     <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
                         <div class="flex-1 min-w-0">
-                            <label class="block text-xs font-semibold text-muted uppercase tracking-wider mb-1">Amount (GH₵)</label>
+                            <label class="block text-xs font-semibold text-muted uppercase tracking-wider mb-1">Amount (GHS)</label>
                             <input type="number" x-model="withdrawAmount" step="0.01" :min="min_withdraw" placeholder="0.00" class="w-full px-4 py-3 rounded-card bg-surface-muted border border-line focus:outline-none focus:border-brand-navy font-medium text-brand-navy text-sm">
                             <p class="mt-1 text-xs text-red-600" x-show="withdrawError" x-text="withdrawError"></p>
                         </div>
@@ -108,8 +108,8 @@
                             <tbody>
                                 <template x-for="w in withdrawals" :key="w.id">
                                     <tr class="border-b border-line hover:bg-surface-muted/80">
-                                        <td class="px-5 py-3 font-semibold text-brand-navy text-sm" x-text="'GH₵ ' + (w.amount != null ? Number(w.amount).toFixed(2) : '0.00')"></td>
-                                        <td class="px-5 py-3 text-sm text-muted" x-text="w.fee_amount != null ? ('GH₵ ' + Number(w.fee_amount).toFixed(2)) : '—'"></td>
+                                        <td class="px-5 py-3 font-semibold text-brand-navy text-sm" x-text="'GHS ' + (w.amount != null ? Number(w.amount).toFixed(2) : '0.00')"></td>
+                                        <td class="px-5 py-3 text-sm text-muted" x-text="w.fee_amount != null ? ('GHS ' + Number(w.fee_amount).toFixed(2)) : '—'"></td>
                                         <td class="px-5 py-3">
                                             <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold" :class="w.status === 'approved' ? 'bg-emerald-100 text-emerald-700' : (w.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700')" x-text="w.status"></span>
                                         </td>
@@ -187,7 +187,7 @@ function referralPage() {
             this.withdrawError = '';
             const amt = parseFloat(this.withdrawAmount);
             if (isNaN(amt) || amt < this.min_withdraw) {
-                this.withdrawError = 'Amount must be at least GH₵ ' + this.min_withdraw.toFixed(2);
+                this.withdrawError = 'Amount must be at least GHS ' + this.min_withdraw.toFixed(2);
                 return;
             }
             if (this.affiliate && amt > parseFloat(this.affiliate.balance || 0)) {

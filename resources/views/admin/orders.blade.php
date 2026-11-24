@@ -1,7 +1,5 @@
-@extends('layouts.app')
-
-@section('content')
-<div class="admin-page min-h-screen bg-gray-50 py-8" 
+<x-layouts.admin title="Data orders">
+<div class="admin-page min-h-screen bg-surface-muted py-8" 
      x-data="orderManagement()" 
      x-init="init()">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -11,9 +9,9 @@
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                     Back to Dashboard
                 </a>
-                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Inventory</p>
-                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Orders</h1>
-                <p class="text-slate-500 mt-1 text-sm">Monitor and manage data transaction orders.</p>
+                <p class="text-xs font-semibold text-muted uppercase tracking-wider mb-1">Inventory</p>
+                <h1 class="text-3xl font-bold text-brand-navy tracking-tight">Orders</h1>
+                <p class="text-muted mt-1 text-sm">Monitor and manage data transaction orders.</p>
             </div>
             <div class="flex flex-wrap gap-3">
                 <button type="button" @click="checkAllOrdersStatus()" :disabled="checkingAllStatus"
@@ -30,15 +28,15 @@
         </div>
 
         <div class="admin-card overflow-hidden">
-            <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="p-6 border-b border-line bg-surface-muted/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div class="relative flex-1 max-w-md flex gap-2">
-                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     <input type="text" x-model="search" @input="onSearchInput()" @keydown.enter="clearSearchDebounce(); fetchOrders(1)"
                            placeholder="Search orders (ID, number, customer)..."
-                           class="w-full pl-12 pr-4 py-3 rounded-xl bg-white border border-slate-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none text-slate-900">
+                           class="w-full pl-12 pr-4 py-3 rounded-card bg-surface border border-line focus:border-brand-navy focus:ring-2 focus:ring-brand-navy/20 outline-none text-brand-navy">
                     <button type="button" @click="clearSearchDebounce(); fetchOrders(1)" class="btn-admin-primary px-5 py-3 shrink-0 text-sm">Search</button>
                 </div>
-                <select x-model="statusFilter" @change="fetchOrders(1)" class="px-4 py-3 rounded-xl bg-white border border-slate-200 outline-none focus:border-cyan-500 font-medium text-slate-600 text-sm">
+                <select x-model="statusFilter" @change="fetchOrders(1)" class="px-4 py-3 rounded-card bg-surface border border-line outline-none focus:border-brand-navy font-medium text-muted text-sm">
                     <option value="all">All Status</option>
                     <option value="delivered">Delivered</option>
                     <option value="processing">Processing</option>
@@ -48,35 +46,35 @@
             </div>
             <div class="overflow-x-auto min-h-[400px]">
                 <table class="w-full text-left">
-                    <thead class="bg-slate-50 border-b border-slate-100">
+                    <thead class="bg-surface-muted border-b border-line">
                         <tr>
-                            <th @click="sortBy('id')" class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:text-cyan-600">Order <span x-show="sortField === 'id'" x-text="sortOrder === 'asc' ? '↑' : '↓'"></span></th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Customer</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Number</th>
-                            <th @click="sortBy('amount')" class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:text-cyan-600">Amount <span x-show="sortField === 'amount'" x-text="sortOrder === 'asc' ? '↑' : '↓'"></span></th>
-                            <th @click="sortBy('profit')" class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:text-cyan-600">Profit <span x-show="sortField === 'profit'" x-text="sortOrder === 'asc' ? '↑' : '↓'"></span></th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">Status</th>
-                            <th @click="sortBy('created_at')" class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:text-cyan-600 text-right">Date <span x-show="sortField === 'created_at'" x-text="sortOrder === 'asc' ? '↑' : '↓'"></span></th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                            <th @click="sortBy('id')" class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider cursor-pointer hover:text-brand-navy">Order <span x-show="sortField === 'id'" x-text="sortOrder === 'asc' ? '↑' : '↓'"></span></th>
+                            <th class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider">Customer</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider">Number</th>
+                            <th @click="sortBy('amount')" class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider cursor-pointer hover:text-brand-navy">Amount <span x-show="sortField === 'amount'" x-text="sortOrder === 'asc' ? '↑' : '↓'"></span></th>
+                            <th @click="sortBy('profit')" class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider cursor-pointer hover:text-brand-navy">Profit <span x-show="sortField === 'profit'" x-text="sortOrder === 'asc' ? '↑' : '↓'"></span></th>
+                            <th class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider text-center">Status</th>
+                            <th @click="sortBy('created_at')" class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider cursor-pointer hover:text-brand-navy text-right">Date <span x-show="sortField === 'created_at'" x-text="sortOrder === 'asc' ? '↑' : '↓'"></span></th>
+                            <th class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100">
+                    <tbody class="divide-y divide-line">
                         <template x-for="order in orders" :key="order.id">
-                            <tr class="hover:bg-slate-50/80 transition-colors">
+                            <tr class="hover:bg-surface-muted/80 transition-colors">
                                 <td class="px-6 py-4">
-                                    <p class="font-semibold text-slate-900" x-text="order.id"></p>
-                                    <p class="text-xs text-cyan-600" x-text="order.package"></p>
+                                    <p class="font-semibold text-brand-navy" x-text="order.id"></p>
+                                    <p class="text-xs text-brand-navy" x-text="order.package"></p>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <p class="font-medium text-slate-700" x-text="order.customer || order.user?.full_name || '—'"></p>
-                                    <p x-show="order.source === 'storefront' && order.source_label" class="text-xs text-cyan-600 mt-0.5">Storefront: <span x-text="order.source_label"></span></p>
+                                    <p class="font-medium text-ink" x-text="order.customer || order.user?.full_name || '—'"></p>
+                                    <p x-show="order.source === 'storefront' && order.source_label" class="text-xs text-brand-navy mt-0.5">Storefront: <span x-text="order.source_label"></span></p>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <p class="font-mono text-sm text-slate-600" x-text="order.number"></p>
-                                    <p x-show="order.source === 'storefront'" class="text-xs text-cyan-600 mt-0.5">Storefront<span x-show="order.source_label">: <span x-text="order.source_label"></span></span></p>
+                                    <p class="font-mono text-sm text-muted" x-text="order.number"></p>
+                                    <p x-show="order.source === 'storefront'" class="text-xs text-brand-navy mt-0.5">Storefront<span x-show="order.source_label">: <span x-text="order.source_label"></span></span></p>
                                 </td>
-                                <td class="px-6 py-4 font-semibold text-slate-900">GHS <span x-text="parseFloat(order.amount).toFixed(2)"></span></td>
-                                <td class="px-6 py-4 font-medium" :class="order.profit != null && order.profit >= 0 ? 'text-emerald-600' : 'text-slate-500'">GHS <span x-text="order.profit != null ? Number(order.profit).toFixed(2) : '—'"></span></td>
+                                <td class="px-6 py-4 font-semibold text-brand-navy">GHS <span x-text="parseFloat(order.amount).toFixed(2)"></span></td>
+                                <td class="px-6 py-4 font-medium" :class="order.profit != null && order.profit >= 0 ? 'text-emerald-600' : 'text-muted'">GHS <span x-text="order.profit != null ? Number(order.profit).toFixed(2) : '—'"></span></td>
                                 <td class="px-6 py-4 text-center">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold border"
                                           :class="{
@@ -86,7 +84,7 @@
                                               'bg-red-50 text-red-700 border-red-100': order.status === 'failed'
                                           }" x-text="order.status"></span>
                                 </td>
-                                <td class="px-6 py-4 text-right text-sm text-slate-500" x-text="order.created_at ? new Date(order.created_at).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short', hour12: true }) : ''"></td>
+                                <td class="px-6 py-4 text-right text-sm text-muted" x-text="order.created_at ? new Date(order.created_at).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short', hour12: true }) : ''"></td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
                                         <template x-if="order.status === 'pending'">
@@ -98,7 +96,7 @@
                                         </template>
                                         <template x-if="order.transaction_id">
                                             <button type="button" @click="checkOrderStatus(order)" :disabled="checkingStatusId === order.id"
-                                                    class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-cyan-100 text-cyan-700 border border-cyan-200 hover:bg-cyan-200 disabled:opacity-50">
+                                                    class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-cyan-100 text-brand-navy-soft border border-line hover:bg-cyan-200 disabled:opacity-50">
                                                 <span x-show="checkingStatusId !== order.id">Check status</span>
                                                 <span x-show="checkingStatusId === order.id">Checking…</span>
                                             </button>
@@ -108,18 +106,18 @@
                             </tr>
                         </template>
                         <tr x-show="orders.length === 0">
-                            <td colspan="8" class="px-6 py-16 text-center text-slate-500">No orders found.</td>
+                            <td colspan="8" class="px-6 py-16 text-center text-muted">No orders found.</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="p-6 border-t border-slate-100 bg-slate-50/50 flex flex-wrap items-center justify-between gap-4">
-                <p class="text-sm text-slate-500">Showing <span x-text="pagination.total ? ((pagination.current_page - 1) * pagination.per_page + 1) : 0"></span>–<span x-text="Math.min(pagination.current_page * pagination.per_page, pagination.total)"></span> of <span x-text="pagination.total"></span></p>
+            <div class="p-6 border-t border-line bg-surface-muted/50 flex flex-wrap items-center justify-between gap-4">
+                <p class="text-sm text-muted">Showing <span x-text="pagination.total ? ((pagination.current_page - 1) * pagination.per_page + 1) : 0"></span>–<span x-text="Math.min(pagination.current_page * pagination.per_page, pagination.total)"></span> of <span x-text="pagination.total"></span></p>
                 <div class="flex items-center gap-2">
                     <button @click="goToPage(pagination.current_page - 1)" :disabled="pagination.current_page <= 1" class="btn-admin-secondary px-4 py-2 text-sm disabled:opacity-50">Previous</button>
-                    <span class="text-sm text-slate-600" x-text="'Page ' + pagination.current_page + ' of ' + (pagination.last_page || 1)"></span>
+                    <span class="text-sm text-muted" x-text="'Page ' + pagination.current_page + ' of ' + (pagination.last_page || 1)"></span>
                     <button @click="goToPage(pagination.current_page + 1)" :disabled="pagination.current_page >= pagination.last_page" class="btn-admin-secondary px-4 py-2 text-sm disabled:opacity-50">Next</button>
-                    <button @click="fetchOrders()" class="p-2 text-slate-400 hover:text-cyan-600 rounded-xl" title="Refresh"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button>
+                    <button @click="fetchOrders()" class="p-2 text-muted hover:text-brand-navy rounded-card" title="Refresh"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button>
                 </div>
             </div>
         </div>
@@ -331,4 +329,4 @@ function orderManagement() {
     }
 }
 </script>
-@endsection
+</x-layouts.admin>

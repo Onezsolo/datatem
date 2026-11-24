@@ -1,7 +1,5 @@
-@extends('layouts.app')
-
-@section('content')
-<div class="admin-page min-h-screen bg-gray-50 py-8" 
+<x-layouts.admin title="Payments">
+<div class="admin-page min-h-screen bg-surface-muted py-8" 
      x-data="paymentManagement()" 
      x-init="init()">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -11,9 +9,9 @@
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                     Back to Dashboard
                 </a>
-                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Finance</p>
-                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Manual Payments</h1>
-                <p class="text-slate-500 mt-1 text-sm">Verify bank/MoMo references. Paystack is under <a href="/admin/topups" class="admin-back">Topups</a>.</p>
+                <p class="text-xs font-semibold text-muted uppercase tracking-wider mb-1">Finance</p>
+                <h1 class="text-3xl font-bold text-brand-navy tracking-tight">Manual Payments</h1>
+                <p class="text-muted mt-1 text-sm">Verify bank/MoMo references. Paystack is under <a href="/admin/topups" class="admin-back">Topups</a>.</p>
             </div>
             <button @click="exportCSV()" class="btn-admin-secondary px-5 py-2.5 flex items-center gap-2 text-sm">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
@@ -23,8 +21,8 @@
 
         <div class="mb-6 flex gap-2 max-w-md">
             <div class="relative flex-1">
-                <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                <input type="text" x-model="search" @keydown.enter="fetchPayments(1)" placeholder="Search (ID, reference, user)..." class="w-full pl-12 pr-4 py-3 rounded-xl bg-white border border-slate-200 focus:border-cyan-500 outline-none text-slate-900">
+                <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" x-model="search" @keydown.enter="fetchPayments(1)" placeholder="Search (ID, reference, user)..." class="w-full pl-12 pr-4 py-3 rounded-card bg-surface border border-line focus:border-brand-navy outline-none text-brand-navy">
             </div>
             <button type="button" @click="fetchPayments(1)" class="btn-admin-primary px-5 py-3 shrink-0 text-sm">Search</button>
         </div>
@@ -32,23 +30,23 @@
         <div class="admin-card overflow-hidden">
             <div class="overflow-x-auto min-h-[400px]">
                 <table class="w-full text-left">
-                    <thead class="bg-slate-50 border-b border-slate-100">
+                    <thead class="bg-surface-muted border-b border-line">
                         <tr>
-                            <th @click="sortBy('id')" class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:text-cyan-600">ID</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">User</th>
-                            <th @click="sortBy('amount')" class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:text-cyan-600">Amount</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Reference</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">Status</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                            <th @click="sortBy('id')" class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider cursor-pointer hover:text-brand-navy">ID</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider">User</th>
+                            <th @click="sortBy('amount')" class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider cursor-pointer hover:text-brand-navy">Amount</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider">Reference</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider text-center">Status</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100">
+                    <tbody class="divide-y divide-line">
                         <template x-for="payment in payments" :key="payment.id">
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="px-6 py-4 font-semibold text-slate-900" x-text="payment.id"></td>
-                                <td class="px-6 py-4 text-slate-700" x-text="payment.user?.full_name || 'System'"></td>
-                                <td class="px-6 py-4 font-semibold text-slate-900">GHS <span x-text="parseFloat(payment.amount).toFixed(2)"></span></td>
-                                <td class="px-6 py-4 font-mono text-xs text-cyan-600" x-text="payment.reference"></td>
+                            <tr class="hover:bg-surface-muted/80 transition-colors">
+                                <td class="px-6 py-4 font-semibold text-brand-navy" x-text="payment.id"></td>
+                                <td class="px-6 py-4 text-ink" x-text="payment.user?.full_name || 'System'"></td>
+                                <td class="px-6 py-4 font-semibold text-brand-navy">GHS <span x-text="parseFloat(payment.amount).toFixed(2)"></span></td>
+                                <td class="px-6 py-4 font-mono text-xs text-brand-navy" x-text="payment.reference"></td>
                                 <td class="px-6 py-4 text-center">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold border border-amber-200 bg-amber-50 text-amber-700" x-text="payment.status"></span>
                                 </td>
@@ -62,13 +60,13 @@
                     </tbody>
                 </table>
             </div>
-            <div class="p-6 border-t border-slate-100 bg-slate-50/50 flex flex-wrap items-center justify-between gap-4">
-                <p class="text-sm text-slate-500">Showing <span x-text="pagination.total ? ((pagination.current_page - 1) * pagination.per_page + 1) : 0"></span>–<span x-text="Math.min(pagination.current_page * pagination.per_page, pagination.total)"></span> of <span x-text="pagination.total"></span></p>
+            <div class="p-6 border-t border-line bg-surface-muted/50 flex flex-wrap items-center justify-between gap-4">
+                <p class="text-sm text-muted">Showing <span x-text="pagination.total ? ((pagination.current_page - 1) * pagination.per_page + 1) : 0"></span>–<span x-text="Math.min(pagination.current_page * pagination.per_page, pagination.total)"></span> of <span x-text="pagination.total"></span></p>
                 <div class="flex items-center gap-2">
                     <button @click="goToPage(pagination.current_page - 1)" :disabled="pagination.current_page <= 1" class="btn-admin-secondary px-4 py-2 text-sm disabled:opacity-50">Previous</button>
-                    <span class="text-sm text-slate-600" x-text="'Page ' + pagination.current_page + ' of ' + (pagination.last_page || 1)"></span>
+                    <span class="text-sm text-muted" x-text="'Page ' + pagination.current_page + ' of ' + (pagination.last_page || 1)"></span>
                     <button @click="goToPage(pagination.current_page + 1)" :disabled="pagination.current_page >= pagination.last_page" class="btn-admin-secondary px-4 py-2 text-sm disabled:opacity-50">Next</button>
-                    <button @click="fetchPayments()" class="p-2 text-slate-400 hover:text-cyan-600 rounded-xl" title="Refresh"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button>
+                    <button @click="fetchPayments()" class="p-2 text-muted hover:text-brand-navy rounded-card" title="Refresh"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button>
                 </div>
             </div>
         </div>
@@ -163,4 +161,4 @@ function paymentManagement() {
     }
 }
 </script>
-@endsection
+</x-layouts.admin>

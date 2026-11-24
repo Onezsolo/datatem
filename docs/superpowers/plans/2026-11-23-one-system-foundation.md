@@ -566,14 +566,19 @@ git commit -m "feat: unify legacy layout with compiled design system"
 
 - Phase 0 complete (Tasks 1-6): test harness, Vite/Tailwind/Alpine pipeline, design tokens/components, public + member shells (desktop sidebar, mobile bottom nav), pilot pages `/`, `/bundles`, `/login`, `/signup`, legacy palette bridge, docs.
 - Phase 1 started: all member pages (`/dashboard`, `/orders`, `/topup`, `/referral`, `/reseller*`, `/profile`, `/notifications`) and public pages (`/support`, `/privacy`, `/terms`, `/maintenance`, `/forgot-password`) now render inside the unified shells; legacy cyan/Outfit styling bridged to brand tokens. Inner card polish continues.
+- Shop auth + finance: shop checkout requires the r2b login, carts/orders carry user_id, login/register/refresh set the httpOnly uth_token cookie, member shop orders match user_id (with legacy phone/email fallback); /admin/statistics is the single finance dashboard with shop revenue, paid/pending shop orders, delivery fees, combined revenue and shop daily breakdown. MFA is out of scope by decision.
 - Phase 2 storefront: `shop_*` schema + models, guest cart/checkout/Paystack/tracking, catalog seeder, shop pages under `/shop`, cart badge in header, unified member "Shop orders" tab (`/orders/shop` + `/api/auth/shop-orders`), admin catalog & shop orders (`/admin/shop`, `/api/admin/shop/*`).
 - Evidence: `php artisan test` 34 passed / 285 assertions; `npm run build` clean; live checks `/shop`, `/shop/product/...`, `/orders/shop`, `/admin/shop` all 200.
 - Branch pushed: `feat/one-system-foundation` (origin).
 
 ### Next
 
-1. Finish Phase 1 inner restyle (dashboard/orders/topup cards to `x-ui.*`).
-2. Phase 2 remainder: product image uploads, variants UI, delivery zone settings, Paystack webhook replay test with real keys.
-3. Phase 3: unify reseller storefront (`/store/{slug}`) and `spin-preview` onto the shared shell; remove their remaining CDNs.
-4. Phase 4: single admin shell, server-side gating of `/admin`, admin auth/MFA decision, finance ledger.
-5. Phase 5: QA sweep, screenshots at 360/768/1280, deploy build.
+1. Phase 5: QA sweep already started (Playwright screenshots at 390/1280 for public, member, admin); deploy build to cPanel when credentials/environment are supplied.
+
+### Completed follow-ups
+
+- Phase 1 remainder: member cards/buttons normalised to tokens (cash accents, radii, shadows removed); desktop sidebar + mobile off-canvas sidebar (member, admin, public header) with bottom navigation retained everywhere; currency unified to GHS.
+- Phase 2 remainder: product image uploads (storage + admin thumbnails), variant CRUD, delivery-zone/service-charge settings stored via SettingsService and used by checkout and validation.
+- Phase 3 complete: reseller storefront and spin preview render inside the shared public shell; all view CDNs removed (Tailwind/Alpine/fonts/confetti now bundled); spin wheel uses brand palette, no gradients or glow.
+- Phase 4 complete: one admin shell (sidebar + mobile drawer + bottom nav), all 14 admin views migrated, `/admin/*` gated server-side by `jwt.cookie` + `admin.web` (guest -> login, non-admin -> 403). MFA explicitly out of scope per user decision.
+- QA: Playwright screenshots captured at 390px and 1280px for home, shop, bundles, store, design system, dashboard, orders, top-up, shop orders, admin dashboard, admin shop and admin statistics; mobile sidebars verified open/close.

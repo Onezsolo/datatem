@@ -48,7 +48,7 @@
                 </div>
                 <div class="flex items-baseline gap-2">
                     <span class="text-muted text-sm font-medium">Balance</span>
-                    <span class="dash-accent text-3xl sm:text-4xl font-bold tabular-nums" x-text="'GH₵ ' + (stats.balance != null ? Number(stats.balance).toLocaleString(undefined, {minimumFractionDigits: 2}) : '0.00')"></span>
+                    <span class="dash-accent text-3xl sm:text-4xl font-bold tabular-nums" x-text="'GHS ' + (stats.balance != null ? Number(stats.balance).toLocaleString(undefined, {minimumFractionDigits: 2}) : '0.00')"></span>
                 </div>
             </div>
         </header>
@@ -70,7 +70,7 @@
                         <p class="font-semibold text-brand-navy">Invite & Earn</p>
                         <p class="text-muted text-sm">Share your link. Earn when others sign up.</p>
                     </div>
-                    <span class="dash-accent font-bold text-lg">₵1 per signup</span>
+                    <span class="dash-accent font-bold text-lg">GHS 1 per signup</span>
                 </div>
                 <div class="flex flex-wrap gap-2">
                     <a :href="whatsAppShareUrl" target="_blank" rel="noopener noreferrer" class="dash-pill px-4 py-2.5 rounded-lg text-sm font-medium text-ink hover:text-brand-navy inline-flex items-center gap-2">WhatsApp</a>
@@ -84,11 +84,11 @@
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
             <div class="dash-card rounded-card p-5">
                 <p class="text-muted text-xs font-medium uppercase tracking-wider mb-2">Today spent</p>
-                <p class="text-xl font-bold text-brand-navy tabular-nums" x-text="'GH₵ ' + (stats.todaySpent != null ? Number(stats.todaySpent).toLocaleString(undefined, {minimumFractionDigits: 2}) : '0.00')"></p>
+                <p class="text-xl font-bold text-brand-navy tabular-nums" x-text="'GHS ' + (stats.todaySpent != null ? Number(stats.todaySpent).toLocaleString(undefined, {minimumFractionDigits: 2}) : '0.00')"></p>
             </div>
             <div class="dash-card rounded-card p-5">
                 <p class="text-muted text-xs font-medium uppercase tracking-wider mb-2">Total spent</p>
-                <p class="text-xl font-bold text-brand-navy tabular-nums" x-text="'GH₵ ' + (stats.totalSpent != null ? Number(stats.totalSpent).toLocaleString(undefined, {minimumFractionDigits: 2}) : '0.00')"></p>
+                <p class="text-xl font-bold text-brand-navy tabular-nums" x-text="'GHS ' + (stats.totalSpent != null ? Number(stats.totalSpent).toLocaleString(undefined, {minimumFractionDigits: 2}) : '0.00')"></p>
             </div>
             <div class="dash-card rounded-card p-5">
                 <p class="text-muted text-xs font-medium uppercase tracking-wider mb-2">Orders</p>

@@ -1,7 +1,5 @@
-@extends('layouts.app')
-
-@section('content')
-<div class="admin-page min-h-screen bg-gray-50 py-8" 
+<x-layouts.admin title="Top-ups">
+<div class="admin-page min-h-screen bg-surface-muted py-8" 
      x-data="topupManagement()" 
      x-init="init()">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -11,9 +9,9 @@
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                     Back to Dashboard
                 </a>
-                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Finance</p>
-                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Topups</h1>
-                <p class="text-slate-500 mt-1 text-sm">Completed topups and pending Paystack. Use &quot;Check status&quot; to verify and credit.</p>
+                <p class="text-xs font-semibold text-muted uppercase tracking-wider mb-1">Finance</p>
+                <h1 class="text-3xl font-bold text-brand-navy tracking-tight">Topups</h1>
+                <p class="text-muted mt-1 text-sm">Completed topups and pending Paystack. Use &quot;Check status&quot; to verify and credit.</p>
             </div>
             <button @click="exportCSV()" class="btn-admin-secondary px-5 py-2.5 flex items-center gap-2 text-sm">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
@@ -23,8 +21,8 @@
 
         <div class="mb-6 flex gap-2 max-w-md">
             <div class="relative flex-1">
-                <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                <input type="text" x-model="search" @keydown.enter="fetchTopups(1)" placeholder="Search (ID, reference, customer)..." class="w-full pl-12 pr-4 py-3 rounded-xl bg-white border border-slate-200 focus:border-cyan-500 outline-none text-slate-900">
+                <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" x-model="search" @keydown.enter="fetchTopups(1)" placeholder="Search (ID, reference, customer)..." class="w-full pl-12 pr-4 py-3 rounded-card bg-surface border border-line focus:border-brand-navy outline-none text-brand-navy">
             </div>
             <button type="button" @click="fetchTopups(1)" class="btn-admin-primary px-5 py-3 shrink-0 text-sm">Search</button>
         </div>
@@ -32,47 +30,47 @@
         <div class="admin-card overflow-hidden">
             <div class="overflow-x-auto min-h-[400px]">
                 <table class="w-full text-left">
-                    <thead class="bg-slate-50 border-b border-slate-100">
+                    <thead class="bg-surface-muted border-b border-line">
                         <tr>
-                            <th @click="sortBy('id')" class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:text-cyan-600">Reference</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">User</th>
-                            <th @click="sortBy('amount')" class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:text-cyan-600">Amount</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Method</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">Status</th>
-                            <th class="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                            <th @click="sortBy('id')" class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider cursor-pointer hover:text-brand-navy">Reference</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider">User</th>
+                            <th @click="sortBy('amount')" class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider cursor-pointer hover:text-brand-navy">Amount</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider">Method</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider text-center">Status</th>
+                            <th class="px-6 py-4 text-xs font-semibold text-muted uppercase tracking-wider text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100">
+                    <tbody class="divide-y divide-line">
                         <template x-for="row in topups" :key="row.record_type + '-' + row.id">
-                            <tr class="hover:bg-slate-50/80 transition-colors">
+                            <tr class="hover:bg-surface-muted/80 transition-colors">
                                 <td class="px-6 py-4">
-                                    <p class="font-semibold text-slate-900 font-mono text-sm" x-text="row.reference || row.id"></p>
-                                    <p class="text-xs text-slate-500 mt-0.5" x-text="row.created_at ? new Date(row.created_at).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short', hour12: true }) : ''"></p>
+                                    <p class="font-semibold text-brand-navy font-mono text-sm" x-text="row.reference || row.id"></p>
+                                    <p class="text-xs text-muted mt-0.5" x-text="row.created_at ? new Date(row.created_at).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short', hour12: true }) : ''"></p>
                                 </td>
                                 <td class="px-6 py-4">
                                     <template x-if="row.record_type === 'storefront_pending' || row.record_type === 'storefront_completed'">
                                         <div>
-                                            <p class="font-semibold text-cyan-600">Storefront</p>
-                                            <p class="text-xs text-slate-500 mt-0.5" x-text="(row.reseller?.store_name || row.reseller?.full_name) || 'Reseller'"></p>
+                                            <p class="font-semibold text-brand-navy">Storefront</p>
+                                            <p class="text-xs text-muted mt-0.5" x-text="(row.reseller?.store_name || row.reseller?.full_name) || 'Reseller'"></p>
                                         </div>
                                     </template>
                                     <template x-if="row.record_type !== 'storefront_pending' && row.record_type !== 'storefront_completed'">
                                         <div>
-                                            <p class="font-medium text-slate-700" x-text="row.user?.full_name || 'System'"></p>
-                                            <p class="text-xs text-slate-500 mt-0.5" x-text="row.user?.email || ''" x-show="row.user?.email"></p>
+                                            <p class="font-medium text-ink" x-text="row.user?.full_name || 'System'"></p>
+                                            <p class="text-xs text-muted mt-0.5" x-text="row.user?.email || ''" x-show="row.user?.email"></p>
                                         </div>
                                     </template>
                                 </td>
                                 <td class="px-6 py-4 font-semibold text-emerald-600">GHS <span x-text="parseFloat(row.amount).toFixed(2)"></span></td>
-                                <td class="px-6 py-4 text-slate-500 text-sm" x-text="row.method"></td>
+                                <td class="px-6 py-4 text-muted text-sm" x-text="row.method"></td>
                                 <td class="px-6 py-4 text-center">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold border"
-                                          :class="row.status === 'approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : (row.record_type === 'storefront_completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : (row.record_type === 'storefront_pending' ? 'bg-cyan-50 text-cyan-700 border-cyan-100' : (row.record_type === 'paystack_pending' ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-slate-100 text-slate-600 border-slate-200')))"
+                                          :class="row.status === 'approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : (row.record_type === 'storefront_completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : (row.record_type === 'storefront_pending' ? 'bg-surface-muted text-brand-navy-soft border-cyan-100' : (row.record_type === 'paystack_pending' ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-surface-muted text-muted border-line')))"
                                           x-text="row.record_type === 'storefront_completed' ? 'Completed (Storefront)' : (row.record_type === 'storefront_pending' ? 'Pending (Storefront)' : (row.record_type === 'paystack_pending' ? 'Pending (Paystack)' : row.status))"></span>
                                 </td>
                                 <td class="px-6 py-4 text-right">
-                                    <template x-if="row.record_type === 'storefront_pending'"><span class="text-slate-400 text-xs">Completed on callback</span></template>
-                                    <template x-if="row.record_type === 'storefront_completed'"><span class="text-slate-400 text-xs">—</span></template>
+                                    <template x-if="row.record_type === 'storefront_pending'"><span class="text-muted text-xs">Completed on callback</span></template>
+                                    <template x-if="row.record_type === 'storefront_completed'"><span class="text-muted text-xs">—</span></template>
                                     <template x-if="row.record_type === 'paystack_pending'">
                                         <button @click="checkPaystackStatus(row.id)" :disabled="verifyingId === row.id" class="btn-admin-primary px-3 py-1.5 text-xs disabled:opacity-50">
                                             <span x-show="verifyingId !== row.id">Check status</span>
@@ -81,7 +79,7 @@
                                     </template>
                                     <template x-if="row.record_type === 'topup' && row.status === 'pending'">
                                         <div class="flex justify-end gap-2">
-                                            <button @click="approve(row.id)" class="bg-cyan-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-cyan-700">Approve</button>
+                                            <button @click="approve(row.id)" class="bg-brand-navy text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-cyan-700">Approve</button>
                                             <button class="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-100">Reject</button>
                                         </div>
                                     </template>
@@ -92,15 +90,15 @@
                 </table>
             </div>
             
-            <div class="p-8 border-t border-slate-100 bg-slate-50/50 flex flex-wrap items-center justify-between gap-4">
-                <p class="text-sm font-bold text-slate-500">
+            <div class="p-8 border-t border-line bg-surface-muted/50 flex flex-wrap items-center justify-between gap-4">
+                <p class="text-sm font-bold text-muted">
                     Showing <span x-text="pagination.total ? ((pagination.current_page - 1) * pagination.per_page + 1) : 0"></span>–<span x-text="Math.min(pagination.current_page * pagination.per_page, pagination.total)"></span> of <span x-text="pagination.total"></span> items
                 </p>
                 <div class="flex items-center gap-2">
-                    <button @click="goToPage(pagination.current_page - 1)" :disabled="pagination.current_page <= 1" class="px-4 py-2 rounded-xl font-bold border border-slate-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50">Previous</button>
-                    <span class="px-3 py-1 text-sm font-bold text-slate-600" x-text="'Page ' + pagination.current_page + ' of ' + (pagination.last_page || 1)"></span>
-                    <button @click="goToPage(pagination.current_page + 1)" :disabled="pagination.current_page >= pagination.last_page" class="px-4 py-2 rounded-xl font-bold border border-slate-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50">Next</button>
-                    <button @click="fetchTopups()" class="p-2 text-slate-400 hover:text-cyan-600 rounded-xl" title="Refresh"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button>
+                    <button @click="goToPage(pagination.current_page - 1)" :disabled="pagination.current_page <= 1" class="px-4 py-2 rounded-card font-bold border border-line disabled:opacity-50 disabled:cursor-not-allowed hover:bg-surface-muted">Previous</button>
+                    <span class="px-3 py-1 text-sm font-bold text-muted" x-text="'Page ' + pagination.current_page + ' of ' + (pagination.last_page || 1)"></span>
+                    <button @click="goToPage(pagination.current_page + 1)" :disabled="pagination.current_page >= pagination.last_page" class="px-4 py-2 rounded-card font-bold border border-line disabled:opacity-50 disabled:cursor-not-allowed hover:bg-surface-muted">Next</button>
+                    <button @click="fetchTopups()" class="p-2 text-muted hover:text-brand-navy rounded-card" title="Refresh"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button>
                 </div>
             </div>
         </div>
@@ -245,4 +243,4 @@ function topupManagement() {
     }
 }
 </script>
-@endsection
+</x-layouts.admin>

@@ -61,6 +61,54 @@ final class Navigation
     }
 
     /**
+     * @return array<string, array<int, array{label: string, url: string, route: string|null, active: bool, icon: string|null}>>
+     */
+    public static function admin(): array
+    {
+        return [
+            'Overview' => array_map(fn (array $item) => self::item($item), [
+                ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'pattern' => 'admin/dashboard', 'icon' => 'home'],
+                ['label' => 'Shop catalog', 'route' => 'admin.shop', 'pattern' => 'admin/shop', 'icon' => 'bag'],
+            ]),
+            'Data' => array_map(fn (array $item) => self::item($item), [
+                ['label' => 'Bundles', 'route' => 'admin.packages', 'pattern' => 'admin/packages', 'icon' => 'phone'],
+                ['label' => 'Data orders', 'route' => 'admin.orders', 'pattern' => 'admin/orders', 'icon' => 'truck'],
+                ['label' => 'Top-ups', 'route' => 'admin.topups', 'pattern' => 'admin/topups', 'icon' => 'cart'],
+            ]),
+            'Finance' => array_map(fn (array $item) => self::item($item), [
+                ['label' => 'Finance overview', 'route' => 'admin.statistics', 'pattern' => 'admin/statistics', 'icon' => 'grid'],
+                ['label' => 'Payments', 'route' => 'admin.payments', 'pattern' => 'admin/payments', 'icon' => 'check'],
+            ]),
+            'Growth' => array_map(fn (array $item) => self::item($item), [
+                ['label' => 'Users', 'route' => 'admin.users', 'pattern' => 'admin/users', 'icon' => 'help'],
+                ['label' => 'Resellers', 'route' => 'admin.resellers', 'pattern' => 'admin/resellers', 'icon' => 'bag'],
+                ['label' => 'Affiliates', 'route' => 'admin.affiliates', 'pattern' => 'admin/affiliates', 'icon' => 'check'],
+                ['label' => 'Announcements', 'route' => 'admin.announcements', 'pattern' => 'admin/announcements', 'icon' => 'more'],
+            ]),
+            'Support' => array_map(fn (array $item) => self::item($item), [
+                ['label' => 'Support', 'route' => 'admin.support', 'pattern' => 'admin/support', 'icon' => 'help'],
+                ['label' => 'Notifications', 'route' => 'admin.notifications', 'pattern' => 'admin/notifications', 'icon' => 'more'],
+            ]),
+            'Settings' => array_map(fn (array $item) => self::item($item), [
+                ['label' => 'Settings', 'route' => 'admin.settings', 'pattern' => 'admin/settings', 'icon' => 'grid'],
+            ]),
+        ];
+    }
+
+    /**
+     * @return array<int, array{label: string, url: string, active: bool, icon: string}>
+     */
+    public static function adminBottom(): array
+    {
+        return [
+            ['label' => 'Dashboard', 'url' => route('admin.dashboard'), 'active' => request()->routeIs('admin.dashboard'), 'icon' => 'home'],
+            ['label' => 'Orders', 'url' => route('admin.orders'), 'active' => request()->routeIs('admin.orders'), 'icon' => 'truck'],
+            ['label' => 'Shop', 'url' => route('admin.shop'), 'active' => request()->routeIs('admin.shop'), 'icon' => 'bag'],
+            ['label' => 'Settings', 'url' => route('admin.settings'), 'active' => request()->routeIs('admin.settings'), 'icon' => 'grid'],
+        ];
+    }
+
+    /**
      * @param  array{label: string, route?: string, url?: string, pattern?: string, icon?: string}  $item
      * @return array{label: string, url: string, route: string|null, active: bool, icon: string|null}
      */

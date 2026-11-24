@@ -83,4 +83,42 @@
     .carousel-item {
         scroll-snap-align: start;
     }
+
+    .admin-back {
+        color: var(--color-brand-navy);
+        font-weight: 600;
+    }
+
+    .admin-back:hover {
+        text-decoration: underline;
+    }
+
+    .admin-card {
+        background: var(--color-surface);
+        border-radius: var(--radius-card);
+        border: 1px solid var(--color-line);
+    }
+
+    .btn-admin-primary {
+        background: var(--color-brand-yellow);
+        color: var(--color-brand-navy);
+        font-weight: 700;
+        border-radius: var(--radius-control);
+    }
+
+    .btn-admin-primary:hover {
+        background: var(--color-brand-yellow-strong);
+    }
+
+    .btn-admin-secondary {
+        background: var(--color-surface);
+        color: var(--color-muted);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-control);
+        font-weight: 600;
+    }
+
+    .btn-admin-secondary:hover {
+        background: var(--color-surface-muted);
+    }
 }
