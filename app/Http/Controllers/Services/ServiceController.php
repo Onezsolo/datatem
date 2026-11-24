@@ -36,8 +36,12 @@ class ServiceController extends Controller
 
     public function data(): View
     {
+        $items = $this->items(PatupaaCatalogItem::TYPE_DATA);
+
         return view('services.data', [
-            'items' => $this->items(PatupaaCatalogItem::TYPE_DATA),
+            'items' => $items,
+            'groups' => $items->groupBy(fn (PatupaaCatalogItem $item) => $item->network ?: 'Other')
+                ->sortKeys(),
             'wallet' => (float) (auth()->user()?->balance ?? 0),
         ]);
     }

@@ -1,5 +1,5 @@
 <x-layouts.shop title="Data bundles">
-    <div class="space-y-6">
+    <div class="space-y-8">
         <header class="flex flex-wrap items-end justify-between gap-3">
             <div>
                 <p class="text-xs font-bold uppercase tracking-wide text-muted">Services / Data</p>
@@ -17,30 +17,38 @@
                 <p class="mt-1 text-sm text-muted">Run a catalog sync in the admin console or check back later.</p>
             </div>
         @else
-            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                @foreach ($items as $item)
-                    <div class="rounded-card border border-line bg-surface p-5">
-                        <div class="flex items-start justify-between gap-3">
-                            <div class="min-w-0">
-                                <p class="text-sm font-bold text-brand-navy">{{ $item->name }}</p>
-                                <p class="mt-0.5 text-xs text-muted">{{ collect([$item->network, $item->validity])->filter()->implode(' · ') }}</p>
+            @foreach ($groups as $network => $networkItems)
+                <x-ui.carousel
+                    :heading="$network"
+                    :label="$network.' data bundles'"
+                    :description="$networkItems->count().' '.($networkItems->count() === 1 ? 'bundle' : 'bundles')"
+                >
+                    @foreach ($networkItems as $item)
+                        <li class="carousel-item w-72 shrink-0">
+                            <div class="flex h-full flex-col rounded-card border border-line bg-surface p-5">
+                                <div class="flex items-start justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <p class="text-sm font-bold text-brand-navy">{{ $item->name }}</p>
+                                        <p class="mt-0.5 text-xs text-muted">{{ collect([$item->network, $item->validity])->filter()->implode(' · ') }}</p>
+                                    </div>
+                                    <x-ui.badge variant="neutral" size="sm">{{ $item->data_value ?: 'Bundle' }}</x-ui.badge>
+                                </div>
+
+                                <p class="mt-3 text-lg font-extrabold text-brand-navy">GHS {{ number_format((float) $item->price, 2) }}</p>
+
+                                <form action="{{ route('services.data.store', $item) }}" method="POST" class="mt-auto flex gap-2 pt-3">
+                                    @csrf
+                                    <label for="beneficiary-{{ $item->id }}" class="sr-only">Phone number</label>
+                                    <input id="beneficiary-{{ $item->id }}" name="beneficiary" type="tel" required placeholder="0244000000" class="h-11 min-w-0 flex-1 rounded-control border border-line px-3 text-sm">
+                                    <x-ui.button type="submit" size="sm">Buy</x-ui.button>
+                                </form>
+                                @error('beneficiary')<p class="mt-1 text-xs font-semibold text-brand-red-strong">{{ $message }}</p>@enderror
+                                @error('wallet')<p class="mt-1 text-xs font-semibold text-brand-red-strong">{{ $message }}</p>@enderror
                             </div>
-                            <x-ui.badge variant="neutral" size="sm">{{ $item->data_value ?: 'Bundle' }}</x-ui.badge>
-                        </div>
-
-                        <p class="mt-3 text-lg font-extrabold text-brand-navy">GHS {{ number_format((float) $item->price, 2) }}</p>
-
-                        <form action="{{ route('services.data.store', $item) }}" method="POST" class="mt-3 flex gap-2">
-                            @csrf
-                            <label for="beneficiary-{{ $item->id }}" class="sr-only">Phone number</label>
-                            <input id="beneficiary-{{ $item->id }}" name="beneficiary" type="tel" required placeholder="0244000000" class="h-11 min-w-0 flex-1 rounded-control border border-line px-3 text-sm">
-                            <x-ui.button type="submit" size="sm">Buy</x-ui.button>
-                        </form>
-                        @error('beneficiary')<p class="mt-1 text-xs font-semibold text-brand-red-strong">{{ $message }}</p>@enderror
-                        @error('wallet')<p class="mt-1 text-xs font-semibold text-brand-red-strong">{{ $message }}</p>@enderror
-                    </div>
-                @endforeach
-            </div>
+                        </li>
+                    @endforeach
+                </x-ui.carousel>
+            @endforeach
         @endif
     </div>
 </x-layouts.shop>
