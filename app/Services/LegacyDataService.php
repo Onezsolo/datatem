@@ -7,20 +7,19 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Refer2Bundle API V1 – balance, bundles, and orders.
- * @see samples/ – Base URL e.g. https://databosshub.org/api/v1 (use your provider’s URL)
+ * Legacy data API – balance, bundles, and orders for the reseller storefront.
  */
-final class Refer2BundleService
+final class LegacyDataService
 {
     public static function getBaseUrl(): string
     {
-        $url = SettingsService::get('refer2bundle_base_url', config('services.refer2bundle.base_url', 'https://databosshub.org/api/v1'));
+        $url = SettingsService::get('legacy_data_base_url', config('services.legacy_data.base_url', ''));
         return rtrim((string) $url, '/');
     }
 
     public static function getApiKey(): string
     {
-        $key = SettingsService::get('refer2bundle_api_key', config('services.refer2bundle.api_key', ''));
+        $key = SettingsService::get('legacy_data_api_key', config('services.legacy_data.api_key', ''));
         return trim((string) $key);
     }
 
@@ -32,7 +31,7 @@ final class Refer2BundleService
     {
         $key = self::getApiKey();
         if ($key === '') {
-            return ['success' => false, 'message' => 'Refer2Bundle API key not set.'];
+            return ['success' => false, 'message' => 'Storefront data API key not set.'];
         }
 
         $response = Http::timeout(15)
@@ -46,7 +45,7 @@ final class Refer2BundleService
         $rawBody = $response->body();
         if (! $response->successful()) {
             $logBody = $data ?? (strlen($rawBody) > 300 ? substr($rawBody, 0, 300) . '...' : $rawBody);
-            Log::warning('Refer2Bundle balance failed', ['status' => $response->status(), 'body' => $logBody]);
+            Log::warning('Legacy data balance failed', ['status' => $response->status(), 'body' => $logBody]);
             $message = is_array($data) && isset($data['data']['message'])
                 ? (string) $data['data']['message']
                 : 'Failed to fetch balance (HTTP ' . $response->status() . ').';
@@ -80,21 +79,21 @@ final class Refer2BundleService
     {
         $key = self::getApiKey();
         if ($key === '') {
-            Log::warning('Refer2Bundle API key not set.');
+            Log::warning('Storefront data API key not set.');
             return [
                 'list' => [],
                 'error' => 'api_key_not_set',
-                'message' => 'Refer2Bundle API key is not set. Add it in Admin → Settings.',
+                'message' => 'Storefront data API key is not set. Add it in Admin → Settings.',
             ];
         }
 
         // Use .env base URL so we match Postman (Admin → Settings can override other calls with a different URL)
-        $baseUrl = rtrim((string) config('services.refer2bundle.base_url', 'https://refer2bundle.com/api/v1'), '/');
-        $bundlesPath = config('services.refer2bundle.bundles_path', 'bundles.php');
+        $baseUrl = rtrim((string) config('services.legacy_data.base_url', ''), '/');
+        $bundlesPath = config('services.legacy_data.bundles_path', 'bundles.php');
 
         // Same as Postman: GET base_url/bundles.php (no query param)
         $url = $baseUrl . '/' . ltrim($bundlesPath, '/');
-        Log::info('Refer2Bundle bundles request', ['url' => $url]);
+        Log::info('Legacy data bundles request', ['url' => $url]);
 
         $response = Http::timeout(30)
             ->withHeaders([
@@ -107,11 +106,11 @@ final class Refer2BundleService
         $rawBody = $response->body();
         if (! $response->successful()) {
             $logBody = $body ?? (strlen($rawBody) > 300 ? substr($rawBody, 0, 300) . '...' : $rawBody);
-            Log::warning('Refer2Bundle bundles failed', ['url' => $url, 'status' => $response->status(), 'body' => $logBody]);
+            Log::warning('Legacy data bundles failed', ['url' => $url, 'status' => $response->status(), 'body' => $logBody]);
             return [
                 'list' => [],
                 'error' => 'fetch_failed',
-                'message' => 'Failed to fetch bundles. Check REFER2BUNDLE_BASE_URL and API key.',
+                'message' => 'Failed to fetch bundles. Check LEGACY_DATA_BASE_URL and API key.',
             ];
         }
 
@@ -127,7 +126,7 @@ final class Refer2BundleService
         $allBundles = is_array($bundles) ? $bundles : [];
 
         if (count($allBundles) > 0) {
-            Log::info('Refer2Bundle bundles response sample', ['url' => $url, 'first_bundle' => $allBundles[0], 'total_fetched' => count($allBundles)]);
+            Log::info('Legacy data bundles response sample', ['url' => $url, 'first_bundle' => $allBundles[0], 'total_fetched' => count($allBundles)]);
             // Log MTN 1 GB from API response so we can confirm price (4.50 vs 54.50)
             $mtn1gb = collect($allBundles)->first(function ($item) {
                 $net = trim((string) ($item['network'] ?? ''));
@@ -135,7 +134,7 @@ final class Refer2BundleService
                 return $net === 'MTN' && (strcasecmp($plan, '1 GB') === 0 || strcasecmp($plan, '1GB') === 0);
             });
             if ($mtn1gb !== null) {
-                Log::info('Refer2Bundle MTN 1 GB from API (raw)', ['network' => $mtn1gb['network'] ?? '', 'plan_name' => $mtn1gb['plan_name'] ?? '', 'price' => $mtn1gb['price'] ?? '', 'bundle_id' => $mtn1gb['bundle_id'] ?? '']);
+                Log::info('Legacy data MTN 1 GB from API (raw)', ['network' => $mtn1gb['network'] ?? '', 'plan_name' => $mtn1gb['plan_name'] ?? '', 'price' => $mtn1gb['price'] ?? '', 'bundle_id' => $mtn1gb['bundle_id'] ?? '']);
             }
         }
 
@@ -151,7 +150,7 @@ final class Refer2BundleService
             }
             $volume = self::parseVolumeFromPlanName($planName);
             $networkId = self::networkNameToId($network);
-            // Prefer bundle_id (Refer2Bundle API) over id
+            // Prefer bundle_id (legacy data API) over id
             $providerBundleId = isset($b['bundle_id']) ? (string) $b['bundle_id'] : (isset($b['id']) ? (string) $b['id'] : (isset($b['plan_id']) ? (string) $b['plan_id'] : (isset($b['code']) ? (string) $b['code'] : null)));
             $list[] = [
                 'id' => $externalId,
@@ -178,7 +177,7 @@ final class Refer2BundleService
 
         // Log a few samples so we can confirm plan_name vs price and whether bundle id exists
         $samples = array_slice($list, 0, 5);
-        Log::info('Refer2Bundle sync: sample bundles stored', array_map(function ($item) {
+        Log::info('Legacy data sync: sample bundles stored', array_map(function ($item) {
             return [
                 'network' => $item['network'],
                 'plan_name_stored_as_volume_gb' => $item['volumeGB'],
@@ -193,7 +192,7 @@ final class Refer2BundleService
             return $v >= 0.9 && $v <= 1.1;
         });
         if (count($oneGbBundles) > 0) {
-            Log::info('Refer2Bundle sync: all 1GB bundles from API (network, plan, price, bundle_id)', array_values(array_map(function ($item) {
+            Log::info('Legacy data sync: all 1GB bundles from API (network, plan, price, bundle_id)', array_values(array_map(function ($item) {
                 return [
                     'network' => $item['network'],
                     'plan_name' => $item['volumeGB'],
@@ -227,7 +226,7 @@ final class Refer2BundleService
             ];
         }
 
-        Log::info('Refer2Bundle sync: starting DB upsert', ['list_count' => count($list)]);
+        Log::info('Legacy data sync: starting DB upsert', ['list_count' => count($list)]);
 
         $created = 0;
         $updated = 0;
@@ -290,7 +289,7 @@ final class Refer2BundleService
     {
         $key = self::getApiKey();
         if ($key === '') {
-            return ['success' => false, 'message' => 'Refer2Bundle API key not set.'];
+            return ['success' => false, 'message' => 'Storefront data API key not set.'];
         }
 
         $beneficiary = preg_replace('/\s+/', '', $recipientMsisdn);
@@ -334,7 +333,7 @@ final class Refer2BundleService
             if ($logBody === null && $rawBody !== '') {
                 $logBody = strlen($rawBody) > 500 ? substr($rawBody, 0, 500) . '...' : $rawBody;
             }
-            Log::warning('Refer2Bundle order failed', [
+            Log::warning('Legacy data order failed', [
                 'status' => $response->status(),
                 'body' => $logBody,
                 'body_empty' => $rawBody === '',
@@ -387,7 +386,7 @@ final class Refer2BundleService
             $required = isset($details['required']) ? (string) $details['required'] : '';
             $available = isset($details['available']) ? (string) $details['available'] : '';
             if ($required !== '' || $available !== '') {
-                return 'Insufficient balance on your Refer2Bundle provider account. Required: GH₵ ' . $required . ', Available: GH₵ ' . $available . '. Top up your balance at the provider (Refer2Bundle) and try again.';
+                return 'Insufficient balance on your storefront data provider account. Required: GH₵ ' . $required . ', Available: GH₵ ' . $available . '. Top up that account and try again.';
             }
         }
         return $apiMessage;
@@ -402,7 +401,7 @@ final class Refer2BundleService
     {
         $key = self::getApiKey();
         if ($key === '') {
-            return ['success' => false, 'message' => 'Refer2Bundle API key not set.'];
+            return ['success' => false, 'message' => 'Storefront data API key not set.'];
         }
 
         $tid = trim($transactionId);
@@ -411,7 +410,7 @@ final class Refer2BundleService
         }
 
         $baseUrl = self::getBaseUrl();
-        $statusPath = config('services.refer2bundle.order_status_path', 'order-status.php');
+        $statusPath = config('services.legacy_data.order_status_path', 'order-status.php');
         $url = rtrim($baseUrl, '/') . '/' . ltrim($statusPath, '/') . '?reference=' . rawurlencode($tid);
 
         $response = Http::timeout(15)
@@ -426,7 +425,7 @@ final class Refer2BundleService
 
         if (! $response->successful()) {
             $logBody = $body ?? (strlen($rawBody) > 200 ? substr($rawBody, 0, 200) . '...' : $rawBody);
-            Log::warning('Refer2Bundle order status failed', ['reference' => $tid, 'status' => $response->status(), 'body' => $logBody]);
+            Log::warning('Legacy data order status failed', ['reference' => $tid, 'status' => $response->status(), 'body' => $logBody]);
             return [
                 'success' => false,
                 'message' => $response->status() === 404
@@ -455,7 +454,7 @@ final class Refer2BundleService
         }
 
         if (count($orderItems) === 0) {
-            Log::info('Refer2Bundle order status: no order items in response', ['reference' => $tid, 'data_keys' => array_keys($data)]);
+            Log::info('Legacy data order status: no order items in response', ['reference' => $tid, 'data_keys' => array_keys($data)]);
             return ['success' => false, 'message' => 'API returned no order status.'];
         }
 

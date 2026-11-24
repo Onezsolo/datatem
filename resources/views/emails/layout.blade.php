@@ -37,7 +37,7 @@
                 <table role="presentation" class="content" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px;">
                     <tr>
                         <td class="header">
-                            <h1 class="header-title">{{ $appName ?? 'R2BMarket' }}</h1>
+                            <h1 class="header-title">{{ $appName ?? 'Datatem' }}</h1>
                         </td>
                     </tr>
                     <tr>
@@ -47,7 +47,7 @@
                     </tr>
                     <tr>
                         <td class="footer">
-                            <p class="footer-text">&copy; {{ date('Y') }} {{ $appName ?? 'R2BMarket' }}. All rights reserved.</p>
+                            <p class="footer-text">&copy; {{ date('Y') }} {{ $appName ?? 'Datatem' }}. All rights reserved.</p>
                         </td>
                     </tr>
                 </table>

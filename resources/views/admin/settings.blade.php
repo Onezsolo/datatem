@@ -84,7 +84,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
                         <label class="block text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-3 ml-2">Site Name</label>
-                        <input type="text" x-model="settings.site_name" class="w-full px-6 py-4 rounded-card bg-surface border border-line focus:border-brand-navy outline-none transition-all font-black text-brand-navy" placeholder="R2BMarket">
+                        <input type="text" x-model="settings.site_name" class="w-full px-6 py-4 rounded-card bg-surface border border-line focus:border-brand-navy outline-none transition-all font-black text-brand-navy" placeholder="Datatem">
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-3 ml-2">Site Description</label>
@@ -326,7 +326,7 @@
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-3 ml-2">From name</label>
-                        <input type="text" x-model="settings.smtp_from_name" placeholder="e.g. R2BMarket" class="w-full px-6 py-4 rounded-card bg-surface border border-line focus:border-brand-navy outline-none transition-all font-black text-brand-navy">
+                        <input type="text" x-model="settings.smtp_from_name" placeholder="e.g. Datatem" class="w-full px-6 py-4 rounded-card bg-surface border border-line focus:border-brand-navy outline-none transition-all font-black text-brand-navy">
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-3 ml-2">Admin notification email</label>
@@ -346,7 +346,7 @@
                 <p x-show="testEmailMessage" x-text="testEmailMessage" :class="testEmailError ? 'text-red-600 font-bold mt-4' : 'text-emerald-600 font-bold mt-4'"></p>
             </div>
 
-            <!-- Integrations (Paystack, SMS, JayBart) – API keys managed here; secrets never exposed -->
+            <!-- Integrations (Paystack, SMS, data API) – API keys managed here; secrets never exposed -->
             <div class="admin-card p-8 border border-line/50 shadow-none md:col-span-2">
                 <div class="flex items-center space-x-4 mb-8">
                     <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-card flex items-center justify-center">
@@ -354,7 +354,7 @@
                     </div>
                     <h2 class="text-xl font-black text-brand-navy">Integrations</h2>
                 </div>
-                <p class="text-muted font-medium mb-6">Paystack, SMS and JayBart API keys. Stored securely; secret keys are never shown. Leave secret fields blank to keep current value.</p>
+                <p class="text-muted font-medium mb-6">Paystack, SMS and data API keys. Stored securely; secret keys are never shown. Leave secret fields blank to keep current value.</p>
                 <div class="space-y-8">
                     <div class="p-6 rounded-card bg-surface-muted border border-line">
                         <h3 class="font-black text-brand-navy mb-4">Paystack</h3>
@@ -375,7 +375,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-2 ml-2">Sender ID</label>
-                                <input type="text" x-model="settings.sms_sender_id" placeholder="e.g. R2BMarket" class="w-full px-6 py-4 rounded-card bg-surface border border-line focus:border-brand-navy outline-none transition-all font-black text-brand-navy" autocomplete="off">
+                                <input type="text" x-model="settings.sms_sender_id" placeholder="e.g. Datatem" class="w-full px-6 py-4 rounded-card bg-surface border border-line focus:border-brand-navy outline-none transition-all font-black text-brand-navy" autocomplete="off">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-2 ml-2">API key</label>
@@ -385,17 +385,17 @@
                         </div>
                     </div>
                     <div class="p-6 rounded-card bg-surface-muted border border-line">
-                        <h3 class="font-black text-brand-navy mb-4">Refer2Bundle (Data API)</h3>
-                        <p class="text-muted text-sm mb-4">Used to sync bundles and place data orders. Use the base URL your provider gave you (e.g. <code class="bg-slate-200 px-1 rounded">https://databosshub.org/api/v1</code>).</p>
+                        <h3 class="font-black text-brand-navy mb-4">Storefront data API</h3>
+                        <p class="text-muted text-sm mb-4">Optional. Used only by the legacy reseller storefront for bundle sync and order placement. Leave blank unless that storefront is enabled.</p>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-2 ml-2">Base URL</label>
-                                <input type="url" x-model="settings.refer2bundle_base_url" placeholder="https://databosshub.org/api/v1" class="w-full px-6 py-4 rounded-card bg-surface border border-line focus:border-brand-navy outline-none transition-all font-mono text-sm text-brand-navy" autocomplete="off">
+                                <input type="url" x-model="settings.legacy_data_base_url" placeholder="" class="w-full px-6 py-4 rounded-card bg-surface border border-line focus:border-brand-navy outline-none transition-all font-mono text-sm text-brand-navy" autocomplete="off">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-2 ml-2">API key</label>
-                                <input type="password" x-model="settings.refer2bundle_api_key" placeholder="Leave blank to keep current" class="w-full px-6 py-4 rounded-card bg-surface border border-line focus:border-brand-navy outline-none transition-all font-mono text-sm text-brand-navy" autocomplete="new-password">
-                                <p x-show="settings.refer2bundle_api_key_set" class="text-xs text-emerald-600 font-bold mt-2 ml-2">Currently set</p>
+                                <input type="password" x-model="settings.legacy_data_api_key" placeholder="Leave blank to keep current" class="w-full px-6 py-4 rounded-card bg-surface border border-line focus:border-brand-navy outline-none transition-all font-mono text-sm text-brand-navy" autocomplete="new-password">
+                                <p x-show="settings.legacy_data_api_key_set" class="text-xs text-emerald-600 font-bold mt-2 ml-2">Currently set</p>
                             </div>
                         </div>
                     </div>
@@ -422,7 +422,7 @@
                     </div>
                     <div>
                         <label class="block text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-3 ml-2">Account Name</label>
-                        <input type="text" x-model="settings.manual_payment_name" placeholder="e.g. R2BMarket Official" class="w-full px-6 py-4 rounded-card bg-surface border border-line focus:border-brand-navy outline-none transition-all font-black text-brand-navy">
+                        <input type="text" x-model="settings.manual_payment_name" placeholder="e.g. Datatem Official" class="w-full px-6 py-4 rounded-card bg-surface border border-line focus:border-brand-navy outline-none transition-all font-black text-brand-navy">
                     </div>
                 </div>
             </div>
@@ -446,8 +446,8 @@ function adminSettingsPage() {
         logoFile: null,
         faviconFile: null,
         settings: {
-            site_name: 'R2BMarket',
-            site_description: 'R2BMarket – Affordable mobile data bundles for MTN, AirtelTigo & Telecel in Ghana.',
+            site_name: 'Datatem',
+            site_description: 'Datatem – Affordable mobile data bundles for MTN, AirtelTigo & Telecel in Ghana.',
             site_logo_url: '',
             site_favicon_url: '',
             theme_primary_hex: '#8b5cf6',
@@ -465,7 +465,7 @@ function adminSettingsPage() {
             whatsapp_channel: '',
             support_email: '',
             manual_payment_number: '0241234567',
-            manual_payment_name: 'R2BMarket Official',
+            manual_payment_name: 'Datatem Official',
             manual_topup_enabled: false,
             platform_balance: '0',
             smtp_host: '',
@@ -474,17 +474,17 @@ function adminSettingsPage() {
             smtp_username: '',
             smtp_password: '',
             smtp_from_address: '',
-            smtp_from_name: 'R2BMarket',
-            admin_notification_email: 'r2bmarketservices@gmail.com',
+            smtp_from_name: 'Datatem',
+            admin_notification_email: 'support@example.com',
             paystack_public_key: '',
             paystack_secret_key: '',
             paystack_secret_key_set: false,
             sms_sender_id: '',
             sms_api_key: '',
             sms_api_key_set: false,
-            refer2bundle_base_url: '',
-            refer2bundle_api_key: '',
-            refer2bundle_api_key_set: false
+            legacy_data_base_url: '',
+            legacy_data_api_key: '',
+            legacy_data_api_key_set: false
         },
         testEmailTo: '',
         testEmailSending: false,
@@ -516,8 +516,8 @@ function adminSettingsPage() {
                 if (response.ok) {
                     const data = await response.json();
                     this.settings = {
-                        site_name: data.site_name ?? 'R2BMarket',
-                        site_description: data.site_description ?? 'R2BMarket – Affordable mobile data bundles for MTN, AirtelTigo & Telecel in Ghana.',
+                        site_name: data.site_name ?? 'Datatem',
+                        site_description: data.site_description ?? 'Datatem – Affordable mobile data bundles for MTN, AirtelTigo & Telecel in Ghana.',
                         site_logo_url: data.site_logo_url ?? '',
                         site_favicon_url: data.site_favicon_url ?? '',
                         theme_primary_hex: data.theme_primary_hex ?? '#8b5cf6',
@@ -535,7 +535,7 @@ function adminSettingsPage() {
                         whatsapp_channel: data.whatsapp_channel ?? '',
                         support_email: data.support_email ?? '',
                         manual_payment_number: data.manual_payment_number ?? '0241234567',
-                        manual_payment_name: data.manual_payment_name ?? 'R2BMarket Official',
+                        manual_payment_name: data.manual_payment_name ?? 'Datatem Official',
                         manual_topup_enabled: data.manual_topup_enabled === true || data.manual_topup_enabled === '1',
                         platform_balance: data.platform_balance ?? '0',
                         smtp_host: data.smtp_host ?? '',
@@ -544,17 +544,17 @@ function adminSettingsPage() {
                         smtp_username: data.smtp_username ?? '',
                         smtp_password: '',
                         smtp_from_address: data.smtp_from_address ?? '',
-                        smtp_from_name: data.smtp_from_name ?? 'R2BMarket',
-                        admin_notification_email: data.admin_notification_email ?? 'r2bmarketservices@gmail.com',
+                        smtp_from_name: data.smtp_from_name ?? 'Datatem',
+                        admin_notification_email: data.admin_notification_email ?? 'support@example.com',
                         paystack_public_key: data.paystack_public_key ?? '',
                         paystack_secret_key: '',
                         paystack_secret_key_set: data.paystack_secret_key_set === true,
                         sms_sender_id: data.sms_sender_id ?? '',
                         sms_api_key: '',
                         sms_api_key_set: data.sms_api_key_set === true,
-                        refer2bundle_base_url: data.refer2bundle_base_url ?? '',
-                        refer2bundle_api_key: '',
-                        refer2bundle_api_key_set: data.refer2bundle_api_key_set === true
+                        legacy_data_base_url: data.legacy_data_base_url ?? '',
+                        legacy_data_api_key: '',
+                        legacy_data_api_key_set: data.legacy_data_api_key_set === true
                     };
                     this.testEmailTo = data.support_email || (this.$store.auth.user && this.$store.auth.user.email) || '';
                 }
@@ -606,8 +606,8 @@ function adminSettingsPage() {
                     if (this.settings.paystack_secret_key) form.append('paystack_secret_key', this.settings.paystack_secret_key);
                     form.append('sms_sender_id', this.settings.sms_sender_id || '');
                     if (this.settings.sms_api_key) form.append('sms_api_key', this.settings.sms_api_key);
-                    form.append('refer2bundle_base_url', this.settings.refer2bundle_base_url || '');
-                    if (this.settings.refer2bundle_api_key) form.append('refer2bundle_api_key', this.settings.refer2bundle_api_key);
+                    form.append('legacy_data_base_url', this.settings.legacy_data_base_url || '');
+                    if (this.settings.legacy_data_api_key) form.append('legacy_data_api_key', this.settings.legacy_data_api_key);
                     if (this.logoFile) form.append('logo', this.logoFile);
                     if (this.faviconFile) form.append('favicon', this.faviconFile);
                     response = await fetch('{{ url("/api/admin/settings") }}', {
@@ -661,8 +661,8 @@ function adminSettingsPage() {
                             paystack_secret_key: this.settings.paystack_secret_key || undefined,
                             sms_sender_id: this.settings.sms_sender_id || undefined,
                             sms_api_key: this.settings.sms_api_key || undefined,
-                            refer2bundle_base_url: this.settings.refer2bundle_base_url || undefined,
-                            refer2bundle_api_key: this.settings.refer2bundle_api_key || undefined
+                            legacy_data_base_url: this.settings.legacy_data_base_url || undefined,
+                            legacy_data_api_key: this.settings.legacy_data_api_key || undefined
                         })
                     });
                 }
@@ -672,7 +672,7 @@ function adminSettingsPage() {
                     if (data.settings) this.settings = { ...this.settings, ...data.settings };
                     this.settings.paystack_secret_key = '';
                     this.settings.sms_api_key = '';
-                    this.settings.refer2bundle_api_key = '';
+                    this.settings.legacy_data_api_key = '';
                     setTimeout(() => { this.saveMessage = ''; }, 4000);
                 } else {
                     this.saveError = true;

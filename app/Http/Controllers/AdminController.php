@@ -13,7 +13,7 @@ use App\Models\StorefrontPayment;
 use App\Models\Topup;
 use App\Models\User;
 use App\Services\AffiliateService;
-use App\Services\Refer2BundleService;
+use App\Services\LegacyDataService;
 use App\Services\NotifyService;
 use App\Services\PaystackService;
 use App\Services\SettingsService;
@@ -424,7 +424,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Resend a pending order to the API (JayBart). Only orders with status "pending" can be resent.
+     * Resend a pending order to the data API. Only orders with status "pending" can be resent.
      */
     public function resendOrder($id)
     {
@@ -463,7 +463,7 @@ class AdminController extends Controller
                 $sharedBundle = $correctMtn1Gb->volume > 0 ? (int) round((float) $correctMtn1Gb->volume * 1000) : $sharedBundle;
             }
         }
-        $apiResult = Refer2BundleService::buyPackage($beneficiary, $networkId, $sharedBundle, $dataPlanOverride, $providerBundleId, $networkNameOverride);
+        $apiResult = LegacyDataService::buyPackage($beneficiary, $networkId, $sharedBundle, $dataPlanOverride, $providerBundleId, $networkNameOverride);
 
         if ($apiResult['success']) {
             $transactionCode = $apiResult['transaction_code'] ?? null;
@@ -498,7 +498,7 @@ class AdminController extends Controller
             return response()->json(['error' => 'Order has no transaction ID. Resend to API first.'], 400);
         }
 
-        $result = Refer2BundleService::fetchTransactionStatus($tid);
+        $result = LegacyDataService::fetchTransactionStatus($tid);
         if (! ($result['success'] ?? false)) {
             return response()->json([
                 'error' => $result['message'] ?? 'Failed to fetch status from API.',
@@ -517,7 +517,7 @@ class AdminController extends Controller
         }) ?? $orderItems[0];
 
         $apiStatus = (string) ($item['status'] ?? '');
-        $mappedStatus = Refer2BundleService::mapApiStatusToOurStatus($apiStatus);
+        $mappedStatus = LegacyDataService::mapApiStatusToOurStatus($apiStatus);
 
         $purchase->update(['status' => $mappedStatus]);
 
@@ -564,7 +564,7 @@ class AdminController extends Controller
                 continue;
             }
             $checked++;
-            $result = Refer2BundleService::fetchTransactionStatus($tid);
+            $result = LegacyDataService::fetchTransactionStatus($tid);
             if (! ($result['success'] ?? false)) {
                 $errors[] = 'Order #' . $purchase->id . ': ' . ($result['message'] ?? 'Failed to fetch status');
                 continue;
@@ -581,7 +581,7 @@ class AdminController extends Controller
                 return $num === $beneficiaryNorm;
             }) ?? $orderItems[0];
             $apiStatus = (string) ($item['status'] ?? '');
-            $mappedStatus = Refer2BundleService::mapApiStatusToOurStatus($apiStatus);
+            $mappedStatus = LegacyDataService::mapApiStatusToOurStatus($apiStatus);
             $previousStatus = $purchase->status;
             $purchase->update(['status' => $mappedStatus]);
             if ($previousStatus !== $mappedStatus) {
@@ -1152,20 +1152,20 @@ class AdminController extends Controller
     }
 
     /**
-     * Sync data packages from Refer2Bundle API to database. Preserves existing selling_price.
-     * Uses Refer2Bundle API key from Admin → Settings or REFER2BUNDLE_API_KEY in .env.
+     * Sync data packages from LegacyData API to database. Preserves existing selling_price.
+     * Uses LegacyData API key from Admin → Settings or LEGACY_DATA_API_KEY in .env.
      */
     public function syncPackages()
     {
-        $apiKey = Refer2BundleService::getApiKey();
+        $apiKey = LegacyDataService::getApiKey();
         if ($apiKey === '') {
             return response()->json([
-                'message' => 'Refer2Bundle API key is not set. Add it in Admin → Settings or in .env as REFER2BUNDLE_API_KEY.',
+                'message' => 'LegacyData API key is not set. Add it in Admin → Settings or in .env as LEGACY_DATA_API_KEY.',
                 'error' => 'api_key_not_set',
             ], 400);
         }
 
-        $result = Refer2BundleService::syncPackagesToDb();
+        $result = LegacyDataService::syncPackagesToDb();
 
         if (!empty($result['error'])) {
             $status = ($result['error'] === 'api_key_not_set') ? 400 : 502;
@@ -1337,8 +1337,8 @@ class AdminController extends Controller
     {
         $all = SettingsService::all();
         return response()->json([
-            'site_name' => $all['site_name'] ?? config('app.name', 'R2BMarket'),
-            'site_description' => $all['site_description'] ?? 'R2BMarket – Affordable mobile data bundles for MTN, AirtelTigo & Telecel in Ghana.',
+            'site_name' => $all['site_name'] ?? config('app.name', 'Datatem'),
+            'site_description' => $all['site_description'] ?? 'Datatem – Affordable mobile data bundles for MTN, AirtelTigo & Telecel in Ghana.',
             'site_logo_url' => SettingsService::getLogoUrl(),
             'site_favicon_url' => SettingsService::getFaviconUrl(),
             'theme_primary_hex' => $all['theme_primary_hex'] ?? '#9333ea',
@@ -1356,7 +1356,7 @@ class AdminController extends Controller
             'whatsapp_channel' => $all['support_whatsapp_group_url'] ?? '',
             'support_email' => $all['contact_email'] ?? '',
             'manual_payment_number' => $all['manual_payment_mobile_money'] ?? '0241234567',
-            'manual_payment_name' => $all['manual_payment_account_name'] ?? 'R2BMarket Official',
+            'manual_payment_name' => $all['manual_payment_account_name'] ?? 'Datatem Official',
             'manual_topup_enabled' => (isset($all['manual_topup_enabled']) && ($all['manual_topup_enabled'] === '1' || $all['manual_topup_enabled'] === 'true')),
             'platform_balance' => $all['platform_balance'] ?? '0',
             'smtp_host' => $all['smtp_host'] ?? '',
@@ -1365,15 +1365,15 @@ class AdminController extends Controller
             'smtp_username' => $all['smtp_username'] ?? '',
             'smtp_password' => '', // never expose stored password
             'smtp_from_address' => $all['smtp_from_address'] ?? '',
-            'smtp_from_name' => $all['smtp_from_name'] ?? config('app.name', 'R2BMarket'),
-            'admin_notification_email' => $all['admin_notification_email'] ?? 'r2bmarketservices@gmail.com',
+            'smtp_from_name' => $all['smtp_from_name'] ?? config('app.name', 'Datatem'),
+            'admin_notification_email' => $all['admin_notification_email'] ?? 'support@example.com',
             // Integrations: never expose secret keys; only _set booleans and non-secret values
             'paystack_public_key' => $all['paystack_public_key'] ?? config('services.paystack.public_key', ''),
             'paystack_secret_key_set' => trim((string) ($all['paystack_secret_key'] ?? config('services.paystack.secret_key', ''))) !== '',
             'sms_sender_id' => $all['sms_sender_id'] ?? config('services.sms.sender_id', ''),
             'sms_api_key_set' => trim((string) ($all['sms_api_key'] ?? config('services.sms.api_key', ''))) !== '',
-            'refer2bundle_base_url' => $all['refer2bundle_base_url'] ?? config('services.refer2bundle.base_url', ''),
-            'refer2bundle_api_key_set' => trim((string) ($all['refer2bundle_api_key'] ?? config('services.refer2bundle.api_key', ''))) !== '',
+            'legacy_data_base_url' => $all['legacy_data_base_url'] ?? config('services.legacy_data.base_url', ''),
+            'legacy_data_api_key_set' => trim((string) ($all['legacy_data_api_key'] ?? config('services.legacy_data.api_key', ''))) !== '',
         ]);
     }
 
@@ -1418,8 +1418,8 @@ class AdminController extends Controller
             'paystack_secret_key' => 'nullable|string|max:500',
             'sms_api_key' => 'nullable|string|max:500',
             'sms_sender_id' => 'nullable|string|max:100',
-            'refer2bundle_base_url' => 'nullable|string|max:500',
-            'refer2bundle_api_key' => 'nullable|string|max:500',
+            'legacy_data_base_url' => 'nullable|string|max:500',
+            'legacy_data_api_key' => 'nullable|string|max:500',
         ];
         $validator = Validator::make($request->all(), $rules);
 
@@ -1469,11 +1469,11 @@ class AdminController extends Controller
         if ($request->has('sms_sender_id')) {
             SettingsService::set('sms_sender_id', trim((string) $request->input('sms_sender_id', '')));
         }
-        if ($request->filled('refer2bundle_base_url')) {
-            SettingsService::set('refer2bundle_base_url', rtrim(trim((string) $request->input('refer2bundle_base_url')), '/'));
+        if ($request->filled('legacy_data_base_url')) {
+            SettingsService::set('legacy_data_base_url', rtrim(trim((string) $request->input('legacy_data_base_url')), '/'));
         }
-        if ($request->filled('refer2bundle_api_key')) {
-            SettingsService::set('refer2bundle_api_key', trim((string) $request->input('refer2bundle_api_key')));
+        if ($request->filled('legacy_data_api_key')) {
+            SettingsService::set('legacy_data_api_key', trim((string) $request->input('legacy_data_api_key')));
         }
 
         $many = [
@@ -1540,8 +1540,8 @@ class AdminController extends Controller
 
         $all = SettingsService::all();
         $settings = [
-            'site_name' => $all['site_name'] ?? config('app.name', 'R2BMarket'),
-            'site_description' => $all['site_description'] ?? 'R2BMarket – Affordable mobile data bundles for MTN, AirtelTigo & Telecel in Ghana.',
+            'site_name' => $all['site_name'] ?? config('app.name', 'Datatem'),
+            'site_description' => $all['site_description'] ?? 'Datatem – Affordable mobile data bundles for MTN, AirtelTigo & Telecel in Ghana.',
             'site_logo_url' => SettingsService::getLogoUrl(),
             'site_favicon_url' => SettingsService::getFaviconUrl(),
             'theme_primary_hex' => $all['theme_primary_hex'] ?? '#9333ea',
@@ -1559,7 +1559,7 @@ class AdminController extends Controller
             'whatsapp_channel' => $all['support_whatsapp_group_url'] ?? '',
             'support_email' => $all['contact_email'] ?? '',
             'manual_payment_number' => $all['manual_payment_mobile_money'] ?? '0241234567',
-            'manual_payment_name' => $all['manual_payment_account_name'] ?? 'R2BMarket Official',
+            'manual_payment_name' => $all['manual_payment_account_name'] ?? 'Datatem Official',
             'manual_topup_enabled' => (isset($all['manual_topup_enabled']) && ($all['manual_topup_enabled'] === '1' || $all['manual_topup_enabled'] === 'true')),
             'platform_balance' => $all['platform_balance'] ?? '0',
             'smtp_host' => $all['smtp_host'] ?? '',
@@ -1567,14 +1567,14 @@ class AdminController extends Controller
             'smtp_encryption' => $all['smtp_encryption'] ?? 'tls',
             'smtp_username' => $all['smtp_username'] ?? '',
             'smtp_from_address' => $all['smtp_from_address'] ?? '',
-            'smtp_from_name' => $all['smtp_from_name'] ?? config('app.name', 'R2BMarket'),
-            'admin_notification_email' => $all['admin_notification_email'] ?? 'r2bmarketservices@gmail.com',
+            'smtp_from_name' => $all['smtp_from_name'] ?? config('app.name', 'Datatem'),
+            'admin_notification_email' => $all['admin_notification_email'] ?? 'support@example.com',
             'paystack_public_key' => $all['paystack_public_key'] ?? config('services.paystack.public_key', ''),
             'paystack_secret_key_set' => trim((string) ($all['paystack_secret_key'] ?? '')) !== '',
             'sms_sender_id' => $all['sms_sender_id'] ?? config('services.sms.sender_id', ''),
             'sms_api_key_set' => trim((string) ($all['sms_api_key'] ?? '')) !== '',
-            'refer2bundle_base_url' => $all['refer2bundle_base_url'] ?? config('services.refer2bundle.base_url', ''),
-            'refer2bundle_api_key_set' => trim((string) ($all['refer2bundle_api_key'] ?? '')) !== '',
+            'legacy_data_base_url' => $all['legacy_data_base_url'] ?? config('services.legacy_data.base_url', ''),
+            'legacy_data_api_key_set' => trim((string) ($all['legacy_data_api_key'] ?? '')) !== '',
         ];
 
         return response()->json([
@@ -1600,7 +1600,7 @@ class AdminController extends Controller
         $username = $request->filled('smtp_username') ? $request->input('smtp_username') : ($all['smtp_username'] ?? '');
         $password = $request->filled('smtp_password') ? $request->input('smtp_password') : ($all['smtp_password'] ?? '');
         $fromAddress = $request->filled('smtp_from_address') ? $request->input('smtp_from_address') : ($all['smtp_from_address'] ?? $request->user()->email);
-        $fromName = $request->filled('smtp_from_name') ? $request->input('smtp_from_name') : ($all['smtp_from_name'] ?? config('app.name', 'R2BMarket'));
+        $fromName = $request->filled('smtp_from_name') ? $request->input('smtp_from_name') : ($all['smtp_from_name'] ?? config('app.name', 'Datatem'));
 
         if (trim((string) $host) === '') {
             return response()->json(['error' => 'SMTP host is required. Enter it in Email (SMTP) settings and try again.'], 422);
@@ -1623,8 +1623,8 @@ class AdminController extends Controller
             ]);
 
             \Illuminate\Support\Facades\Mail::mailer('dynamic_smtp')
-                ->raw("This is a test email from " . config('app.name', 'R2BMarket') . ".\n\nIf you received this, your SMTP configuration is working.", function ($message) use ($to) {
-                    $message->to($to)->subject('SMTP test – ' . config('app.name', 'R2BMarket'));
+                ->raw("This is a test email from " . config('app.name', 'Datatem') . ".\n\nIf you received this, your SMTP configuration is working.", function ($message) use ($to) {
+                    $message->to($to)->subject('SMTP test – ' . config('app.name', 'Datatem'));
                 });
 
             return response()->json(['message' => 'Test email sent successfully to ' . $to . '. Check your inbox.']);

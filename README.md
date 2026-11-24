@@ -48,7 +48,7 @@ php artisan view:cache
 3. Create the first admin with seed environment variables:
    `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`, `SEED_ADMIN_NAME`, `SEED_ADMIN_PHONE`, then run `php artisan db:seed --class=UserSeeder --force`.
    Demo data is not seeded outside local/testing (`SEED_DEMO_CATALOG=true` only if you want the sample shop).
-4. Set provider credentials: `PATUPAA_API_*` (data/services) and `PAYSTACK_*`; `REFER2BUNDLE_*` only if the legacy reseller storefront is used.
+4. Set provider credentials: `PATUPAA_API_*` (data/services) and `PAYSTACK_*`; `LEGACY_DATA_*` only if the legacy reseller storefront is used.
 5. Point the web server document root at `public/`, enable HTTPS, and run `php artisan storage:link`.
 6. Deploy assets: `composer install --no-dev --optimize-autoloader`, `npm ci && npm run build`.
 7. Cache: `php artisan config:cache && php artisan route:cache && php artisan view:cache`. Clear with the matching `:clear` commands after env changes.
@@ -58,7 +58,7 @@ php artisan view:cache
 
 ## Security defaults
 
-- `/admin/*` requires the r2b login and an admin role; guests are redirected, non-admins get 403.
+- `/admin/*` requires the application login and an admin role; guests are redirected, non-admins get 403.
 - All wallet purchases are login-only; shop/services duplicate submissions are blocked by idempotency keys + atomic locks (replayed requests return the original order, never double-charge).
 - Login/registration, service purchases and checkout are rate-limited; provider webhooks are signature-checked.
 - Security headers (nosniff, frame options, referrer policy, permissions policy, HSTS over HTTPS) are applied globally; HTTPS and destructive DB commands are enforced in production.

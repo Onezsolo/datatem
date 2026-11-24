@@ -91,7 +91,7 @@ class ServiceProvider extends Model
         }
 
         return self::create([
-            'name' => 'Default provider',
+            'name' => 'PATUPAA',
             'driver' => 'patupaa',
             'base_url' => (string) config('services.patupaa.base_url'),
             'api_key' => (string) config('services.patupaa.api_key'),

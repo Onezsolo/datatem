@@ -8,12 +8,10 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Send SMS and OTP via SMS Online Ghana API.
- * @see https://api.smsonlinegh.com/v5/message/sms/send
+ * Send SMS and OTP through the configured SMS gateway.
  */
-final class SmsOnlineService
+final class SmsService
 {
-    private const BASE_URL = 'https://api.smsonlinegh.com/v5/message/sms/send';
     private const OTP_CACHE_PREFIX = 'phone_otp:';
     private const OTP_TTL_SECONDS = 600; // 10 minutes
     private const OTP_LENGTH = 6;
@@ -28,11 +26,16 @@ final class SmsOnlineService
     {
         $apiKey = (string) SettingsService::get('sms_api_key', config('services.sms.api_key', ''));
         $senderId = (string) SettingsService::get('sms_sender_id', config('services.sms.sender_id', ''));
-        return new self($apiKey, $senderId ?: config('app.name', 'R2BMarket'));
+        return new self($apiKey, $senderId ?: config('app.name', 'Datatem'));
+    }
+
+    private static function endpoint(): string
+    {
+        return (string) config('services.sms.endpoint');
     }
 
     /**
-     * Generate OTP, store in cache, send via SMS Online, return result.
+     * Generate OTP, store in cache, send via the SMS gateway, return result.
      */
     public function sendPhoneVerificationOtp(string $phone): array
     {
@@ -45,7 +48,7 @@ final class SmsOnlineService
         $cacheKey = self::OTP_CACHE_PREFIX . $normalized;
         Cache::put($cacheKey, $otp, self::OTP_TTL_SECONDS);
 
-        $siteName = SettingsService::get('site_name') ?: config('app.name', 'R2BMarket');
+        $siteName = SettingsService::get('site_name') ?: config('app.name', 'Datatem');
         $message = "Your {$siteName} verification code is: {$otp}. Valid for 10 minutes.";
         $result = $this->sendQuickSms([$normalized], $message, true);
 
@@ -82,7 +85,7 @@ final class SmsOnlineService
     public function sendQuickSms(array $recipients, string $message, bool $isOtp = false): array
     {
         if ($this->apiKey === '') {
-            Log::warning('SMS Online API key not set. Skipping SMS.');
+            Log::warning('SMS API key not set. Skipping SMS.');
             return ['success' => false, 'message' => 'SMS not configured.'];
         }
 
@@ -108,24 +111,27 @@ final class SmsOnlineService
         $payload = [
             'text' => $message,
             'type' => self::TYPE_GSM,
-            'sender' => $this->senderId ?: config('app.name', 'R2BMarket'),
+            'sender' => $this->senderId ?: config('app.name', 'Datatem'),
             'destinations' => $destinations,
         ];
 
+        $endpoint = self::endpoint();
+        $host = (string) parse_url($endpoint, PHP_URL_HOST);
+
         $response = Http::timeout(15)
             ->withHeaders([
-                'Host' => 'api.smsonlinegh.com',
+                'Host' => $host,
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
                 'Authorization' => 'key ' . trim($this->apiKey),
             ])
-            ->post(self::BASE_URL, $payload);
+            ->post($endpoint, $payload);
 
         $body = $response->json();
         $ok = $response->successful();
 
         if (!$ok) {
-            Log::warning('SMS Online send failed.', [
+            Log::warning('SMS send failed.', [
                 'status' => $response->status(),
                 'body' => $body,
             ]);
@@ -134,7 +140,7 @@ final class SmsOnlineService
                 $handshake = $body['handshake'] ?? null;
                 if (is_array($handshake) && isset($handshake['label'])) {
                     if (str_contains((string) $handshake['label'], 'AUTH')) {
-                        $message = 'Invalid SMS API key. Check SMS_API_KEY in .env and your SMS Online account.';
+                        $message = 'Invalid SMS API key. Check SMS_API_KEY in .env and your SMS gateway account.';
                     }
                 }
             }

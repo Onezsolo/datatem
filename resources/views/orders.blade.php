@@ -153,7 +153,7 @@
                 <div class="p-6 border-b border-line flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div class="w-12 h-12 bg-surface-muted rounded-card flex items-center justify-center p-2">
-                            <img src="{{ \App\Services\SettingsService::getLogoUrl() }}" alt="{{ \App\Services\SettingsService::get('site_name', 'R2BMarket') }}" class="w-full h-full object-contain">
+                            <img src="{{ \App\Services\SettingsService::getLogoUrl() }}" alt="{{ \App\Services\SettingsService::get('site_name', 'Datatem') }}" class="w-full h-full object-contain">
                         </div>
                         <div>
                             <h3 class="text-lg font-bold text-brand-navy">Receipt</h3>
@@ -277,7 +277,7 @@ function transactionHistory() {
         },
 
         get whatsAppShareUrl() {
-            const text = 'Get cheap data on R2BMarket! Sign up with my link: ' + this.referralUrl;
+            const text = 'Get cheap data on Datatem! Sign up with my link: ' + this.referralUrl;
             return 'https://wa.me/?text=' + encodeURIComponent(text);
         },
 
@@ -368,7 +368,7 @@ function transactionHistory() {
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `R2BMarket_Transactions_${this.activeTab}_${new Date().toISOString().split('T')[0]}.csv`);
+            link.setAttribute("download", `Datatem_Transactions_${this.activeTab}_${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

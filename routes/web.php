@@ -74,7 +74,7 @@ Route::get('/orders/shop', function () {
 
 Route::get('/topup', function () {
     $manualNumber = \App\Services\SettingsService::get('manual_payment_mobile_money', '0241234567');
-    $manualName = \App\Services\SettingsService::get('manual_payment_account_name', 'Data2Buy Official');
+    $manualName = \App\Services\SettingsService::get('manual_payment_account_name', 'Datatem Official');
     $manualTopupEnabled = \App\Services\SettingsService::getBool('manual_topup_enabled');
     return view('topup', [
         'manual_payment_number' => $manualNumber,

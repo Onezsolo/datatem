@@ -18,7 +18,7 @@
     <div class="max-w-md w-full">
         <div class="glass p-10 rounded-[40px] shadow-2xl border border-slate-200/50">
             <div class="text-center mb-10">
-                <img src="{{ asset('assets/l2.png') }}" alt="R2BMarket" class="h-20 w-auto object-contain mx-auto">
+                <img src="{{ \App\Support\Brand::logoUrl() }}" alt="{{ \App\Support\Brand::name() }}" class="h-20 w-auto object-contain mx-auto">
                 <h2 class="mt-6 text-2xl font-black text-slate-900">Reset Password</h2>
                 <p class="mt-2 text-slate-500 font-medium">Enter your email to recover your account</p>
             </div>

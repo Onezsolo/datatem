@@ -10,10 +10,10 @@ On the server, open your user’s crontab:
 crontab -e
 ```
 
-Add this line (replace `/home/qsngunceng/data2buy.com` with your project path if different):
+Add this line (replace `/var/www/datatem` with your project path):
 
 ```cron
-* * * * * cd /home/qsngunceng/data2buy.com && php artisan schedule:run >> /dev/null 2>&1
+* * * * * cd /var/www/datatem && php artisan schedule:run >> /dev/null 2>&1
 ```
 
 Save and exit. This runs every minute and executes any scheduled tasks that are due.
@@ -32,13 +32,13 @@ You should see the line above.
 
 - **List scheduled tasks and next run time:**
   ```bash
-  cd /home/qsngunceng/data2buy.com && php artisan schedule:list
+  cd /var/www/datatem && php artisan schedule:list
   ```
   You should see `orders:check-status` with “Every minute”.
 
 - **Run the scheduler once by hand:**
   ```bash
-  cd /home/qsngunceng/data2buy.com && php artisan schedule:run
+  cd /var/www/datatem && php artisan schedule:run
   ```
   No output is normal when tasks run successfully.
 
@@ -54,7 +54,7 @@ You should see the line above.
 To capture output and errors from the scheduler into a file instead of discarding them:
 
 ```cron
-* * * * * cd /home/qsngunceng/data2buy.com && php artisan schedule:run >> /home/qsngunceng/data2buy.com/storage/logs/schedule.log 2>&1
+* * * * * cd /var/www/datatem && php artisan schedule:run >> /var/www/datatem/storage/logs/schedule.log 2>&1
 ```
 
 Then check `storage/logs/schedule.log` to confirm runs.
@@ -63,7 +63,7 @@ Then check `storage/logs/schedule.log` to confirm runs.
 
 | What                | Command / action |
 |---------------------|-------------------|
-| Cron entry          | `* * * * * cd /home/qsngunceng/data2buy.com && php artisan schedule:run >> /dev/null 2>&1` |
+| Cron entry          | `* * * * * cd /var/www/datatem && php artisan schedule:run >> /dev/null 2>&1` |
 | List schedules      | `php artisan schedule:list` |
 | Run once manually   | `php artisan schedule:run` |
 | Confirm in app log  | `grep "orders:check-status" storage/logs/laravel.log` |

@@ -8,8 +8,8 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CRON_LINE="* * * * * cd $DIR && php artisan schedule:run >> /dev/null 2>&1"
 
 # Only skip if THIS project's scheduler is already in crontab (match our path)
-if crontab -l 2>/dev/null | grep -q "data2buy.com.*schedule:run"; then
-    echo "Cron entry for data2buy.com scheduler already exists. Current crontab:"
+if crontab -l 2>/dev/null | grep -qF "cd $DIR && php artisan schedule:run"; then
+    echo "Cron entry for this project already exists. Current crontab:"
     crontab -l
     exit 0
 fi

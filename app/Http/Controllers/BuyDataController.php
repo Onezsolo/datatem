@@ -6,7 +6,7 @@ use App\Models\DataPackage;
 use App\Models\Purchase;
 use App\Models\User;
 use App\Services\AffiliateService;
-use App\Services\Refer2BundleService;
+use App\Services\LegacyDataService;
 use App\Services\NotifyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -22,7 +22,7 @@ class BuyDataController extends Controller
     public const BENEFICIARY_COOLDOWN_MINUTES = 5;
 
     /**
-     * Show the Buy Data page (single + bulk). Packages from DB (synced from JayBart).
+     * Show the Buy Data page (single + bulk). Packages from DB (synced from the legacy data API).
      */
     public function index(Request $request): Response|JsonResponse
     {
@@ -143,7 +143,7 @@ class BuyDataController extends Controller
     }
 
     /**
-     * Map our package volume to JayBart shared_bundle (e.g. 10GB => 10000 per API example).
+     * Map our package volume to the legacy data API shared_bundle (e.g. 10GB => 10000 per API example).
      */
     private function packageToSharedBundle(DataPackage $package): int
     {
@@ -164,7 +164,7 @@ class BuyDataController extends Controller
             return;
         }
 
-        $result = Refer2BundleService::fetchTransactionStatus($tid);
+        $result = LegacyDataService::fetchTransactionStatus($tid);
         if (! ($result['success'] ?? false)) {
             return;
         }
@@ -181,7 +181,7 @@ class BuyDataController extends Controller
         }) ?? $orderItems[0];
 
         $apiStatus = (string) ($item['status'] ?? '');
-        $mappedStatus = Refer2BundleService::mapApiStatusToOurStatus($apiStatus);
+        $mappedStatus = LegacyDataService::mapApiStatusToOurStatus($apiStatus);
 
         DB::table('purchases')
             ->where('transaction_id', $tid)
@@ -203,7 +203,7 @@ class BuyDataController extends Controller
     }
 
     /**
-     * Single data purchase: deduct balance (admin-set price), call JayBart, record. No client amount accepted.
+     * Single data purchase: deduct balance (admin-set price), call the legacy data API, record. No client amount accepted.
      */
     public function store(Request $request): RedirectResponse|JsonResponse
     {
@@ -274,14 +274,14 @@ class BuyDataController extends Controller
                 'bundle_id_sent' => $providerBundleId,
                 'network_sent' => $networkNameOverride ?? '(from network_id)',
             ]);
-            $apiResult = Refer2BundleService::buyPackage($beneficiary, $networkId, $sharedBundle, $dataPlanOverride, $providerBundleId, $networkNameOverride);
+            $apiResult = LegacyDataService::buyPackage($beneficiary, $networkId, $sharedBundle, $dataPlanOverride, $providerBundleId, $networkNameOverride);
 
             if ($apiResult['success']) {
                 $transactionCode = $apiResult['transaction_code'] ?? null;
                 $orderStatus = $apiResult['order_status'] ?? null;
                 $status = 'processing';
                 if ($orderStatus !== null && $orderStatus !== '') {
-                    $status = Refer2BundleService::mapApiStatusToOurStatus($orderStatus);
+                    $status = LegacyDataService::mapApiStatusToOurStatus($orderStatus);
                 }
                 $insert = [
                     'user_id' => $user->id,
@@ -369,7 +369,7 @@ class BuyDataController extends Controller
     }
 
     /**
-     * Bulk data purchases: same package for all numbers; deduct balance per order, call JayBart each time.
+     * Bulk data purchases: same package for all numbers; deduct balance per order, call the legacy data API each time.
      */
     public function storeBulk(Request $request): RedirectResponse|JsonResponse
     {
@@ -456,7 +456,7 @@ class BuyDataController extends Controller
                 $dataPlanOverride = $package->volume_gb ? trim((string) $package->volume_gb) : null;
                 $providerBundleId = $package->provider_bundle_id ? trim((string) $package->provider_bundle_id) : null;
                 $networkNameOverride = $package->network ? trim((string) $package->network) : null;
-                $apiResult = Refer2BundleService::buyPackage($beneficiary, $networkId, $sharedBundle, $dataPlanOverride, $providerBundleId, $networkNameOverride);
+                $apiResult = LegacyDataService::buyPackage($beneficiary, $networkId, $sharedBundle, $dataPlanOverride, $providerBundleId, $networkNameOverride);
 
                 if ($apiResult['success']) {
                     $transactionCode = $apiResult['transaction_code'] ?? null;

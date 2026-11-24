@@ -111,7 +111,7 @@ final class NotifyService
 
         $phone = GhanaPhone::normalize($user->phone);
         if ($phone) {
-            $sms = SmsOnlineService::fromConfig();
+            $sms = SmsService::fromConfig();
             $sms->sendQuickSms([$phone], $message, false);
         }
 
@@ -125,12 +125,12 @@ final class NotifyService
     {
         $amount = number_format((float) $topup->amount, 2);
         $title = 'Wallet topped up';
-        $message = "Your wallet has been credited with GH₵ {$amount}. Ref: {$topup->id}. Thank you for using R2BMarket.";
+        $message = "Your wallet has been credited with GH₵ {$amount}. Ref: {$topup->id}. Thank you for using Datatem.";
         self::user($user, $title, $message, 'success', '/dashboard', ['topup_id' => $topup->id]);
 
         $phone = GhanaPhone::normalize($user->phone);
         if ($phone) {
-            $sms = SmsOnlineService::fromConfig();
+            $sms = SmsService::fromConfig();
             $sms->sendQuickSms([$phone], $message, false);
         }
 
@@ -138,13 +138,13 @@ final class NotifyService
     }
 
     /**
-     * Send announcement SMS to multiple recipients (e.g. broadcast). Uses SmsOnlineService.
+     * Send announcement SMS to multiple recipients (e.g. broadcast). Uses SmsService.
      *
      * @param array<int, string> $recipients Phone numbers (Ghana format)
      */
     public static function sendAnnouncementSms(array $recipients, string $message): array
     {
-        $sms = SmsOnlineService::fromConfig();
+        $sms = SmsService::fromConfig();
         return $sms->sendQuickSms($recipients, $message, false);
     }
 
@@ -159,7 +159,7 @@ final class NotifyService
     /** Send welcome in-app notification and email to new user after registration. */
     public static function notifyUserWelcome(User $user): void
     {
-        $title = 'Welcome to ' . (SettingsService::get('site_name') ?: config('app.name', 'R2BMarket'));
+        $title = 'Welcome to ' . (SettingsService::get('site_name') ?: config('app.name', 'Datatem'));
         $message = 'Hi ' . $user->name . ', thank you for signing up. You can now buy data bundles, top up your wallet, and manage your orders from your dashboard. If you have any questions, reach out to our support team.';
         self::user($user, $title, $message, 'success', '/dashboard');
         self::sendUserEmail($user, $title, self::emailBody($title, $message, url('/dashboard')));

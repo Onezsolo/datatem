@@ -7,7 +7,7 @@ use App\Models\Purchase;
 use App\Models\ResellerPackagePrice;
 use App\Models\StorefrontPayment;
 use App\Models\User;
-use App\Services\Refer2BundleService;
+use App\Services\LegacyDataService;
 use App\Services\PaystackService;
 use App\Services\SettingsService;
 use App\Services\StorefrontFulfillmentService;
@@ -192,7 +192,7 @@ class StorefrontController extends Controller
             'reseller_profit' => $resellerProfit,
         ]);
 
-        $paystackEmail = $reseller->email ?: config('mail.from.address', 'support@r2bmarket.com');
+        $paystackEmail = $reseller->email ?: config('mail.from.address', 'support@example.com');
         if (empty(trim((string) $paystackEmail))) {
             Log::channel('storefront')->warning('Storefront checkout: no reseller email', ['reference' => $reference, 'reseller_id' => $reseller->id]);
             return response()->json(['error' => 'This store cannot accept payments yet. Please contact support.'], 400);

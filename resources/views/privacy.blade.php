@@ -6,7 +6,7 @@
             <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl"></div>
             <div class="relative z-10 text-center">
                 <h1 class="text-6xl font-black mb-6 italic tracking-tighter">Privacy <span class="text-primary-400">Policy</span></h1>
-                <p class="text-slate-400 text-lg font-bold tracking-widest uppercase">Safe & Secure with R2BMarket</p>
+                <p class="text-slate-400 text-lg font-bold tracking-widest uppercase">Safe & Secure with Datatem</p>
                 <div class="mt-8 inline-block px-6 py-2 bg-white/10 rounded-full text-sm font-bold backdrop-blur-md">Last updated: February 15, 2026</div>
             </div>
         </div>
@@ -26,7 +26,7 @@
                 <div class="lg:col-span-2 space-y-12">
                     <section>
                         <h2 class="text-2xl font-black text-slate-900 mb-4 tracking-tight">1. Information We Collect</h2>
-                        <p class="text-slate-500 font-medium leading-relaxed">We collect information you provide directly to us when you create an account, purchase data bundles, or contact us for support. At R2BMarket, your privacy is our top priority. We only collect essential data like your name, email address, and phone number to ensure smooth transaction processing.</p>
+                        <p class="text-slate-500 font-medium leading-relaxed">We collect information you provide directly to us when you create an account, purchase data bundles, or contact us for support. At Datatem, your privacy is our top priority. We only collect essential data like your name, email address, and phone number to ensure smooth transaction processing.</p>
                     </section>
 
                     <section class="p-8 bg-primary-50/50 rounded-3xl border border-primary-100">

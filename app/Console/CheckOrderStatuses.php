@@ -4,7 +4,7 @@ namespace App\Console;
 
 use App\Models\Purchase;
 use App\Services\AffiliateService;
-use App\Services\Refer2BundleService;
+use App\Services\LegacyDataService;
 use App\Services\NotifyService;
 use App\Services\ResellerService;
 use Illuminate\Support\Facades\Log;
@@ -54,7 +54,7 @@ class CheckOrderStatuses
      */
     private function checkTransaction(string $tid, $purchases): void
     {
-        $result = Refer2BundleService::fetchTransactionStatus($tid);
+        $result = LegacyDataService::fetchTransactionStatus($tid);
         if (! ($result['success'] ?? false)) {
             Log::debug('CheckOrderStatuses: fetch failed for txn ' . $tid, [
                 'message' => $result['message'] ?? 'unknown',
@@ -83,7 +83,7 @@ class CheckOrderStatuses
             }) ?? $orderItems[0];
 
             $apiStatus = (string) ($item['status'] ?? '');
-            $mappedStatus = Refer2BundleService::mapApiStatusToOurStatus($apiStatus);
+            $mappedStatus = LegacyDataService::mapApiStatusToOurStatus($apiStatus);
 
             $purchase->update(['status' => $mappedStatus]);
 

@@ -197,10 +197,10 @@ function userDashboard() {
             return code ? window.location.origin + '/signup?ref=' + encodeURIComponent(code) : window.location.origin + '/signup';
         },
         get whatsAppShareUrl() {
-            return 'https://wa.me/?text=' + encodeURIComponent('Get cheap data on R2BMarket! Sign up with my link: ' + this.referralUrl);
+            return 'https://wa.me/?text=' + encodeURIComponent('Get cheap data on Datatem! Sign up with my link: ' + this.referralUrl);
         },
         get telegramShareUrl() {
-            return 'https://t.me/share/url?url=' + encodeURIComponent(this.referralUrl) + '&text=' + encodeURIComponent('Get cheap data on R2BMarket! Sign up with my link.');
+            return 'https://t.me/share/url?url=' + encodeURIComponent(this.referralUrl) + '&text=' + encodeURIComponent('Get cheap data on Datatem! Sign up with my link.');
         },
         async init() {
             if (!this.$store.auth.token) { window.location.href = '/login'; return; }

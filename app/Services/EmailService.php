@@ -36,7 +36,7 @@ final class EmailService
         $username = $all['smtp_username'] ?? '';
         $password = $all['smtp_password'] ?? '';
         $fromAddress = trim((string) ($all['smtp_from_address'] ?? ''));
-        $fromName = trim((string) ($all['smtp_from_name'] ?? config('app.name', 'R2BMarket')));
+        $fromName = trim((string) ($all['smtp_from_name'] ?? config('app.name', 'Datatem')));
 
         if ($fromAddress === '') {
             $fromAddress = $username ?: 'noreply@' . (parse_url(config('app.url', 'http://localhost'), PHP_URL_HOST) ?: 'localhost');
@@ -59,7 +59,7 @@ final class EmailService
             $html = view('emails.layout', [
                 'subject' => $subject,
                 'bodyHtml' => $bodyHtml,
-                'appName' => config('app.name', 'R2BMarket'),
+                'appName' => config('app.name', 'Datatem'),
             ])->render();
 
             Mail::mailer('dynamic_smtp')->html($html, function ($message) use ($toEmail, $toName, $subject) {

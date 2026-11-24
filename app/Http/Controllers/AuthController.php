@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Services\AffiliateService;
 use App\Services\SettingsService;
-use App\Services\SmsOnlineService;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -26,7 +26,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'OTP verification is not required.'], 200);
         }
 
-        $sms = SmsOnlineService::fromConfig();
+        $sms = SmsService::fromConfig();
         $result = $sms->sendPhoneVerificationOtp($request->phone);
 
         if (! ($result['success'] ?? false)) {

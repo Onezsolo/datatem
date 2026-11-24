@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\DataPackage;
 use App\Models\Purchase;
 use App\Models\StorefrontPayment;
-use App\Services\Refer2BundleService;
+use App\Services\LegacyDataService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -80,9 +80,9 @@ final class StorefrontFulfillmentService
                 $sharedBundle = $correctMtn1Gb->volume > 0 ? (int) round((float) $correctMtn1Gb->volume * 1000) : $sharedBundle;
             }
         }
-        Log::channel('storefront')->info('StorefrontFulfillment: calling Refer2Bundle API', ['beneficiary' => $payment->beneficiary, 'network_id' => $networkId, 'shared_bundle' => $sharedBundle]);
-        $apiResult = Refer2BundleService::buyPackage($payment->beneficiary, $networkId, $sharedBundle, $dataPlanOverride, $providerBundleId, $networkNameOverride);
-        Log::channel('storefront')->info('StorefrontFulfillment: Refer2Bundle API result', ['success' => $apiResult['success'] ?? false, 'message' => $apiResult['message'] ?? null, 'transaction_code' => $apiResult['transaction_code'] ?? null]);
+        Log::channel('storefront')->info('StorefrontFulfillment: calling legacy data API', ['beneficiary' => $payment->beneficiary, 'network_id' => $networkId, 'shared_bundle' => $sharedBundle]);
+        $apiResult = LegacyDataService::buyPackage($payment->beneficiary, $networkId, $sharedBundle, $dataPlanOverride, $providerBundleId, $networkNameOverride);
+        Log::channel('storefront')->info('StorefrontFulfillment: legacy data API result', ['success' => $apiResult['success'] ?? false, 'message' => $apiResult['message'] ?? null, 'transaction_code' => $apiResult['transaction_code'] ?? null]);
 
         if ($apiResult['success']) {
             $transactionCode = $apiResult['transaction_code'] ?? null;

@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('data_packages', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('external_id')->unique()->comment('JayBart API package id');
+            $table->unsignedBigInteger('external_id')->unique()->comment('Legacy data API package id');
             $table->unsignedInteger('network_id')->default(0);
             $table->string('network')->nullable();
             $table->decimal('volume', 12, 2)->default(0);

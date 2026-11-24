@@ -25,7 +25,7 @@ Tokens live in `resources/css/tokens.css` and are exported to Tailwind utilities
 - Breakpoints: 40 / 48 / 64 / 80 / 96 rem.
 - Rules: no gradients, no pill controls, no glow effects, no decorative emoji or Unicode.
 
-Legacy bridge tokens (`primary-50` … `primary-900`, `mtn`, `airteltigo`, `telecel`) exist only so pre-migration r2b pages render in the brand palette until their phase restyles them. New work uses `brand-*` tokens.
+Legacy bridge tokens (`primary-50` … `primary-900`, `mtn`, `airteltigo`, `telecel`) exist only so pre-migration legacy pages render in the brand palette until their phase restyles them. New work uses `brand-*` tokens.
 
 ## 2. Components
 

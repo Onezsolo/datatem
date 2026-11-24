@@ -13,6 +13,10 @@ class ServiceProviderSeeder extends Seeder
     {
         $default = ServiceProvider::ensureDefault();
 
+        if ($default->name === 'Default provider') {
+            $default->update(['name' => 'PATUPAA']);
+        }
+
         PatupaaCatalogItem::query()
             ->whereNull('provider_id')
             ->update(['provider_id' => $default->id]);

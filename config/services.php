@@ -53,29 +53,19 @@ return [
         'timeout' => (int) env('PATUPAA_API_TIMEOUT', 25),
     ],
 
-    'mnotify' => [
-        'api_key' => trim((string) env('MNOTIFY_API_KEY', '')),
-        'sender_id' => trim((string) env('MNOTIFY_SENDER_ID', 'gabbyshub')),
-    ],
-
     'sms' => [
+        'endpoint' => trim((string) env('SMS_ENDPOINT', 'https://api.smsonlinegh.com/v5/message/sms/send')),
         'api_key' => trim((string) env('SMS_API_KEY', '')),
-        'sender_id' => trim((string) env('SMS_SENDER_ID', 'Supa Cheap')),
+        'sender_id' => trim((string) env('SMS_SENDER_ID', (string) env('APP_NAME', 'Datatem'))),
     ],
 
-    'jaybart' => [
-        // Deprecated: use refer2bundle. Kept for backwards compatibility of env keys only.
-        'base_url' => rtrim((string) env('JAYBART_BASE_URL', 'https://agent.jaybartservices.com/api/v1'), '/'),
-        'api_key' => trim((string) env('JAYBART_API_KEY', '')),
-    ],
-
-    'refer2bundle' => [
-        // Data bundle API. .env: REFER2BUNDLE_BASE_URL, REFER2BUNDLE_API_KEY (use your provider’s URL)
-        'base_url' => rtrim((string) env('REFER2BUNDLE_BASE_URL', 'https://databosshub.org/api/v1'), '/'),
-        'api_key' => trim((string) env('REFER2BUNDLE_API_KEY', '')),
-        'bundles_path' => env('REFER2BUNDLE_BUNDLES_PATH', 'bundles.php'),
-        'order_status_path' => env('REFER2BUNDLE_ORDER_STATUS_PATH', 'order_status.php'),
-        'excluded_bundle_ids' => array_filter(array_map('intval', explode(',', (string) env('REFER2BUNDLE_EXCLUDED_BUNDLE_IDS', '')))),
+    'legacy_data' => [
+        // Data bundle API. .env: LEGACY_DATA_BASE_URL, LEGACY_DATA_API_KEY (use your provider’s URL)
+        'base_url' => rtrim((string) env('LEGACY_DATA_BASE_URL', ''), '/'),
+        'api_key' => trim((string) env('LEGACY_DATA_API_KEY', '')),
+        'bundles_path' => env('LEGACY_DATA_BUNDLES_PATH', 'bundles.php'),
+        'order_status_path' => env('LEGACY_DATA_ORDER_STATUS_PATH', 'order_status.php'),
+        'excluded_bundle_ids' => array_filter(array_map('intval', explode(',', (string) env('LEGACY_DATA_EXCLUDED_BUNDLE_IDS', '')))),
     ],
 
 ];

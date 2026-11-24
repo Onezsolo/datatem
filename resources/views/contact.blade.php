@@ -13,7 +13,7 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-bold text-brand-navy">Email Us</h3>
-                            <p class="text-muted font-medium">support@r2bmarket.com</p>
+                            <p class="text-muted font-medium">support@example.com</p>
                         </div>
                     </div>
                     

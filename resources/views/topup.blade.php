@@ -152,7 +152,7 @@ function topupPage() {
         errorMsg: '',
         manualReference: '',
         lastReference: '',
-        manualDetails: { number: @json($manual_payment_number ?? '0241234567'), name: @json($manual_payment_name ?? 'R2BMarket Official') },
+        manualDetails: { number: @json($manual_payment_number ?? '0241234567'), name: @json($manual_payment_name ?? 'Datatem Official') },
         init() {
             const params = new URLSearchParams(window.location.search);
             const success = params.get('success');

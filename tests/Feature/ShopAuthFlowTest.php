@@ -20,7 +20,7 @@ class ShopAuthFlowTest extends TestCase
         $this->seed(ShopCatalogSeeder::class);
     }
 
-    public function test_shop_uses_r2b_login_cookie_for_cart_checkout_and_order_ownership(): void
+    public function test_shop_uses_application_login_cookie_for_cart_checkout_and_order_ownership(): void
     {
         $user = User::create([
             'full_name' => 'Cookie Shopper',
@@ -71,7 +71,7 @@ class ShopAuthFlowTest extends TestCase
         $this->assertSame('12 Independence Avenue', $user->fresh()->delivery_address);
     }
 
-    public function test_guest_is_redirected_to_r2b_login_before_checkout(): void
+    public function test_guest_is_redirected_to_login_before_checkout(): void
     {
         $this->get('/shop/checkout')->assertRedirectContains('/login');
     }

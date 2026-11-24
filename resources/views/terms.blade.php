@@ -25,12 +25,12 @@
                 <div class="lg:col-span-2 space-y-12">
                     <section>
                         <h2 class="text-2xl font-black text-slate-900 mb-4 tracking-tight">1. Acceptance of Terms</h2>
-                        <p class="text-slate-500 font-medium leading-relaxed">By accessing or using R2BMarket, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.</p>
+                        <p class="text-slate-500 font-medium leading-relaxed">By accessing or using Datatem, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.</p>
                     </section>
 
                     <section class="p-8 bg-slate-900 text-white rounded-3xl shadow-xl">
                         <h2 class="text-2xl font-black mb-4 tracking-tight text-primary-400">2. Delivery Policy</h2>
-                        <p class="text-slate-300 font-medium leading-relaxed">R2BMarket provides instant mobile data delivery. However, delivery times may vary due to network congestion or service provider downtime. We guarantee that your data will be delivered or your money will be refunded.</p>
+                        <p class="text-slate-300 font-medium leading-relaxed">Datatem provides instant mobile data delivery. However, delivery times may vary due to network congestion or service provider downtime. We guarantee that your data will be delivered or your money will be refunded.</p>
                     </section>
 
                     <section>

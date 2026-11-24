@@ -2,17 +2,17 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Turn `datatem` (r2b reseller base) into the frontend foundation of one complete system: compiled Tailwind 4 design system, unified public/member shells, and four pilot pages rendered with one uniform UI/UX.
+**Goal:** Turn `datatem` (reseller base) into the frontend foundation of one complete system: compiled Tailwind 4 design system, unified public/member shells, and four pilot pages rendered with one uniform UI/UX.
 
-**Architecture:** Keep the Laravel 11 r2b base and its JWT API contracts. Adopt the novagel design system (navy `#001534` / yellow `#FFCC00` / red `#E63946` tokens, Instrument Sans, Blade UI components) as the single visual language. Add a Vite 8 + Tailwind 4 pipeline and bundled Alpine, then migrate pages page-by-page behind new Blade shells. Legacy pages keep working through a temporary palette bridge (static `primary-*` aliases) until later phases restyle them.
+**Architecture:** Keep the Laravel 11 base and its JWT API contracts. Adopt the novagel design system (navy `#001534` / yellow `#FFCC00` / red `#E63946` tokens, Instrument Sans, Blade UI components) as the single visual language. Add a Vite 8 + Tailwind 4 pipeline and bundled Alpine, then migrate pages page-by-page behind new Blade shells. Legacy pages keep working through a temporary palette bridge (static `primary-*` aliases) until later phases restyle them.
 
 **Tech Stack:** Laravel 11.48, PHP 8.3.33, Composer 2.10, Node v22.23.2 (`C:\laragon\bin\nodejs\node-v22`), Vite 8, Tailwind CSS 4, Alpine.js 3, PHPUnit 10 (SQLite `:memory:`).
 
-**Spec:** `novagel/docs/design-system.md`, `novagel/README.md`, `novagel/PATU_CONTEXT.md` (user rules: no gradients, no pill shapes, no decorative emoji/Unicode, functional UI only), and the user brief: "one complete system using a uniform design and UI/UX" with r2b as base.
+**Spec:** `novagel/docs/design-system.md`, `novagel/README.md`, `novagel/PATU_CONTEXT.md` (user rules: no gradients, no pill shapes, no decorative emoji/Unicode, functional UI only), and the user brief: "one complete system using a uniform design and UI/UX" with the existing reseller app as base.
 
 ## Global Constraints
 
-- Base stays Laravel 11 + existing r2b APIs, JWT auth and DB tables; no destructive schema changes in Phase 0.
+- Base stays Laravel 11 + existing APIs, JWT auth and DB tables; no destructive schema changes in Phase 0.
 - Palette (verbatim): navy `#001534`, navy-soft `#0B2550`, yellow `#FFCC00`, yellow-strong `#E6B800`, red `#E63946`, red-strong `#B0202D`, red-strong-hover `#941B26`, surface `#FFFFFF`, surface-muted `#F4F4F4`, ink `#0B0B0B`, muted `#5A6270`, line `#E2E4E8`, nav-muted `#D7DEEA`.
 - Radius: control `0.375rem`, card `0.75rem`. Container `75rem`, inline padding `1rem`. Breakpoints 40/48/64/80/96rem.
 - Typography: Instrument Sans; display 40/800, heading 24/800, body 16/400, small 14/400.
@@ -44,7 +44,7 @@
 | 4 | Admin back office: single shell/nav (Dashboard, Bundles, Shop catalog, Orders, Top-ups, Payments, Users, Resellers, Affiliates, Finance, Support, Settings), server-side gating of `/admin`, finance ledger | Uniform admin |
 | 5 | QA, accessibility sweep, performance, production build/deploy, operations docs | Shippable release |
 
-**Locked decisions:** shop tables use `shop_*` prefix; admin/auth unification and MFA are decided in Phase 4 (out of Phase 0 scope); fixed brand palette replaces runtime theme colors; existing r2b APIs keep contracts; new pages are server-rendered Blade + Alpine, not SPA-only.
+**Locked decisions:** shop tables use `shop_*` prefix; admin/auth unification and MFA are decided in Phase 4 (out of Phase 0 scope); fixed brand palette replaces runtime theme colors; existing APIs keep contracts; new pages are server-rendered Blade + Alpine, not SPA-only.
 
 **Navigation model (user requirement):**
 - Desktop: persistent left **sidebar** for member and admin areas (grouped: Overview, Shop, Data, Account); public area uses the top nav.
@@ -211,7 +211,7 @@ export default defineConfig({
 `resources/css/tokens.css`: copy the 32-line token block from `novagel/resources/css/tokens.css` unchanged, then append the temporary legacy aliases used by Task 6:
 
 ```css
-/* Legacy bridge: r2b views use primary-* and former CDN palette names. */
+/* Legacy bridge: legacy views use primary-* and former CDN palette names. */
 --color-primary-50: #eef2f7;
 --color-primary-100: #dbe3ee;
 --color-primary-200: #b9c8dd;
@@ -566,7 +566,7 @@ git commit -m "feat: unify legacy layout with compiled design system"
 
 - Phase 0 complete (Tasks 1-6): test harness, Vite/Tailwind/Alpine pipeline, design tokens/components, public + member shells (desktop sidebar, mobile bottom nav), pilot pages `/`, `/bundles`, `/login`, `/signup`, legacy palette bridge, docs.
 - Phase 1 started: all member pages (`/dashboard`, `/orders`, `/topup`, `/referral`, `/reseller*`, `/profile`, `/notifications`) and public pages (`/support`, `/privacy`, `/terms`, `/maintenance`, `/forgot-password`) now render inside the unified shells; legacy cyan/Outfit styling bridged to brand tokens. Inner card polish continues.
-- Shop auth + finance: shop checkout requires the r2b login, carts/orders carry user_id, login/register/refresh set the httpOnly uth_token cookie, member shop orders match user_id (with legacy phone/email fallback); /admin/statistics is the single finance dashboard with shop revenue, paid/pending shop orders, delivery fees, combined revenue and shop daily breakdown. MFA is out of scope by decision.
+- Shop auth + finance: shop checkout requires the application login, carts/orders carry user_id, login/register/refresh set the httpOnly uth_token cookie, member shop orders match user_id (with legacy phone/email fallback); /admin/statistics is the single finance dashboard with shop revenue, paid/pending shop orders, delivery fees, combined revenue and shop daily breakdown. MFA is out of scope by decision.
 - Phase 2 storefront: `shop_*` schema + models, guest cart/checkout/Paystack/tracking, catalog seeder, shop pages under `/shop`, cart badge in header, unified member "Shop orders" tab (`/orders/shop` + `/api/auth/shop-orders`), admin catalog & shop orders (`/admin/shop`, `/api/admin/shop/*`).
 - Evidence: `php artisan test` 34 passed / 285 assertions; `npm run build` clean; live checks `/shop`, `/shop/product/...`, `/orders/shop`, `/admin/shop` all 200.
 - Branch pushed: `feat/one-system-foundation` (origin).
@@ -587,7 +587,7 @@ git commit -m "feat: unify legacy layout with compiled design system"
 
 - Orders and Shop orders are separate pages and separate sidebar entries; the data Orders page no longer mixes shop tabs.
 - Delivery details are saved on the user (`delivery_*` columns), auto-filled at checkout, auto-updated after each order and editable from Profile.
-- Shop no longer behaves as guest: cart, checkout and wallet payment require the r2b login (auth middleware redirects guests to login); guest wording removed.
+- Shop no longer behaves as guest: cart, checkout and wallet payment require the application login (auth middleware redirects guests to login); guest wording removed.
 - Cart is shop-only: header cart link/badge renders only inside `/shop*`; data flows never touch the cart.
 - Top up before purchase: checkout is wallet-only. The order and wallet debit happen in one transaction; insufficient balance blocks the order with a Top up CTA (Paystack shop checkout removed).
 
@@ -627,7 +627,7 @@ git commit -m "feat: unify legacy layout with compiled design system"
 
 - Home stays public outside login: authenticated users can view the landing page (no redirect); the CTA switches to Welcome back with Dashboard (admin-aware) and Shop. Login/signup still land on the dashboard after signing in.
 
-- Fixed the refresh loop: /login and /signup no longer server-redirect authenticated visitors (dashboard's client guard sent them back, causing ping-pong). Authenticated login/signup pages now self-heal via POST /auth/session-token (new endpoint using the r2b cookie session), store the JWT in localStorage and redirect once; if minting fails the page stays put instead of looping.
+- Fixed the refresh loop: /login and /signup no longer server-redirect authenticated visitors (dashboard's client guard sent them back, causing ping-pong). Authenticated login/signup pages now self-heal via POST /auth/session-token (new endpoint using the existing cookie session), store the JWT in localStorage and redirect once; if minting fails the page stays put instead of looping.
 
 ### PATUPAA services integration (data, WAEC, utility, subscriptions, AFA)
 

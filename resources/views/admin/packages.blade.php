@@ -230,7 +230,7 @@ function packageManagement() {
                 });
                 const result = await response.json().catch(() => ({}));
                 if (!response.ok) {
-                    alert(result.message || 'Sync failed. Check JAYBART_API_KEY in .env and run: php artisan config:clear');
+                    alert(result.message || 'Sync failed. Check LEGACY_DATA_API_KEY in .env and run: php artisan config:clear');
                     return;
                 }
                 await this.fetchPackages();

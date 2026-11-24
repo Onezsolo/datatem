@@ -30,7 +30,7 @@
     --breakpoint-xl: 80rem;
     --breakpoint-2xl: 96rem;
 
-    /* Legacy bridge: r2b views use primary-* and former CDN palette names. */
+    /* Legacy bridge: legacy views use primary-* and former CDN palette names. */
     --color-primary-50: #edf1f6;
     --color-primary-100: #d9e1eb;
     --color-primary-200: #b7c6da;

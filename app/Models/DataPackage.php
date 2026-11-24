@@ -45,7 +45,7 @@ class DataPackage extends Model
         return $t;
     }
 
-    /** Refer2Bundle bundle_id for the good MTN 1 GB at 4.50 – never exclude this from display. */
+    /** LegacyData bundle_id for the good MTN 1 GB at 4.50 – never exclude this from display. */
     public const MTN_1GB_450_BUNDLE_ID = '162';
 
     /**
@@ -54,7 +54,7 @@ class DataPackage extends Model
      */
     public function scopeExcludeProviderBundleIds($query)
     {
-        $ids = config('services.refer2bundle.excluded_bundle_ids', []);
+        $ids = config('services.legacy_data.excluded_bundle_ids', []);
         if ($ids === [] || $ids === null) {
             return $query;
         }

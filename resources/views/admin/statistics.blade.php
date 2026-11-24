@@ -215,7 +215,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-muted uppercase tracking-wider mb-1">Current provider balance (GHS)</label>
-                    <input type="number" step="0.01" min="0" x-model="calc.providerBalanceNow" placeholder="e.g. 8.75 (Refer2Bundle)" class="rounded-card border border-line px-4 py-3 w-full font-bold text-brand-navy" />
+                    <input type="number" step="0.01" min="0" x-model="calc.providerBalanceNow" placeholder="e.g. 8.75" class="rounded-card border border-line px-4 py-3 w-full font-bold text-brand-navy" />
                 </div>
             </div>
             <div class="flex flex-wrap items-center gap-3 mb-4">

@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\DataPackage;
-use App\Services\Refer2BundleService;
+use App\Services\LegacyDataService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -16,7 +16,7 @@ class ClearPackagesAndSyncCommand extends Command
     protected $signature = 'packages:clear-and-sync
                             {--force : Skip confirmation}';
 
-    protected $description = 'Clear all data packages and re-sync from Refer2Bundle API. Clears reseller prices and storefront payment records that reference packages.';
+    protected $description = 'Clear all data packages and re-sync from LegacyData API. Clears reseller prices and storefront payment records that reference packages.';
 
     public function handle(): int
     {
@@ -46,8 +46,8 @@ class ClearPackagesAndSyncCommand extends Command
         $this->line("  Deleted {$packageCount} package(s).");
         $this->info('Packages table cleared.');
 
-        $this->info('Syncing from Refer2Bundle API...');
-        $result = Refer2BundleService::syncPackagesToDb();
+        $this->info('Syncing from LegacyData API...');
+        $result = LegacyDataService::syncPackagesToDb();
 
         if (isset($result['error']) && $result['error']) {
             $this->error('Sync failed: ' . ($result['message'] ?? $result['error']));
