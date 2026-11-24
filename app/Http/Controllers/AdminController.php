@@ -205,6 +205,43 @@ class AdminController extends Controller
             $row->profit = isset($dailyProfit[$d]) ? (float) $dailyProfit[$d]->profit : 0;
         }
 
+        $shopRevenue = 0.0;
+        $shopPaidOrders = 0;
+        $shopPendingOrders = 0;
+        $shopDeliveryFees = 0.0;
+        $shopDaily = collect();
+
+        if (Schema::hasTable('shop_orders') && Schema::hasTable('shop_payments')) {
+            try {
+                $shopRevenue = (float) \App\Shop\Models\Payment::query()
+                    ->where('status', 'paid')
+                    ->whereBetween('created_at', [$dateFrom, $dateTo])
+                    ->sum('amount');
+
+                $paidOrders = \App\Shop\Models\Order::query()
+                    ->where('payment_status', 'paid')
+                    ->whereBetween('created_at', [$dateFrom, $dateTo]);
+
+                $shopPaidOrders = (int) (clone $paidOrders)->count();
+                $shopDeliveryFees = (float) (clone $paidOrders)->sum('delivery_fee');
+
+                $shopPendingOrders = (int) \App\Shop\Models\Order::query()
+                    ->where('payment_status', 'pending')
+                    ->whereBetween('created_at', [$dateFrom, $dateTo])
+                    ->count();
+
+                $shopDaily = \App\Shop\Models\Order::query()
+                    ->where('payment_status', 'paid')
+                    ->whereBetween('created_at', [$dateFrom, $dateTo])
+                    ->selectRaw('DATE(created_at) as date, COUNT(*) as orders_count, COALESCE(SUM(total), 0) as amount')
+                    ->groupBy('date')
+                    ->orderBy('date')
+                    ->get();
+            } catch (\Throwable $e) {
+                // Shop tables unavailable; keep zeroed metrics.
+            }
+        }
+
         return response()->json([
             'date_from' => $dateFrom->toDateString(),
             'date_to' => $dateTo->toDateString(),
@@ -219,6 +256,12 @@ class AdminController extends Controller
             'wallet_topups_sum' => round($walletTopupsSum, 2),
             'total_orders' => $totalOrders,
             'affiliate_expenses' => round($affiliateExpenses, 2),
+            'shop_revenue' => round($shopRevenue, 2),
+            'shop_paid_orders' => $shopPaidOrders,
+            'shop_pending_orders' => $shopPendingOrders,
+            'shop_delivery_fees' => round($shopDeliveryFees, 2),
+            'combined_revenue' => round($amountSpent + $shopRevenue, 2),
+            'shop_daily_breakdown' => $shopDaily,
             'daily_breakdown' => $dailyBreakdown,
         ]);
     }
