@@ -26,7 +26,7 @@ class CheckoutRequest extends FormRequest
             'delivery_address' => ['required', 'string', 'max:500'],
             'delivery_city' => ['required', 'string', 'max:120'],
             'delivery_region' => ['nullable', 'string', 'max:120'],
-            'delivery_zone' => ['required', 'string', Rule::in(array_keys(config('delivery.zones')))],
+            'delivery_zone' => ['required', 'string', Rule::in(array_keys(\App\Shop\Services\ShopSettings::deliveryZones()))],
             'delivery_phone' => ['nullable', 'string', 'regex:/^(?:\+233|0)[235]\d{8}$/'],
             'delivery_notes' => ['nullable', 'string', 'max:1000'],
             'payment_method' => ['required', 'string', 'in:paystack'],

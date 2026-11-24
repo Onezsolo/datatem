@@ -92,6 +92,13 @@ Route::group([
     Route::put('/shop/products/{product}', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'updateProduct']);
     Route::delete('/shop/products/{product}', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'destroyProduct']);
     Route::post('/shop/products/{product}/stock', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'adjustStock']);
+    Route::post('/shop/products/{product}/images', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'uploadImage']);
+    Route::delete('/shop/images/{image}', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'destroyImage']);
+    Route::post('/shop/products/{product}/variants', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'storeVariant']);
+    Route::put('/shop/variants/{variant}', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'updateVariant']);
+    Route::delete('/shop/variants/{variant}', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'destroyVariant']);
+    Route::get('/shop/delivery', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'deliverySettings']);
+    Route::put('/shop/delivery', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'updateDeliverySettings']);
     Route::get('/shop/orders', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'orders']);
     Route::put('/shop/orders/{order}/status', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'updateOrderStatus']);
     Route::get('/topups', [\App\Http\Controllers\AdminController::class, 'getTopups']);    Route::post('/topups/{id}/approve', [\App\Http\Controllers\AdminController::class, 'approveTopup']);

@@ -6,7 +6,10 @@ use App\Models\User;
 use App\Shop\Models\Category;
 use App\Shop\Models\Order;
 use App\Shop\Models\Product;
+use App\Shop\Services\ShopSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AdminCatalogTest extends TestCase
@@ -119,5 +122,80 @@ class AdminCatalogTest extends TestCase
             ->assertOk();
 
         $this->assertSame('cancelled', $order->fresh()->status);
+    }
+    public function test_admin_can_upload_images_and_manage_variants(): void
+    {
+        Storage::fake('public');
+
+        $token = $this->adminToken();
+        $headers = ['Authorization' => 'Bearer '.$token];
+
+        $category = Category::create(['name' => 'Audio', 'slug' => 'audio']);
+        $product = Product::create([
+            'category_id' => $category->id,
+            'name' => 'Bluetooth Speaker',
+            'slug' => 'bluetooth-speaker',
+            'price' => 300,
+            'sku' => 'DT-AUD-SPK1',
+            'stock_quantity' => 4,
+        ]);
+
+        $image = $this->withHeaders($headers)
+            ->post('/api/admin/shop/products/'.$product->id.'/images', [
+                'image' => UploadedFile::fake()->image('speaker.jpg', 800, 800),
+            ])
+            ->assertCreated()
+            ->json('image');
+
+        Storage::disk('public')->assertExists($image['path']);
+        $this->assertTrue((bool) $image['is_primary']);
+
+        $this->withHeaders($headers)
+            ->deleteJson('/api/admin/shop/images/'.$image['id'])
+            ->assertOk();
+
+        Storage::disk('public')->assertMissing($image['path']);
+
+        $variant = $this->withHeaders($headers)
+            ->postJson('/api/admin/shop/products/'.$product->id.'/variants', [
+                'name' => 'Black',
+                'sku' => 'DT-AUD-SPK1-BK',
+                'price' => 320,
+                'stock_quantity' => 2,
+            ])
+            ->assertCreated()
+            ->json('variant');
+
+        $this->assertSame(1, $product->variants()->count());
+
+        $this->withHeaders($headers)
+            ->deleteJson('/api/admin/shop/variants/'.$variant['id'])
+            ->assertOk();
+
+        $this->assertSame(0, $product->variants()->count());
+    }
+
+    public function test_admin_can_update_delivery_zones_used_by_shop_settings(): void
+    {
+        $token = $this->adminToken();
+        $headers = ['Authorization' => 'Bearer '.$token];
+
+        $this->withHeaders($headers)
+            ->putJson('/api/admin/shop/delivery', [
+                'zones' => [
+                    'accra' => ['label' => 'Accra Metro', 'fee' => 30],
+                    'tema' => ['label' => 'Tema', 'fee' => 15],
+                ],
+                'default_zone' => 'tema',
+                'service_charge' => 5,
+            ])
+            ->assertOk()
+            ->assertJsonPath('default_zone', 'tema')
+            ->assertJsonPath('zones.accra.fee', 30)
+            ->assertJsonPath('service_charge', 5);
+
+        $this->assertSame('Tema', ShopSettings::deliveryZones()['tema']['label']);
+        $this->assertSame('tema', ShopSettings::defaultZone());
+        $this->assertSame(5.0, ShopSettings::serviceCharge());
     }
 }

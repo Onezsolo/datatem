@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Shop;
 use App\Http\Requests\CheckoutRequest;
 use App\Shop\Services\CartService;
 use App\Shop\Services\CheckoutService;
+use App\Shop\Services\ShopSettings;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -36,7 +37,9 @@ class CheckoutController
 
         return view('shop.checkout', [
             'cart' => $cart,
-            'zones' => config('delivery.zones'),
+            'zones' => ShopSettings::deliveryZones(),
+            'defaultZone' => ShopSettings::defaultZone(),
+            'serviceCharge' => ShopSettings::serviceCharge(),
             'messages' => $messages,
         ]);
     }

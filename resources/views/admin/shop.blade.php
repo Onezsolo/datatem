@@ -21,6 +21,7 @@
             <button type="button" @click="tab='products'" :class="tab === 'products' ? 'bg-brand-navy text-white border-brand-navy' : 'border-line bg-surface text-muted hover:text-brand-navy'" class="min-h-10 rounded-control border px-4 text-sm font-bold">Products</button>
             <button type="button" @click="tab='categories'" :class="tab === 'categories' ? 'bg-brand-navy text-white border-brand-navy' : 'border-line bg-surface text-muted hover:text-brand-navy'" class="min-h-10 rounded-control border px-4 text-sm font-bold">Categories</button>
             <button type="button" @click="tab='orders'" :class="tab === 'orders' ? 'bg-brand-navy text-white border-brand-navy' : 'border-line bg-surface text-muted hover:text-brand-navy'" class="min-h-10 rounded-control border px-4 text-sm font-bold">Shop orders</button>
+            <button type="button" @click="tab='delivery'" :class="tab === 'delivery' ? 'bg-brand-navy text-white border-brand-navy' : 'border-line bg-surface text-muted hover:text-brand-navy'" class="min-h-10 rounded-control border px-4 text-sm font-bold">Delivery</button>
         </div>
 
         <div x-show="loading" x-cloak class="mt-5 rounded-card border border-line bg-surface p-6 text-sm font-semibold text-muted">Loading catalog...</div>
@@ -147,6 +148,40 @@
             </div>
             <p x-show="orders.length === 0" class="p-6 text-sm text-muted">No shop orders yet.</p>
         </div>
+
+        <form x-show="!loading && tab === 'delivery'" @submit.prevent="saveDelivery()" class="mt-5 rounded-card border border-line bg-surface p-5">
+            <div class="flex flex-wrap items-end justify-between gap-3">
+                <div>
+                    <h2 class="text-lg font-extrabold text-brand-navy">Delivery zones</h2>
+                    <p class="mt-1 text-sm text-muted">Fees shown at checkout. Changes apply to new orders.</p>
+                </div>
+                <button type="submit" :disabled="deliverySaving" class="min-h-10 rounded-control bg-brand-yellow px-4 text-sm font-bold text-brand-navy hover:bg-brand-yellow-strong disabled:opacity-60" x-text="deliverySaving ? 'Saving...' : 'Save delivery settings'"></button>
+            </div>
+
+            <div class="mt-4 space-y-3">
+                <template x-for="(zone, key) in deliveryZones" :key="key">
+                    <div class="grid gap-3 sm:grid-cols-[1fr_8rem_10rem] sm:items-end">
+                        <div>
+                            <label :for="'zone-label-' + key" class="block text-sm font-bold text-brand-navy">Label</label>
+                            <input :id="'zone-label-' + key" type="text" x-model="zone.label" required class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm">
+                        </div>
+                        <div>
+                            <label :for="'zone-fee-' + key" class="block text-sm font-bold text-brand-navy">Fee (GHS)</label>
+                            <input :id="'zone-fee-' + key" type="number" step="0.01" min="0" x-model.number="zone.fee" required class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm">
+                        </div>
+                        <label class="flex min-h-11 items-center gap-2 text-sm font-medium text-muted">
+                            <input type="radio" name="default_zone" :value="key" x-model="deliveryDefault" class="h-4 w-4 border-line">
+                            Default zone
+                        </label>
+                    </div>
+                </template>
+            </div>
+
+            <div class="mt-4 max-w-xs">
+                <label for="service-charge" class="block text-sm font-bold text-brand-navy">Service charge (GHS)</label>
+                <input id="service-charge" type="number" step="0.01" min="0" x-model.number="deliveryService" class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm">
+            </div>
+        </form>
     </div>
 
     <div x-show="productModal" x-cloak class="fixed inset-0 z-[120] overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="product-modal-title">
@@ -194,6 +229,46 @@
                     </div>
                 </div>
 
+                <div x-show="productForm.id" class="mt-5 border-t border-line pt-4">
+                    <h3 class="text-sm font-bold text-brand-navy">Images</h3>
+                    <div class="mt-2 flex flex-wrap items-center gap-2">
+                        <template x-for="image in (productForm.images || [])" :key="image.id">
+                            <div class="relative">
+                                <img :src="'/storage/' + image.path" :alt="image.alt_text || productForm.name" class="h-16 w-16 rounded-control border border-line object-cover">
+                                <button type="button" @click="deleteImage(image)" class="absolute -right-1 -top-1 inline-flex h-6 w-6 items-center justify-center rounded-control bg-brand-red-strong text-white" aria-label="Delete image">
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
+                            </div>
+                        </template>
+                        <p x-show="!(productForm.images || []).length" class="text-sm text-muted">No images yet.</p>
+                    </div>
+                    <label class="mt-3 inline-flex min-h-10 cursor-pointer items-center rounded-control border border-line px-3 text-sm font-bold text-brand-navy hover:bg-surface-muted">
+                        Upload image
+                        <input type="file" accept="image/png,image/jpeg,image/webp" class="sr-only" @change="uploadImage($event)">
+                    </label>
+                </div>
+
+                <div x-show="productForm.id" class="mt-5 border-t border-line pt-4">
+                    <h3 class="text-sm font-bold text-brand-navy">Variants</h3>
+                    <ul x-show="(productForm.variants || []).length" class="mt-2 divide-y divide-line rounded-control border border-line">
+                        <template x-for="variant in (productForm.variants || [])" :key="variant.id">
+                            <li class="flex flex-wrap items-center justify-between gap-2 px-3 py-2 text-sm">
+                                <span><span class="font-bold text-brand-navy" x-text="variant.name"></span> <span class="text-muted" x-text="variant.sku"></span></span>
+                                <span class="text-muted" x-text="'GHS ' + Number(variant.price || 0).toFixed(2)"></span>
+                                <button type="button" @click="deleteVariant(variant)" class="text-xs font-bold text-brand-red-strong">Delete</button>
+                            </li>
+                        </template>
+                    </ul>
+                    <p x-show="!(productForm.variants || []).length" class="mt-2 text-sm text-muted">No variants. Add one below.</p>
+                    <div class="mt-3 grid gap-2 sm:grid-cols-4">
+                        <input type="text" x-model="variantForm.name" placeholder="Variant name" class="h-10 rounded-control border border-line px-2 text-sm">
+                        <input type="text" x-model="variantForm.sku" placeholder="SKU" class="h-10 rounded-control border border-line px-2 text-sm">
+                        <input type="number" step="0.01" min="0" x-model.number="variantForm.price" placeholder="Price" class="h-10 rounded-control border border-line px-2 text-sm">
+                        <input type="number" min="0" x-model.number="variantForm.stock_quantity" placeholder="Stock" class="h-10 rounded-control border border-line px-2 text-sm">
+                    </div>
+                    <button type="button" @click="addVariant()" class="mt-2 min-h-10 rounded-control bg-brand-navy px-3 text-sm font-bold text-white hover:bg-brand-navy-soft">Add variant</button>
+                </div>
+
                 <div class="mt-5 flex flex-wrap justify-end gap-2">
                     <button type="button" @click="productModal = false" class="min-h-10 rounded-control border border-line px-4 text-sm font-bold text-brand-navy hover:bg-surface-muted">Cancel</button>
                     <button type="submit" :disabled="saving" class="min-h-10 rounded-control bg-brand-yellow px-4 text-sm font-bold text-brand-navy hover:bg-brand-yellow-strong disabled:opacity-60" x-text="saving ? 'Saving...' : 'Save product'"></button>
@@ -216,6 +291,11 @@ function shopAdmin() {
         productForm: {},
         categoryName: '',
         categorySort: 0,
+        deliveryZones: {},
+        deliveryDefault: '',
+        deliveryService: 0,
+        deliverySaving: false,
+        variantForm: { name: '', sku: '', price: '', stock_quantity: 0 },
 
         get headers() {
             return {
@@ -245,6 +325,7 @@ function shopAdmin() {
                 return;
             }
             await this.load();
+            await this.loadDelivery();
         },
 
         async load() {
@@ -266,7 +347,11 @@ function shopAdmin() {
         },
 
         openProduct(product = null) {
-            this.productForm = product ? { ...product } : {
+            this.productForm = product ? {
+                ...product,
+                images: product.images || [],
+                variants: product.variants || []
+            } : {
                 category_id: this.categories[0] ? this.categories[0].id : '',
                 name: '',
                 sku: '',
@@ -356,6 +441,114 @@ function shopAdmin() {
                 await this.load();
             } catch (error) {
                 window.showAlert(error.message);
+            }
+        },
+
+        async refreshProduct() {
+            const list = await this.api('/api/admin/shop/products');
+            this.products = list.data || [];
+            const fresh = this.products.find((product) => product.id === this.productForm.id);
+            if (fresh) {
+                this.productForm = { ...fresh, images: fresh.images || [], variants: fresh.variants || [] };
+            }
+        },
+
+        async uploadImage(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file || !this.productForm.id) return;
+
+            const form = new FormData();
+            form.append('image', file);
+            form.append('alt_text', this.productForm.name || '');
+
+            try {
+                const response = await fetch('/api/admin/shop/products/' + this.productForm.id + '/images', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + this.$store.auth.token,
+                        'Accept': 'application/json'
+                    },
+                    body: form
+                });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(data.message || 'Upload failed.');
+                await this.refreshProduct();
+                window.showAlert('Image uploaded.');
+            } catch (error) {
+                window.showAlert(error.message);
+            } finally {
+                event.target.value = '';
+            }
+        },
+
+        async deleteImage(image) {
+            if (!window.confirm('Delete this image?')) return;
+            try {
+                await this.api('/api/admin/shop/images/' + image.id, { method: 'DELETE' });
+                await this.refreshProduct();
+            } catch (error) {
+                window.showAlert(error.message);
+            }
+        },
+
+        async addVariant() {
+            if (!this.productForm.id) return;
+            try {
+                await this.api('/api/admin/shop/products/' + this.productForm.id + '/variants', {
+                    method: 'POST',
+                    body: JSON.stringify(this.variantForm)
+                });
+                this.variantForm = { name: '', sku: '', price: '', stock_quantity: 0 };
+                await this.refreshProduct();
+            } catch (error) {
+                window.showAlert(error.message);
+            }
+        },
+
+        async deleteVariant(variant) {
+            if (!window.confirm('Delete variant ' + variant.name + '?')) return;
+            try {
+                await this.api('/api/admin/shop/variants/' + variant.id, { method: 'DELETE' });
+                await this.refreshProduct();
+            } catch (error) {
+                window.showAlert(error.message);
+            }
+        },
+
+        async loadDelivery() {
+            try {
+                const data = await this.api('/api/admin/shop/delivery');
+                this.deliveryZones = data.zones || {};
+                this.deliveryDefault = data.default_zone || '';
+                this.deliveryService = Number(data.service_charge || 0);
+            } catch (error) {
+                window.showAlert(error.message);
+            }
+        },
+
+        async saveDelivery() {
+            this.deliverySaving = true;
+            try {
+                const zones = {};
+                Object.entries(this.deliveryZones).forEach(([key, zone]) => {
+                    zones[key] = { label: zone.label, fee: Number(zone.fee || 0) };
+                });
+                const data = await this.api('/api/admin/shop/delivery', {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        zones,
+                        default_zone: this.deliveryDefault,
+                        service_charge: Number(this.deliveryService || 0)
+                    })
+                });
+                this.deliveryZones = data.zones || zones;
+                this.deliveryDefault = data.default_zone || this.deliveryDefault;
+                this.deliveryService = Number(data.service_charge || 0);
+                window.showAlert('Delivery settings saved.');
+            } catch (error) {
+                window.showAlert(error.message);
+            } finally {
+                this.deliverySaving = false;
             }
         }
     };

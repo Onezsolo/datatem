@@ -6,6 +6,7 @@ namespace App\Shop\Services;
 
 use App\Shop\Models\Cart;
 use App\Shop\Models\Order;
+use App\Shop\Services\ShopSettings;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -16,13 +17,14 @@ class CheckoutService
      */
     public function placeOrder(Cart $cart, array $data): Order
     {
-        $zone = (string) ($data['delivery_zone'] ?? config('delivery.default_zone'));
+        $zones = ShopSettings::deliveryZones();
+        $zone = (string) ($data['delivery_zone'] ?? ShopSettings::defaultZone());
 
-        if (! array_key_exists($zone, config('delivery.zones'))) {
+        if (! array_key_exists($zone, $zones)) {
             throw ValidationException::withMessages(['delivery_zone' => 'Choose a valid delivery zone.']);
         }
 
-        return DB::transaction(function () use ($cart, $data, $zone): Order {
+        return DB::transaction(function () use ($cart, $data, $zone, $zones): Order {
             DB::table('shop_carts')->where('id', $cart->id)->lockForUpdate()->first();
 
             $lockedCart = Cart::query()->whereKey($cart->id)->first();
@@ -85,8 +87,8 @@ class CheckoutService
                 ];
             }
 
-            $deliveryFee = (float) config('delivery.zones.'.$zone.'.fee', 0);
-            $serviceCharge = (float) config('delivery.service_charge', 0);
+            $deliveryFee = (float) ($zones[$zone]['fee'] ?? 0);
+            $serviceCharge = ShopSettings::serviceCharge();
             $total = round($subtotal + $deliveryFee + $serviceCharge, 2);
 
             $order = Order::create([
@@ -109,7 +111,7 @@ class CheckoutService
                 'payment_method' => 'paystack',
                 'status' => Order::STATUS_PENDING,
                 'payment_status' => 'pending',
-                'meta' => ['delivery_zone_label' => config('delivery.zones.'.$zone.'.label')],
+                'meta' => ['delivery_zone_label' => $zones[$zone]['label'] ?? null],
             ]);
 
             foreach ($orderItems as $row) {

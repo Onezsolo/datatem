@@ -7,8 +7,12 @@ namespace App\Http\Controllers\Shop;
 use App\Shop\Models\Category;
 use App\Shop\Models\Order;
 use App\Shop\Models\Product;
+use App\Shop\Models\ProductImage;
+use App\Shop\Models\ProductVariant;
 use App\Shop\Services\InventoryService;
 use App\Shop\Services\OrderService;
+use App\Shop\Services\ShopSettings;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -60,7 +64,7 @@ class AdminCatalogController
     public function products(Request $request): JsonResponse
     {
         $products = Product::query()
-            ->with(['category:id,name,slug', 'primaryImage'])
+            ->with(['category:id,name,slug', 'primaryImage', 'images', 'variants'])
             ->when($request->filled('search'), function ($query) use ($request) {
                 $term = '%'.$request->string('search').'%';
                 $query->where(fn ($query) => $query->where('name', 'like', $term)->orWhere('sku', 'like', $term));
@@ -145,6 +149,109 @@ class AdminCatalogController
         $order = $orders->transition($order, $data['status'], null, $data['note'] ?? null);
 
         return response()->json(['order' => $order->fresh()]);
+    }
+
+    public function uploadImage(Request $request, Product $product): JsonResponse
+    {
+        $data = $request->validate([
+            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'alt_text' => ['nullable', 'string', 'max:255'],
+            'is_primary' => ['nullable', 'boolean'],
+        ]);
+
+        $path = $request->file('image')->store('product-images', 'public');
+        $isPrimary = (bool) ($data['is_primary'] ?? false);
+
+        if ($isPrimary || ! $product->images()->exists()) {
+            $product->images()->update(['is_primary' => false]);
+            $isPrimary = true;
+        }
+
+        $image = $product->images()->create([
+            'path' => $path,
+            'alt_text' => $data['alt_text'] ?? $product->name,
+            'sort_order' => ((int) $product->images()->max('sort_order')) + 1,
+            'is_primary' => $isPrimary,
+        ]);
+
+        return response()->json(['image' => $image], 201);
+    }
+
+    public function destroyImage(ProductImage $image): JsonResponse
+    {
+        Storage::disk('public')->delete($image->path);
+        $image->delete();
+
+        return response()->json(['deleted' => true]);
+    }
+
+    public function storeVariant(Request $request, Product $product): JsonResponse
+    {
+        $variant = $product->variants()->create($this->validateVariant($request));
+
+        return response()->json(['variant' => $variant], 201);
+    }
+
+    public function updateVariant(Request $request, ProductVariant $variant): JsonResponse
+    {
+        $variant->update($this->validateVariant($request, $variant));
+
+        return response()->json(['variant' => $variant->refresh()]);
+    }
+
+    public function destroyVariant(ProductVariant $variant): JsonResponse
+    {
+        $variant->delete();
+
+        return response()->json(['deleted' => true]);
+    }
+
+    public function deliverySettings(): JsonResponse
+    {
+        return response()->json([
+            'zones' => ShopSettings::deliveryZones(),
+            'default_zone' => ShopSettings::defaultZone(),
+            'service_charge' => ShopSettings::serviceCharge(),
+        ]);
+    }
+
+    public function updateDeliverySettings(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'zones' => ['required', 'array', 'min:1'],
+            'zones.*.label' => ['required', 'string', 'max:120'],
+            'zones.*.fee' => ['required', 'numeric', 'min:0', 'max:10000'],
+            'default_zone' => ['required', 'string'],
+            'service_charge' => ['nullable', 'numeric', 'min:0', 'max:10000'],
+        ]);
+
+        ShopSettings::saveDelivery($data['zones'], (string) $data['default_zone'], (float) ($data['service_charge'] ?? 0));
+
+        return $this->deliverySettings();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function validateVariant(Request $request, ?ProductVariant $variant = null): array
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:120'],
+            'sku' => ['required', 'string', 'max:80', Rule::unique('shop_product_variants', 'sku')->ignore($variant?->id)],
+            'price' => ['nullable', 'numeric', 'min:0', 'max:9999999'],
+            'compare_at_price' => ['nullable', 'numeric', 'min:0', 'max:9999999'],
+            'stock_quantity' => ['nullable', 'integer', 'min:0', 'max:1000000'],
+            'low_stock_threshold' => ['nullable', 'integer', 'min:0', 'max:100000'],
+            'track_inventory' => ['nullable', 'boolean'],
+            'is_active' => ['nullable', 'boolean'],
+            'sort_order' => ['nullable', 'integer', 'min:0', 'max:100000'],
+        ]);
+
+        $data['stock_quantity'] = $data['stock_quantity'] ?? 0;
+        $data['sort_order'] = $data['sort_order'] ?? 0;
+        $data['is_active'] = $data['is_active'] ?? true;
+
+        return $data;
     }
 
     /**

@@ -23,7 +23,7 @@
         @endif
 
         <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_22rem]">
-            <form action="{{ route('shop.checkout.store') }}" method="POST" class="rounded-card border border-line bg-surface p-5" data-checkout-form data-service="{{ (float) config('delivery.service_charge', 0) }}">
+            <form action="{{ route('shop.checkout.store') }}" method="POST" class="rounded-card border border-line bg-surface p-5" data-checkout-form data-service="{{ (float) $serviceCharge }}">
                 @csrf
                 <h2 class="text-lg font-extrabold text-brand-navy">Delivery details</h2>
 
@@ -56,7 +56,7 @@
                         <label for="delivery_zone" class="block text-xs font-bold uppercase tracking-wide text-muted">Delivery zone</label>
                         <select id="delivery_zone" name="delivery_zone" required class="mt-1 h-11 w-full rounded-control border border-line px-3 text-sm text-ink" data-zone-select>
                             @foreach ($zones as $key => $zone)
-                                <option value="{{ $key }}" data-fee="{{ (float) $zone['fee'] }}" @selected(old('delivery_zone', config('delivery.default_zone')) === $key)>
+                                <option value="{{ $key }}" data-fee="{{ (float) $zone['fee'] }}" @selected(old('delivery_zone', $defaultZone) === $key)>
                                     {{ $zone['label'] }} - {{ config('store.currency') }} {{ number_format((float) $zone['fee'], 2) }}
                                 </option>
                             @endforeach
@@ -105,9 +105,9 @@
                 </ul>
 
                 @php
-                    $defaultZone = old('delivery_zone', config('delivery.default_zone'));
-                    $defaultFee = (float) ($zones[$defaultZone]['fee'] ?? 0);
-                    $service = (float) config('delivery.service_charge', 0);
+                    $selectedZone = old('delivery_zone', $defaultZone);
+                    $defaultFee = (float) ($zones[$selectedZone]['fee'] ?? 0);
+                    $service = (float) $serviceCharge;
                     $subtotal = (float) $cart->subtotal;
                 @endphp
 
