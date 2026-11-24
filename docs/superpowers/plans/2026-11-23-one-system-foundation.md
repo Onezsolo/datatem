@@ -62,7 +62,7 @@
 **Interfaces:**
 - Produces: route names `home`, `login`, `signup`, `bundles`, `support`, `password.request`, `topup`, `notifications`, `profile`, `legal.privacy`, `legal.terms` used by all shells/components.
 
-- [ ] **Step 1: Create the PHPUnit harness**
+- [x] **Step 1: Create the PHPUnit harness**
 
 `phpunit.xml`:
 
@@ -99,7 +99,7 @@ abstract class TestCase extends BaseTestCase
 }
 ```
 
-- [ ] **Step 2: Write the failing smoke test**
+- [x] **Step 2: Write the failing smoke test**
 
 `tests/Feature/PageSmokeTest.php`:
 
@@ -137,21 +137,21 @@ class PageSmokeTest extends TestCase
 }
 ```
 
-- [ ] **Step 3: Run it and confirm failure**
+- [x] **Step 3: Run it and confirm failure**
 
 Run: `php artisan test --filter=PageSmokeTest`
 Expected: FAIL — no route named `home`.
 
-- [ ] **Step 4: Add names in `routes/web.php`**
+- [x] **Step 4: Add names in `routes/web.php`**
 
 Name the existing routes only; do not change paths or handlers. Exact names: `/`→`home`, `/login`→`login`, `/signup`→`signup`, `/bundles`→`bundles`, `/support`→`support`, `/forgot-password`→`password.request`, `/topup`→`topup`, `/notifications`→`notifications`, `/profile`→`profile`, `/privacy`→`legal.privacy`, `/terms`→`legal.terms`.
 
-- [ ] **Step 5: Run the suite**
+- [x] **Step 5: Run the suite**
 
 Run: `php artisan test`
 Expected: PASS (3 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add phpunit.xml tests routes/web.php
@@ -169,7 +169,7 @@ git commit -m "test: add test harness and named route baseline"
 **Interfaces:**
 - Produces: Tailwind utilities `bg-brand-navy`, `text-brand-ink`, `rounded-card`, `rounded-control`, `container-page`, `skip-link`, `carousel-*`; Vite entries `resources/css/app.css`, `resources/js/app.js`; `GET /design-system` (non-production only).
 
-- [ ] **Step 1: Add tooling manifests**
+- [x] **Step 1: Add tooling manifests**
 
 `package.json`:
 
@@ -206,7 +206,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 2: Tokens and base CSS**
+- [x] **Step 2: Tokens and base CSS**
 
 `resources/css/tokens.css`: copy the 32-line token block from `novagel/resources/css/tokens.css` unchanged, then append the temporary legacy aliases used by Task 6:
 
@@ -273,7 +273,7 @@ export default defineConfig({
 }
 ```
 
-- [ ] **Step 3: Entry scripts**
+- [x] **Step 3: Entry scripts**
 
 `resources/js/components/carousel.js`: copy from `novagel/resources/js/components/carousel.js` unchanged.
 
@@ -297,7 +297,7 @@ window.Alpine = Alpine;
 Alpine.start();
 ```
 
-- [ ] **Step 4: Minimal preview route and view**
+- [x] **Step 4: Minimal preview route and view**
 
 `routes/web.php`, inside `if (! app()->environment('production'))`:
 
@@ -307,7 +307,7 @@ Route::view('/design-system', 'design-system')->name('design-system');
 
 `resources/views/design-system.blade.php`: HTML shell that guards Vite like novagel (`@if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot'))) @vite([...]) @endif`) and renders `<h1>Design system</h1>` plus token swatches using `bg-brand-navy`, `bg-brand-yellow`, `bg-brand-red` and `rounded-card`.
 
-- [ ] **Step 5: Build and verify**
+- [x] **Step 5: Build and verify**
 
 Run:
 
@@ -319,7 +319,7 @@ npm run build
 
 Expected: `public/build/manifest.json` exists and lists `resources/css/app.css`, `resources/js/app.js`, `resources/js/legacy.js`. Then `php artisan test` PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add package.json package-lock.json vite.config.js resources/css resources/js resources/views/design-system.blade.php routes/web.php
@@ -338,7 +338,7 @@ git commit -m "build: add vite tailwind pipeline and design tokens"
 - Produces: `App\Support\Brand::name(): string`, `Brand::logoUrl(): string`, `Brand::faviconUrl(): string` (wrap `SettingsService`, fallback `config('app.name')` / `asset('assets/l1.png')`).
 - Produces Blade components `x-ui.button` (variants primary|secondary|danger|outline|ghost|link), `x-ui.badge`, `x-ui.card`, `x-ui.carousel`, `x-ui.icon`, `x-ui.header` (props: `brandName`, `brandUrl`, `navigation` array of `{label,url}`, `cartUrl?`, `cartCount?`, `searchAction?`), `x-layouts.app`.
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 `tests/Unit/BrandTest.php`: with the SQLite `:memory:` database (no migrated tables, so `SettingsService` returns its fallbacks), assert `Brand::name()` equals `config('app.name')`, and `Brand::logoUrl()`/`Brand::faviconUrl()` return absolute URLs.
 
@@ -346,12 +346,12 @@ git commit -m "build: add vite tailwind pipeline and design tokens"
 
 `tests/Unit/DesignTokensTest.php`: copy `novagel/tests/Unit/DesignTokensTest.php`; keep contrast assertions unchanged (navy/white 18.15:1 ±0.1, white on red-strong ≥ 4.5:1); it reads `resource_path('css/tokens.css')`.
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `php artisan test --filter='BrandTest|DesignSystemTest|DesignTokensTest'`
 Expected: FAIL — missing classes/route/components.
 
-- [ ] **Step 3: Implement Brand and components**
+- [x] **Step 3: Implement Brand and components**
 
 `app/Support/Brand.php`:
 
@@ -381,16 +381,16 @@ final class Brand
 
 Adapt the six UI components from novagel: keep variant/size class maps exactly; replace `config('store.name')` with `Brand::name()`; replace the fixed brand mark with `Brand::logoUrl()` (`alt=""`, wordmark text remains live); make `cartUrl`/`searchAction` nullable so links render only when provided; ensure all `route()` references point to the Task 1 names.
 
-- [ ] **Step 4: Update preview page**
+- [x] **Step 4: Update preview page**
 
 `resources/views/design-system.blade.php` renders inside `<x-layouts.app>`: header with `navigation` = Bundles/Support items, button variants/sizes, badges, cards (default/muted), carousel with three items, and the contrast table from `docs/design-system.md`.
 
-- [ ] **Step 5: Build assets and run tests**
+- [x] **Step 5: Build assets and run tests**
 
 Run: `npm run build; php artisan test`
 Expected: PASS, including token contrast tests.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add app/Support tests resources/views/components resources/views/design-system.blade.php
@@ -409,7 +409,7 @@ git commit -m "feat: port design system components and preview"
 - Produces: `Navigation::public(): array<int, array{label: string, route: string|null, url: string|null, active: string}>`; `Navigation::member(): array` with same shape plus `icon: string|null`.
 - Produces: `<x-layouts.public title?>` and `<x-layouts.member title?>` shells; `Alpine.store('auth')` and `Alpine.store('alertModal')` with the exact API of the legacy layout.
 
-- [ ] **Step 1: Extract legacy Alpine stores**
+- [x] **Step 1: Extract legacy Alpine stores**
 
 Copy the two store implementations from `resources/views/layouts/app.blade.php` (the `Alpine.store('auth', …)` object around L63 and the `Alpine.store('alertModal', …)` object around L165; exclude the `tailwind.config` assignment around L187 and all styling) into ES modules:
 - `auth.js` exports an object with the same keys/behaviour (`token`, `user`, `isAuthenticated`, `storage`, `init`, `setAuth`, `clearAuth`, `logout`, `getToken`, `refresh`) — including the `auth_storage` localStorage/sessionStorage choice.
@@ -429,26 +429,26 @@ Alpine.store('alertModal', alertModalStore);
 Alpine.start();
 ```
 
-- [ ] **Step 2: Navigation config**
+- [x] **Step 2: Navigation config**
 
 `Navigation::public()` (Phase 0 items): Home (`home`), Shop (placeholder `url('/shop')` until Phase 2 adds `shop.index`), Bundles (`bundles`), Stores (`store.landing`), Support (`support`), Track (`login` until shop Phase 2 adds `orders.track`). `Navigation::member()` (sidebar): Overview → Dashboard (`url('/dashboard')`), Shop (`url('/shop')`), Buy data (`url('/bundles')`); Orders → Orders (`orders.index`); Earnings → Referral (`referral`), Reseller (`reseller`); Account → Wallet (`topup`), Notifications (`notifications`), Profile (`profile`), Support (`support`). Bottom navigation (public + member, mobile): Home, Shop, Bundles, Account.
 
-- [ ] **Step 3: Build shells**
+- [x] **Step 3: Build shells**
 
 `public` shell: skip link → `#main-content`, offline banner slot, `<x-shell.public-header>` with `x-ui.header` (brand from Brand, nav from Navigation), session status/warning strips, `<main id="main-content">{{ $slot }}</main>`, `<x-shell.public-footer>` (solid navy with 3px yellow top border, support/settings links, GHS note), `<x-shell.bottom-nav>` (Home/Bundles/Stores/Account), `@vite(['resources/css/app.css','resources/js/app.js'])` guarded by manifest check.
 
 `member` shell: navy top bar with brand, page title slot, user placeholder, sign-out button that reuses the legacy logout routine (Bearer fetch to `/api/auth/logout`, clear `Alpine.store('auth')`, redirect to `/login`); **desktop sidebar** (fixed left, navy-on-surface, grouped nav from `Navigation::member()`, active = `request()->is(...)`); **mobile bottom navigation** (Home, Shop, Bundles, Account) instead of the sidebar; main content area with status/error banners, same guarded Vite include. Do not require a server-side authenticated user; member views hydrate from `Alpine.store('auth')`.
 
-- [ ] **Step 4: Extend tests**
+- [x] **Step 4: Extend tests**
 
 DesignSystemTest: render a view using the public shell (preview page) and assert `Skip to main content`, `id="main-content"`, `Bundles`, `rounded-control`; assert absence of `cdn.tailwindcss.com`, `unpkg.com`, `fonts.googleapis.com`. Add a Navigation unit test asserting item counts and that every `route` name resolves via `route()`.
 
-- [ ] **Step 5: Build and test**
+- [x] **Step 5: Build and test**
 
 Run: `npm run build; php artisan test`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add app/Support/Navigation.php resources/views/components resources/js tests
@@ -466,25 +466,25 @@ git commit -m "feat: add unified public and member shells"
 - Consumes: `x-layouts.public`, `x-layouts.member` (login/signup may use public shell with a centered auth card), `x-ui.*`, `Navigation`, `Alpine.store('auth')`.
 - Preserves: every `fetch` endpoint, request body, storage key and redirect target currently used by these pages.
 
-- [ ] **Step 1: Strengthen tests (write first)**
+- [x] **Step 1: Strengthen tests (write first)**
 
 In `PageSmokeTest`: for `/`, `/bundles`, `/login`, `/signup` assert 200, sees `Skip to main content`, and the HTML lacks `cdn.tailwindcss.com`, `unpkg.com`, `fonts.googleapis.com`. Additionally: `/login` sees `name="email"` and `name="password"`; `/signup` sees `name="phone"`; `/bundles` sees `x-data` and the three network names (`MTN`, `AirtelTigo`, `Telecel`); `/` sees `Buy data` and a link to `route('bundles')`.
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `php artisan test --filter=PageSmokeTest`
 Expected: FAIL — legacy pages load Google Fonts/CDN and lack shell markers.
 
-- [ ] **Step 3: Migrate pages**
+- [x] **Step 3: Migrate pages**
 
 Rebuild each page's markup inside the public shell using only tokens and `x-ui.*` components; keep all `x-data`, `x-init`, `x-show`, `@click`, `$store.auth` and `fetch` code intact (move it into the page body). Remove per-page font/CDN `<link>`/`<script>` tags. Home: solid-color hero, quick actions (Buy data, Top up, Stores, Support), network badges using `bg-mtn`/`bg-airteltigo`/`bg-telecel`, features strip, support contacts from `SettingsService`. Bundles: network tabs, package cards (`x-ui.card`), buy buttons (`x-ui.button`), wallet balance strip. Login/signup: surface-muted page with white card, labels wired to inputs, visible inline errors, links to each other and `/forgot-password`.
 
-- [ ] **Step 4: Build, test, verify manually**
+- [x] **Step 4: Build, test, verify manually**
 
 Run: `npm run build; php artisan test`
 Then `php artisan serve` and check at 360px, 768px, 1280px: navigation, focus outlines, login POST still reaches `/api/auth/login`, bundles list loads and buy action still calls the existing endpoint.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add resources/views tests
@@ -503,28 +503,28 @@ git commit -m "feat: migrate pilot pages to unified design system"
 - Consumes: `resources/js/legacy.js`, `resources/css/tokens.css` aliases (`primary-*`, `mtn*`, `airteltigo*`, `telecel*`).
 - Produces: every `@extends('layouts.app')` page loads compiled CSS + bundled Alpine and renders with the uniform palette.
 
-- [ ] **Step 1: Write the bridge test first**
+- [x] **Step 1: Write the bridge test first**
 
 Add `LegacyLayoutTest`: `GET /dashboard` (extends `layouts.app`) → 200; HTML contains `build/assets`; lacks `cdn.tailwindcss.com`, `unpkg.com`, `fonts.googleapis.com`.
 
-- [ ] **Step 2: Run and confirm failure**
+- [x] **Step 2: Run and confirm failure**
 
 Run: `php artisan test --filter=LegacyLayoutTest`
 Expected: FAIL — CDN links present.
 
-- [ ] **Step 3: Rewire the legacy layout**
+- [x] **Step 3: Rewire the legacy layout**
 
 In `layouts/app.blade.php`: remove Google Fonts links, Tailwind CDN script, Alpine CDN script, and the `tailwind.config` assignment; replace with the guarded `@vite(['resources/css/app.css','resources/js/legacy.js'])`. Keep the `x-cloak` rule and behaviour-only inline styles; replace `.gradient-text` with solid `color: var(--color-brand-navy)`, replace `.btn-cta` cyan/pill styling with yellow/navy `var(--radius-control)`, and replace hard-coded cyan `#0891b2` accents with `var(--color-brand-navy)`. Set the body font to Instrument Sans via tokens (drop Inter/Outfit/Space Grotesk families). Remove `ThemeColorService` calls.
 
-- [ ] **Step 4: Strip per-page font includes**
+- [x] **Step 4: Strip per-page font includes**
 
 Remove remaining `fonts.googleapis.com`/`fonts.gstatic.com` links from `@extends` pages (`dashboard`, `orders`, `profile`, `referral`, `reseller`, `support`, `topup`). Standalone pages (`storefront`, `spin-preview`) are out of Phase 0 scope and keep their own assets until Phase 3/4 — exclude them from the no-CDN assertion list.
 
-- [ ] **Step 5: Docs**
+- [x] **Step 5: Docs**
 
 Create `docs/design-system.md` from the novagel handoff with these edits: brand name comes from `Brand`/settings; routes listed as Bundles/Support; note Phase 0 scope and legacy bridge. Add a README "Design system and frontend build" section with the Node path, `npm install`, `npm run build`, `npm run dev`, and the rule "every migrated page uses x-layouts.public/member".
 
-- [ ] **Step 6: Full verification**
+- [x] **Step 6: Full verification**
 
 Run:
 
@@ -543,7 +543,7 @@ Select-String -Path public/build/assets/*.css -Pattern '\.bg-primary-600'
 
 Expected: at least one match (proves the bridge palette is in the built CSS). Build succeeds; all tests PASS; route list shows unique names; `GET /design-system` renders.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add resources/views resources/js docs README.md tests

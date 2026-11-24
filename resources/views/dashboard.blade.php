@@ -3,7 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
 <style>
 .dash-board { font-family: 'Outfit', sans-serif; }
 .dash-board .dash-hero { background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%); }

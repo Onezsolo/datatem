@@ -2,7 +2,7 @@
 
 @section('content')
 @section('title', 'Top Up')
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <style>
 .topup-page { font-family: 'Outfit', sans-serif; }
 .topup-page .amount-btn { background: #f1f5f9; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; transition: all 0.2s; }

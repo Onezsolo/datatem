@@ -35,172 +35,10 @@
     <meta name="twitter:description" content="@yield('twitter_description', $siteDescription)">
     <meta name="twitter:image" content="{{ url($siteLogoUrl) }}">
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    @if(request()->is('/'))
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    @else
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+        @vite(['resources/css/app.css', 'resources/js/legacy.js'])
     @endif
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Alpine.js -->
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    @php
-        $themePrimary = \App\Services\ThemeColorService::getPrimaryShades();
-        $themeGradientStart = \App\Services\ThemeColorService::getGradientStart();
-        $themeGradientEnd = \App\Services\ThemeColorService::getGradientEnd();
-    @endphp
-    <script>
-        document.addEventListener('alpine:init', () => {
-            (function() {
-                var st = (localStorage.getItem('auth_storage') === 'session') ? sessionStorage : localStorage;
-                var u;
-                try { u = JSON.parse(st.getItem('user') || '{}'); } catch (e) { u = {}; }
-                Alpine.store('auth', {
-                    getStorage: function() {
-                        return (localStorage.getItem('auth_storage') === 'session') ? sessionStorage : localStorage;
-                    },
-                    user: u,
-                    token: st.getItem('token'),
-                    _refreshTimer: null,
-                    refreshing: false,
-                    async refreshToken() {
-                        var t = this.token || this.getStorage().getItem('token');
-                        if (!t) return false;
-                        try {
-                            var response = await fetch('{{ url("/api/auth/refresh") }}', {
-                                method: 'POST',
-                                headers: { 'Authorization': 'Bearer ' + t, 'Accept': 'application/json' }
-                            });
-                            var data = await response.json().catch(function() { return {}; });
-                            if (response.ok && data.access_token) {
-                                this.token = data.access_token;
-                                if (data.user) this.user = data.user;
-                                var s = this.getStorage();
-                                s.setItem('token', this.token);
-                                s.setItem('user', JSON.stringify(this.user));
-                                this.scheduleRefresh();
-                                return true;
-                            }
-                        } catch (e) { }
-                        return false;
-                    },
-                    scheduleRefresh: function() {
-                        var self = this;
-                        if (self._refreshTimer) clearTimeout(self._refreshTimer);
-                        self._refreshTimer = null;
-                        var t = self.token || self.getStorage().getItem('token');
-                        if (!t) return;
-                        try {
-                            var payload = JSON.parse(atob(t.split('.')[1]));
-                            var exp = (payload.exp || 0) * 1000;
-                            var now = Date.now();
-                            var delay = Math.max(60000, (exp - now) - 5 * 60 * 1000);
-                            if (exp - now < 10 * 60 * 1000) {
-                                self.refreshToken();
-                                return;
-                            }
-                            self._refreshTimer = setTimeout(function() { self.refreshToken(); }, delay);
-                        } catch (e) { }
-                    },
-                    refreshUser: async function() {
-                        var t = this.token || this.getStorage().getItem('token');
-                        if (!t || this.refreshing) return;
-                        this.refreshing = true;
-                        try {
-                            var response = await fetch('{{ url("/api/auth/user-profile") }}', {
-                                headers: { 'Authorization': 'Bearer ' + t, 'Accept': 'application/json' }
-                            });
-                            if (response.ok) {
-                                var updatedUser = await response.json();
-                                this.user = updatedUser;
-                                this.getStorage().setItem('user', JSON.stringify(updatedUser));
-                                this.scheduleRefresh();
-                                var path = window.location.pathname;
-                                if (updatedUser.role !== 'admin' && path.startsWith('/admin')) {
-                                    window.location.href = '/dashboard';
-                                }
-                            } else if (response.status === 401) {
-                                if (!(await this.refreshToken())) this.logout();
-                                else await this.refreshUser();
-                            }
-                        } catch (e) {
-                            console.error('Failed to refresh user profile:', e);
-                        } finally {
-                            this.refreshing = false;
-                        }
-                    },
-                    login: function(user, token, keepMeSignedIn) {
-                        if (keepMeSignedIn === undefined) keepMeSignedIn = true;
-                        localStorage.setItem('auth_storage', keepMeSignedIn ? 'local' : 'session');
-                        var s = keepMeSignedIn ? localStorage : sessionStorage;
-                        s.setItem('user', JSON.stringify(user));
-                        s.setItem('token', token);
-                        if (!keepMeSignedIn) {
-                            localStorage.removeItem('user');
-                            localStorage.removeItem('token');
-                        }
-                        this.user = user;
-                        this.token = token;
-                        this.scheduleRefresh();
-                    },
-                    logout: function() {
-                        if (this._refreshTimer) clearTimeout(this._refreshTimer);
-                        this._refreshTimer = null;
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('user');
-                        localStorage.removeItem('auth_storage');
-                        sessionStorage.removeItem('token');
-                        sessionStorage.removeItem('user');
-                        this.user = {};
-                        this.token = null;
-                        window.location.href = '/login';
-                    }
-                });
-            })();
-            Alpine.store('alertModal', {
-                show: false,
-                title: 'Notice',
-                message: '',
-                type: 'info',
-                open(message, title, type) {
-                    this.message = typeof message === 'string' ? message : (message || '');
-                    this.title = typeof title === 'string' ? title : 'Notice';
-                    this.type = (type === 'error' || type === 'success' || type === 'info') ? type : 'info';
-                    this.show = true;
-                },
-                close() { this.show = false; }
-            });
-            window.showAlert = function(msg, title, type) {
-                if (typeof Alpine !== 'undefined' && Alpine.store && Alpine.store('alertModal')) {
-                    Alpine.store('alertModal').open(msg || '', title || 'Notice', type || 'info');
-                } else {
-                    window.alert(msg);
-                }
-            };
-        });
-
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'ui-sans-serif', 'system-ui'],
-                    },
-                    colors: {
-                        mtn: { base: '#FFCC00', dark: '#E6B800' },
-                        airteltigo: { base: '#9333ea', dark: '#6b21a8' },
-                        telecel: { base: '#FF0000', dark: '#CC0000' },
-                        primary: @json($themePrimary),
-                    }
-                }
-            }
-        }
-    </script>
-    
     <style>
         [x-cloak] { display: none !important; }
         .glass {
@@ -211,7 +49,7 @@
         }
         /* User app navbar */
         .nav-app {
-            font-family: 'Outfit', sans-serif;
+            font-family: inherit;
         }
         .nav-app .nav-link-app {
             position: relative;
@@ -219,9 +57,9 @@
             font-weight: 600;
             transition: color 0.2s ease;
         }
-        .nav-app .nav-link-app:hover { color: #0891b2; }
+        .nav-app .nav-link-app:hover { color: var(--color-brand-navy); }
         .nav-app .nav-link-app.active {
-            color: #0891b2;
+            color: var(--color-brand-navy);
         }
         .nav-app .nav-link-app.active::after {
             content: '';
@@ -230,49 +68,53 @@
             left: 0;
             right: 0;
             height: 2px;
-            background: #0891b2;
+            background: var(--color-brand-yellow);
             border-radius: 1px;
         }
         .nav-app .btn-cta {
-            background: #0891b2;
-            color: white;
-            font-weight: 600;
-            border-radius: 9999px;
-            transition: background 0.2s, box-shadow 0.2s;
+            background: var(--color-brand-yellow);
+            color: var(--color-brand-navy);
+            font-weight: 700;
+            border-radius: var(--radius-control);
+            transition: background 0.2s ease;
         }
-        .nav-app .btn-cta:hover { background: #0e7490; box-shadow: 0 4px 14px rgba(8, 145, 178, 0.35); }
+        .nav-app .btn-cta:hover { background: var(--color-brand-yellow-strong); }
         .nav-app .avatar-ring {
-            box-shadow: 0 0 0 2px #e2e8f0;
+            box-shadow: 0 0 0 2px var(--color-line);
         }
         .nav-app .avatar-ring.open {
-            box-shadow: 0 0 0 2px #0891b2;
+            box-shadow: 0 0 0 2px var(--color-brand-navy);
         }
     </style>
     <style>
         .gradient-text {
-            background: linear-gradient(135deg, {{ $themeGradientStart }} 0%, {{ $themeGradientEnd }} 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--color-brand-navy);
         }
         .mobile-nav-link {
-            @apply block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-control);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-ink);
         }
-        /* Mobile app safe area for bottom nav */
+        .mobile-nav-link:hover {
+            background: var(--color-surface-muted);
+        }
         .mobile-bottom-nav {
             padding-bottom: env(safe-area-inset-bottom, 0);
         }
     </style>
     @if(request()->is('admin*'))
     <style>
-        /* Admin area: Outfit, light background, cyan accent */
-        .admin-page { font-family: 'Outfit', sans-serif; }
-        .admin-page .admin-back { color: #0891b2; font-weight: 600; }
+        .admin-page { font-family: inherit; }
+        .admin-page .admin-back { color: var(--color-brand-navy); font-weight: 600; }
         .admin-page .admin-back:hover { text-decoration: underline; }
-        .admin-page .admin-card { background: #fff; border-radius: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .admin-page .btn-admin-primary { background: #0891b2; color: #fff; font-weight: 600; border-radius: 0.75rem; }
-        .admin-page .btn-admin-primary:hover { background: #0e7490; }
-        .admin-page .btn-admin-secondary { background: #fff; color: #475569; border: 1px solid #e2e8f0; border-radius: 0.75rem; font-weight: 600; }
-        .admin-page .btn-admin-secondary:hover { background: #f8fafc; }
+        .admin-page .admin-card { background: #fff; border-radius: var(--radius-card); border: 1px solid var(--color-line); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .admin-page .btn-admin-primary { background: var(--color-brand-yellow); color: var(--color-brand-navy); font-weight: 700; border-radius: var(--radius-control); }
+        .admin-page .btn-admin-primary:hover { background: var(--color-brand-yellow-strong); }
+        .admin-page .btn-admin-secondary { background: #fff; color: var(--color-muted); border: 1px solid var(--color-line); border-radius: var(--radius-control); font-weight: 600; }
+        .admin-page .btn-admin-secondary:hover { background: var(--color-surface-muted); }
     </style>
     @endif
     @if(request()->is('/'))
