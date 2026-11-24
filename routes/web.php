@@ -48,6 +48,10 @@ Route::get('/orders', function () {
     return view('orders');
 })->name('orders.index');
 
+Route::get('/orders/shop', function () {
+    return view('shop-orders');
+})->name('orders.shop');
+
 Route::get('/topup', function () {
     $manualNumber = \App\Services\SettingsService::get('manual_payment_mobile_money', '0241234567');
     $manualName = \App\Services\SettingsService::get('manual_payment_account_name', 'Data2Buy Official');

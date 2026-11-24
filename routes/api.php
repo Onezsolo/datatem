@@ -39,6 +39,7 @@ Route::group([
         Route::post('/buy-data/bulk', [\App\Http\Controllers\BuyDataController::class, 'storeBulk']);
         // User orders and complaints
         Route::get('/orders', [\App\Http\Controllers\OrdersController::class, 'index']);
+        Route::get('/shop-orders', [\App\Http\Controllers\Shop\MemberOrderController::class, 'index']);
         Route::post('/orders/complaint', [\App\Http\Controllers\OrdersController::class, 'storeComplaint']);
         // Wallet top-up via Paystack
         Route::post('/topup/initialize', [\App\Http\Controllers\TopUpController::class, 'initialize']);

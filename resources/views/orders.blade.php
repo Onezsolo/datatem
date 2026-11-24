@@ -30,6 +30,8 @@
             <button @click="setTab('topup')" 
                     :class="activeTab === 'topup' ? 'filter-tab active' : 'filter-tab'" 
                     class="px-5 py-2.5 rounded-xl text-sm">Topups</button>
+            <a href="{{ route('orders.shop') }}"
+               class="filter-tab px-5 py-2.5 rounded-xl text-sm inline-flex items-center">Shop orders</a>
         </div>
 
         <!-- Table card -->
