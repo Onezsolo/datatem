@@ -2,11 +2,11 @@
 
 <aside class="hidden w-64 shrink-0 bg-brand-navy text-white lg:block" aria-label="Admin navigation">
     <div class="sticky top-0 flex h-screen flex-col overflow-y-auto">
-        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 border-b border-white/15 px-5 py-4 focus-visible:outline-brand-yellow" aria-label="{{ \App\Support\Brand::name() }} admin">
+        <a href="{{ auth()->user()?->isDeveloper() ? route('developer.dashboard') : route('admin.dashboard') }}" class="flex items-center gap-2.5 border-b border-white/15 px-5 py-4 focus-visible:outline-brand-yellow" aria-label="{{ \App\Support\Brand::name() }} admin">
             <img src="{{ \App\Support\Brand::logoUrl() }}" alt="" width="48" height="48" class="h-10 w-10 rounded-control bg-surface object-contain p-1">
             <span class="leading-none">
                 <span class="block text-sm font-extrabold tracking-[0.06em] text-white">{{ \Illuminate\Support\Str::upper(\App\Support\Brand::name()) }}</span>
-                <span class="mt-1 block text-[0.5rem] font-bold tracking-[0.24em] text-brand-yellow">ADMIN CONSOLE</span>
+                <span class="mt-1 block text-[0.5rem] font-bold tracking-[0.24em] text-brand-yellow">{{ auth()->user()?->isDeveloper() ? 'DEVELOPER' : 'ADMIN CONSOLE' }}</span>
             </span>
         </a>
 
@@ -37,10 +37,12 @@
         </nav>
 
         <div class="border-t border-white/15 px-3 py-4">
-            <a href="{{ route('home') }}" class="flex min-h-10 items-center gap-2.5 rounded-control px-2 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white">
-                <x-ui.icon name="grid" :size="18" />
-                View store
-            </a>
+            @unless (auth()->user()?->isDeveloper())
+                <a href="{{ route('home') }}" class="flex min-h-10 items-center gap-2.5 rounded-control px-2 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white">
+                    <x-ui.icon name="grid" :size="18" />
+                    View store
+                </a>
+            @endunless
         </div>
     </div>
 </aside>

@@ -24,7 +24,7 @@ class JwtFromCookie
 
             try {
                 $user = Auth::guard('api')->authenticate();
-                if ($user) {
+                if ($user && ! ($user->isDeveloper() && \App\Services\HandoverService::isCompleted())) {
                     Auth::setUser($user);
                 }
             } catch (\Throwable) {

@@ -665,3 +665,10 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - New developer role with 	emplate:dev-account artisan command (email/password/name/phone), env seeding via SEED_DEVELOPER_*, and access to both /developer and the admin console.
 - 	emplate_licenses table + developer console: issue licenses (client, email, domain, agreement reference, expiry, notes) with hashed keys shown once, revoke/reinstate, and set the deployment license for the installation. Dashboard shows license/module/admin stats and quick links to settings, service sources and shop.
 - Tests cover command seeding, access control, key issue/revoke/reinstate, expiry, deployment license validation and admin access.
+
+### Developer-controlled setup, package capture and handover
+
+- Service provider sources/credentials, service switches and AFA price are developer-only at the UI and API level; admins retain catalog toggles and business settings.
+- 	emplate_packages stores encrypted snapshots of the current template setup (design, features, services, AFA price, provider sources). Developer console creates/applies packages without touching business data.
+- Handover requires an active deployment license and typed confirmation; it invalidates the developer session, blocks developer login, /developer and developer admin access via middleware, while the client admin keeps full business access.
+- Tests cover package capture/apply (including provider credential restore), handover gating, post-handover lockout and admin-only developer restrictions.

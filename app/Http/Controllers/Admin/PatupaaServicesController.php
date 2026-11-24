@@ -34,8 +34,11 @@ class PatupaaServicesController extends Controller
             ->groupBy('remote_type')
             ->get();
 
-        $providers = ServiceProvider::query()->orderByDesc('is_default')->orderBy('sort_order')->orderBy('name')->get()
-            ->map(fn (ServiceProvider $provider): array => [
+        $currentUser = auth('api')->user() ?? $request->user();
+
+        $providers = $currentUser?->isDeveloper()
+            ? ServiceProvider::query()->orderByDesc('is_default')->orderBy('sort_order')->orderBy('name')->get()
+                ->map(fn (ServiceProvider $provider): array => [
                 'id' => $provider->id,
                 'name' => $provider->name,
                 'driver' => $provider->driver,
@@ -47,7 +50,8 @@ class PatupaaServicesController extends Controller
                 'masked_key' => $provider->maskedKey(),
                 'last_synced_at' => $provider->last_synced_at?->toIso8601String(),
                 'last_sync_error' => $provider->last_sync_error,
-            ]);
+            ])
+            : collect();
 
         return response()->json([
             'providers' => $providers,

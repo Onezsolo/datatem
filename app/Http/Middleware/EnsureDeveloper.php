@@ -20,6 +20,10 @@ class EnsureDeveloper
             abort(403, 'Developer access only.');
         }
 
+        if (\App\Services\HandoverService::isCompleted()) {
+            abort(403, 'Developer access ended after handover.');
+        }
+
         return $next($request);
     }
 }

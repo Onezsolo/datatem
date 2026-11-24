@@ -7,7 +7,10 @@ namespace App\Http\Controllers;
 use App\Models\TemplateLicense;
 use App\Models\User;
 use App\Services\FeatureSettings;
+use App\Services\HandoverService;
+use App\Models\TemplatePackage;
 use App\Services\TemplateLicenseService;
+use App\Services\TemplatePackageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -27,6 +30,9 @@ class DeveloperController extends Controller
             'featuresTotal' => count(FeatureSettings::definitions()),
             'deployment' => $status,
             'recentLicenses' => TemplateLicense::query()->latest('id')->limit(5)->get(),
+            'handover' => HandoverService::details(),
+            'packagesCount' => TemplatePackage::query()->count(),
+            'appliedPackage' => TemplatePackageService::applied(),
         ]);
     }
 
@@ -86,5 +92,71 @@ class DeveloperController extends Controller
         }
 
         return back()->with('status', 'Deployment license set to '.$license->key_prefix.' ('.$license->statusLabel().').');
+    }
+
+    public function packages(TemplatePackageService $packages): View
+    {
+        return view('developer.packages', [
+            'packages' => TemplatePackage::query()->latest('id')->paginate(20),
+            'applied' => TemplatePackageService::applied(),
+        ]);
+    }
+
+    public function storePackage(Request $request, TemplatePackageService $packages): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:120'],
+            'version' => ['required', 'string', 'max:40'],
+            'description' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $package = $packages->capture($data, $request->user());
+
+        return redirect()
+            ->route('developer.packages')
+            ->with('status', 'Package '.$package->name.' saved from the current setup.');
+    }
+
+    public function applyPackage(TemplatePackage $package, TemplatePackageService $packages, Request $request): RedirectResponse
+    {
+        $result = $packages->apply($package, $request->user());
+
+        return redirect()
+            ->route('developer.dashboard')
+            ->with('status', 'Package '.$result['package']->name.' applied: theme, features, services, AFA price and '.$result['providers'].' provider source(s).');
+    }
+
+    public function destroyPackage(TemplatePackage $package): RedirectResponse
+    {
+        $package->delete();
+
+        return back()->with('status', 'Package deleted.');
+    }
+
+    public function handover(Request $request, TemplateLicenseService $licenses): RedirectResponse
+    {
+        if (HandoverService::isCompleted()) {
+            abort(403, 'Handover already completed.');
+        }
+
+        $data = $request->validate([
+            'confirmation' => ['required', 'in:HANDOVER'],
+            'note' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        if ($licenses->deploymentStatus()['state'] !== 'active') {
+            return back()->withErrors(['confirmation' => 'Set an active deployment license before completing handover.']);
+        }
+
+        HandoverService::complete($request->user(), $data['note'] ?? null);
+
+        auth()->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()
+            ->route('login')
+            ->with('warning', 'Handover complete. Developer access for this deployment has ended.')
+            ->withoutCookie('auth_token');
     }
 }

@@ -148,6 +148,6 @@ class DeveloperConsoleTest extends TestCase
             ->get('/admin/dashboard')
             ->assertOk()
             ->assertSee('Admin navigation')
-            ->assertSee('Developer console');
+            ->assertSee('Template packages');
     }
 }

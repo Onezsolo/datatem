@@ -19,10 +19,10 @@ class ProviderSourceTest extends TestCase
     {
         $admin = User::create([
             'full_name' => 'Provider Admin',
-            'email' => 'provider-admin@example.com',
+            'email' => 'provider-developer@example.com',
             'phone' => '0244000200',
             'password' => bcrypt('password'),
-            'role' => 'admin',
+            'role' => User::ROLE_DEVELOPER,
         ]);
 
         return $this->postJson('/api/auth/login', [

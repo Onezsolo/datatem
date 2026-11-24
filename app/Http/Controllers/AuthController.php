@@ -125,6 +125,12 @@ class AuthController extends Controller
             'password' => $request->password,
         ];
 
+        $candidate = \App\Models\User::query()->where($loginType, $request->login)->first();
+
+        if ($candidate !== null && $candidate->isDeveloper() && \App\Services\HandoverService::isCompleted()) {
+            return response()->json(['error' => 'Developer access has ended for this deployment.'], 403);
+        }
+
         if (!$token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }

@@ -148,6 +148,20 @@ final class Navigation
      */
     public static function admin(): array
     {
+        if (auth()->check() && auth()->user()->isDeveloper()) {
+            return [
+                'Developer' => array_map(fn (array $item) => self::item($item), [
+                    ['label' => 'Console', 'route' => 'developer.dashboard', 'pattern' => 'developer', 'icon' => 'home'],
+                    ['label' => 'Template packages', 'route' => 'developer.packages', 'pattern' => 'developer/packages', 'icon' => 'grid'],
+                    ['label' => 'Licenses', 'route' => 'developer.licenses', 'pattern' => 'developer/licenses', 'icon' => 'check'],
+                ]),
+                'Setup' => array_map(fn (array $item) => self::item($item), [
+                    ['label' => 'Service sources', 'route' => 'admin.services', 'pattern' => 'admin/services', 'icon' => 'grid'],
+                    ['label' => 'Template settings', 'route' => 'admin.settings', 'pattern' => 'admin/settings', 'icon' => 'help'],
+                ]),
+            ];
+        }
+
         $groups = [
             'Overview' => array_map(fn (array $item) => self::item($item), [
                 ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'pattern' => 'admin/dashboard', 'icon' => 'home'],
@@ -177,13 +191,6 @@ final class Navigation
                 ['label' => 'Settings', 'route' => 'admin.settings', 'pattern' => 'admin/settings', 'icon' => 'grid'],
             ]),
         ];
-
-        if (auth()->check() && auth()->user()->isDeveloper()) {
-            $groups['Developer'] = array_map(fn (array $item) => self::item($item), [
-                ['label' => 'Developer console', 'route' => 'developer.dashboard', 'pattern' => 'developer', 'icon' => 'grid'],
-                ['label' => 'Template licenses', 'route' => 'developer.licenses', 'pattern' => 'developer/licenses', 'icon' => 'check'],
-            ]);
-        }
 
         return $groups;
     }

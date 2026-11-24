@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'web.auth' => \App\Http\Middleware\EnsureWebAuth::class,
             'feature' => \App\Http\Middleware\EnsureFeature::class,
             'developer' => \App\Http\Middleware\EnsureDeveloper::class,
+            'developer.api' => \App\Http\Middleware\EnsureDeveloperApi::class,
         ]);
         $middleware->encryptCookies(except: [
             'auth_token',

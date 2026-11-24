@@ -15,11 +15,11 @@
 
     <aside class="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col overflow-y-auto bg-brand-navy text-white">
         <div class="flex items-center justify-between gap-2 border-b border-white/15 px-4 py-3">
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5" aria-label="{{ \App\Support\Brand::name() }} admin">
+            <a href="{{ auth()->user()?->isDeveloper() ? route('developer.dashboard') : route('admin.dashboard') }}" class="flex items-center gap-2.5" aria-label="{{ \App\Support\Brand::name() }} admin">
                 <img src="{{ \App\Support\Brand::logoUrl() }}" alt="" width="40" height="40" class="h-9 w-9 rounded-control bg-surface object-contain p-1">
                 <span class="leading-none">
                     <span class="block text-sm font-extrabold tracking-[0.06em] text-white">{{ \Illuminate\Support\Str::upper(\App\Support\Brand::name()) }}</span>
-                    <span class="mt-1 block text-[0.5rem] font-bold tracking-[0.24em] text-brand-yellow">ADMIN CONSOLE</span>
+                    <span class="mt-1 block text-[0.5rem] font-bold tracking-[0.24em] text-brand-yellow">{{ auth()->user()?->isDeveloper() ? 'DEVELOPER' : 'ADMIN CONSOLE' }}</span>
                 </span>
             </a>
             <button
@@ -59,10 +59,12 @@
         </nav>
 
         <div class="border-t border-white/15 px-3 py-4">
-            <a href="{{ route('home') }}" class="flex min-h-10 items-center gap-2.5 rounded-control px-2 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white">
-                <x-ui.icon name="grid" :size="18" />
-                View store
-            </a>
+            @unless (auth()->user()?->isDeveloper())
+                <a href="{{ route('home') }}" class="flex min-h-10 items-center gap-2.5 rounded-control px-2 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white">
+                    <x-ui.icon name="grid" :size="18" />
+                    View store
+                </a>
+            @endunless
         </div>
     </aside>
 </div>

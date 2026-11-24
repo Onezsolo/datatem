@@ -226,6 +226,11 @@ Route::prefix('developer')->name('developer.')->middleware(['jwt.cookie', 'web.a
     Route::post('/licenses/{license}/revoke', [\App\Http\Controllers\DeveloperController::class, 'revoke'])->name('licenses.revoke');
     Route::post('/licenses/{license}/reinstate', [\App\Http\Controllers\DeveloperController::class, 'reinstate'])->name('licenses.reinstate');
     Route::post('/deployment-license', [\App\Http\Controllers\DeveloperController::class, 'setDeploymentLicense'])->name('deployment-license');
+    Route::get('/packages', [\App\Http\Controllers\DeveloperController::class, 'packages'])->name('packages');
+    Route::post('/packages', [\App\Http\Controllers\DeveloperController::class, 'storePackage'])->name('packages.store');
+    Route::post('/packages/{package}/apply', [\App\Http\Controllers\DeveloperController::class, 'applyPackage'])->name('packages.apply');
+    Route::delete('/packages/{package}', [\App\Http\Controllers\DeveloperController::class, 'destroyPackage'])->name('packages.destroy');
+    Route::post('/handover', [\App\Http\Controllers\DeveloperController::class, 'handover'])->name('handover');
 });
 // Admin Routes
 Route::prefix('admin')->middleware(['jwt.cookie', 'admin.web'])->group(function () {

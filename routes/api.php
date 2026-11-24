@@ -105,13 +105,13 @@ Route::group([
 
     // PATUPAA services catalog and availability
     Route::get('/services', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'index']);
-    Route::put('/services/toggles', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'updateToggles']);
+    Route::put('/services/toggles', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'updateToggles'])->middleware('developer.api');
     Route::post('/services/sync', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'sync']);
-    Route::post('/services/providers', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'storeProvider']);
-    Route::put('/services/providers/{provider}', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'updateProvider']);
-    Route::delete('/services/providers/{provider}', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'destroyProvider']);
-    Route::post('/services/providers/{provider}/default', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'makeDefaultProvider']);
-    Route::post('/services/providers/{provider}/sync', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'syncProvider']);
+    Route::post('/services/providers', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'storeProvider'])->middleware('developer.api');
+    Route::put('/services/providers/{provider}', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'updateProvider'])->middleware('developer.api');
+    Route::delete('/services/providers/{provider}', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'destroyProvider'])->middleware('developer.api');
+    Route::post('/services/providers/{provider}/default', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'makeDefaultProvider'])->middleware('developer.api');
+    Route::post('/services/providers/{provider}/sync', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'syncProvider'])->middleware('developer.api');
     Route::put('/services/catalog/{item}', [\App\Http\Controllers\Admin\PatupaaServicesController::class, 'updateItem']);
     Route::get('/topups', [\App\Http\Controllers\AdminController::class, 'getTopups']);    Route::post('/topups/{id}/approve', [\App\Http\Controllers\AdminController::class, 'approveTopup']);
     Route::post('/payments/{reference}/verify-paystack', [\App\Http\Controllers\AdminController::class, 'verifyPaystackPayment']);

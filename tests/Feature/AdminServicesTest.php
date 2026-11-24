@@ -23,6 +23,17 @@ class AdminServicesTest extends TestCase
         ]);
     }
 
+    private function developer(): User
+    {
+        return User::create([
+            'full_name' => 'Services Developer',
+            'email' => 'services-developer@example.com',
+            'phone' => '0244000071',
+            'password' => bcrypt('password'),
+            'role' => User::ROLE_DEVELOPER,
+        ]);
+    }
+
     private function token(User $admin): string
     {
         return $this->postJson('/api/auth/login', [
@@ -38,7 +49,17 @@ class AdminServicesTest extends TestCase
             ->assertOk()
             ->assertSee('Services catalog')
             ->assertSee('Sync from provider')
-            ->assertSee('Admin navigation');
+            ->assertSee('Admin navigation')
+            ->assertDontSee('Provider sources');
+    }
+
+    public function test_developer_sees_provider_sources_on_services_page(): void
+    {
+        $this->actingAs($this->developer())
+            ->get('/admin/services')
+            ->assertOk()
+            ->assertSee('Provider sources')
+            ->assertSee('Service availability');
     }
 
     public function test_admin_can_toggle_items_and_service_switches(): void
@@ -74,9 +95,39 @@ class AdminServicesTest extends TestCase
         $this->assertFalse($item->fresh()->admin_enabled);
 
         $this->withHeaders($headers)
+            ->putJson('/api/admin/services/toggles', ['toggles' => ['waec' => false]])
+            ->assertForbidden();
+
+        $this->withHeaders($headers)
+            ->getJson('/api/admin/services')
+            ->assertOk()
+            ->assertJsonCount(0, 'providers');
+
+        $provider = \App\Models\ServiceProvider::create([
+            'name' => 'Dev Source',
+            'driver' => 'patupaa',
+            'base_url' => 'https://dev-source.test/api/v1',
+            'api_key' => 'dev-key',
+            'api_secret' => 'dev-secret',
+            'services' => ['data_bundle'],
+            'is_active' => true,
+            'is_default' => true,
+        ]);
+
+        $this->withHeaders($headers)
+            ->putJson('/api/admin/services/providers/'.$provider->id, ['name' => 'Hijack'])->assertForbidden();
+
+        $devHeaders = ['Authorization' => 'Bearer '.$this->token($this->developer())];
+
+        $this->withHeaders($devHeaders)
             ->putJson('/api/admin/services/toggles', ['toggles' => ['waec' => false, 'utility' => true]])
             ->assertOk()
             ->assertJsonPath('toggles.waec', false);
+
+        $this->withHeaders($devHeaders)
+            ->getJson('/api/admin/services')
+            ->assertOk()
+            ->assertJsonPath('providers.0.name', 'Dev Source');
     }
 
     public function test_admin_sync_endpoint_returns_summary(): void

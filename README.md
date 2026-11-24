@@ -96,3 +96,8 @@ php artisan template:dev-account dev@yourdomain.com --password="StrongPassword" 
 - For fresh installs set `SEED_DEVELOPER_EMAIL`, `SEED_DEVELOPER_PASSWORD`, `SEED_DEVELOPER_NAME`, `SEED_DEVELOPER_PHONE` before running `php artisan db:seed`.
 - The developer signs in and lands on `/developer`: issue license keys to clients (client, email, domain, agreement reference, expiry, notes), revoke/reinstate them, and record the deployment license for this installation. Keys are stored hashed and shown only once.
 - Developers can also open the admin console and its settings/services pages. Licensing is administrative tracking for your agreements; it does not hard-lock the application — add an enforcement policy in your agreement if required.
+### Developer control, template packages and handover
+
+- **Developer-only settings:** service provider sources, provider credentials, service switches and the AFA price are restricted to the developer account (admin APIs return 403 and the admin UI hides the sections). Client admins still manage catalog availability, features, design, payments and the rest of the business configuration.
+- **Template packages:** the developer configures this deployment (design, features, service switches, AFA price, provider sources), saves it as a package in `/developer/packages`, and applies it to another deployment with one click. Business data is never packaged.
+- **Handover:** after applying the package and setting an active deployment license, the developer types HANDOVER to complete handover. This permanently disables developer login, `/developer` and developer access to the admin console on that deployment; the client admin continues running the business. Handover cannot be undone from the deployment.

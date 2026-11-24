@@ -20,6 +20,10 @@ class AdminWebGate
             abort(403, 'Admin access only.');
         }
 
+        if ($user->role === 'developer' && \App\Services\HandoverService::isCompleted()) {
+            abort(403, 'Developer access ended after handover.');
+        }
+
         return $next($request);
     }
 }

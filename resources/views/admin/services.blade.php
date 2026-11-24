@@ -13,6 +13,7 @@
             </div>
         </header>
 
+        @if (auth()->user()?->isDeveloper())
         <section class="mt-6 rounded-card border border-line bg-surface p-5">
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
@@ -80,6 +81,8 @@
                 <p x-show="providers.length === 0" class="text-sm text-muted">No sources yet. The default source is created automatically on first sync or by the seeder.</p>
             </div>
         </section>
+
+        @endif
 
         <div class="mt-6 overflow-hidden rounded-card border border-line bg-surface">
             <div class="flex flex-wrap items-center gap-3 border-b border-line p-4">
