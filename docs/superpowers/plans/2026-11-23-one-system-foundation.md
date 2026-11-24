@@ -712,3 +712,5 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Replaced the generic eyebrow/heading/paragraph header with a practical service introduction: back to all services, AFA mark, direct title and useful facts (fee, completion, reference, refund).
 - Added a subject-specific Ghana Card number example with helper copy, a before-you-start checklist, form helper text, numbered after-submit sequence and a short FAQ using native details elements.
 - Kept the design system palette/components; screenshots at 1280 and 390 reviewed.
+
+- AFA page trimmed per feedback: removed editorial checklist, steps and FAQ; now a compact form, fee summary, refund/reference notes and support link only.
