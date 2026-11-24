@@ -223,7 +223,7 @@
                                 <a href="/bundles" class="nav-link-app {{ request()->is('bundles') ? 'active' : '' }} h-16 inline-flex items-center px-4 rounded-lg hover:bg-slate-50">Bundles</a>
                                 <a href="/support" class="nav-link-app {{ request()->is('support') ? 'active' : '' }} h-16 inline-flex items-center px-4 rounded-lg hover:bg-slate-50">Support</a>
                                 <div class="flex items-center space-x-2 ml-4 pl-4 border-l border-slate-200">
-                                    <a href="/login" class="px-4 py-2 rounded-lg text-slate-600 hover:text-cyan-600 font-semibold">Login</a>
+                                    <a href="/login" class="px-4 py-2 rounded-lg text-slate-600 hover:text-brand-navy font-semibold">Login</a>
                                     <a href="/signup" class="btn-cta px-5 py-2.5 text-sm">Sign Up</a>
                                 </div>
                             </div>
@@ -248,56 +248,57 @@
                                 <!-- Admin Links: Show ONLY if admin AND on admin path -->
                                 <template x-if="$store.auth.user.role === 'admin' && window.location.pathname.startsWith('/admin')">
                                     <div class="flex items-center space-x-1">
-                                        <a href="/admin/dashboard" class="{{ request()->is('admin/dashboard') ? 'text-cyan-600 border-b-2 border-cyan-600' : 'text-slate-600 hover:text-cyan-600' }} h-16 inline-flex items-center px-4 rounded-lg font-semibold">Dashboard</a>
-                                        <a href="/admin/users" class="{{ request()->is('admin/users') ? 'text-cyan-600 border-b-2 border-cyan-600' : 'text-slate-600 hover:text-cyan-600' }} h-16 inline-flex items-center px-4 rounded-lg font-semibold">Users</a>
+                                        <a href="/admin/dashboard" class="{{ request()->is('admin/dashboard') ? 'text-brand-navy border-b-2 border-brand-yellow' : 'text-slate-600 hover:text-brand-navy' }} h-16 inline-flex items-center px-4 rounded-lg font-semibold">Dashboard</a>
+                                        <a href="/admin/users" class="{{ request()->is('admin/users') ? 'text-brand-navy border-b-2 border-brand-yellow' : 'text-slate-600 hover:text-brand-navy' }} h-16 inline-flex items-center px-4 rounded-lg font-semibold">Users</a>
                                         
                                         <!-- Inventory Dropdown -->
                                         <div class="relative h-16 flex items-center" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                                            <button class="flex items-center space-x-1 font-semibold text-slate-600 hover:text-cyan-600 transition-all outline-none px-4 rounded-lg hover:bg-slate-50 h-16 items-center">
+                                            <button class="flex items-center space-x-1 font-semibold text-slate-600 hover:text-brand-navy transition-all outline-none px-4 rounded-lg hover:bg-slate-50 h-16 items-center">
                                                 <span>Inventory</span>
                                                 <svg class="w-4 h-4 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                             </button>
                                             <div x-show="open" x-cloak class="absolute top-full left-0 w-48 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-[60]">
-                                                <a href="/admin/packages" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-cyan-600 transition-colors">Packages</a>
-                                                <a href="/admin/orders" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-cyan-600 transition-colors">Orders</a>
+                                                <a href="/admin/packages" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-navy transition-colors">Packages</a>
+                                                <a href="/admin/orders" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-navy transition-colors">Orders</a>
+                                                <a href="/admin/shop" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-navy transition-colors">Shop</a>
                                             </div>
                                         </div>
 
                                         <!-- Finance Dropdown -->
                                         <div class="relative h-16 flex items-center" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                                            <button class="flex items-center space-x-1 font-semibold text-slate-600 hover:text-cyan-600 transition-all outline-none px-4 rounded-lg hover:bg-slate-50 h-16 items-center">
+                                            <button class="flex items-center space-x-1 font-semibold text-slate-600 hover:text-brand-navy transition-all outline-none px-4 rounded-lg hover:bg-slate-50 h-16 items-center">
                                                 <span>Finance</span>
                                                 <svg class="w-4 h-4 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                             </button>
                                             <div x-show="open" x-cloak class="absolute top-full left-0 w-48 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-[60]">
-                                                <a href="/admin/statistics" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-cyan-600 transition-colors">Statistics</a>
-                                                <a href="/admin/topups" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-cyan-600 transition-colors">Topups</a>
-                                                <a href="/admin/payments" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-cyan-600 transition-colors">Payments</a>
-                                                <a href="/admin/affiliates" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-cyan-600 transition-colors">Affiliates</a>
+                                                <a href="/admin/statistics" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-navy transition-colors">Statistics</a>
+                                                <a href="/admin/topups" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-navy transition-colors">Topups</a>
+                                                <a href="/admin/payments" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-navy transition-colors">Payments</a>
+                                                <a href="/admin/affiliates" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-navy transition-colors">Affiliates</a>
                                             </div>
                                         </div>
 
                                         <!-- Support Dropdown -->
                                         <div class="relative h-16 flex items-center" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                                            <button class="flex items-center space-x-1 font-semibold text-slate-600 hover:text-cyan-600 transition-all outline-none px-4 rounded-lg hover:bg-slate-50 h-16 items-center">
+                                            <button class="flex items-center space-x-1 font-semibold text-slate-600 hover:text-brand-navy transition-all outline-none px-4 rounded-lg hover:bg-slate-50 h-16 items-center">
                                                 <span>Support</span>
                                                 <svg class="w-4 h-4 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                             </button>
                                             <div x-show="open" x-cloak class="absolute top-full left-0 w-48 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-[60]">
-                                                <a href="/admin/support" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-cyan-600 transition-colors">Tickets</a>
-                                                <a href="/admin/announcements" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-cyan-600 transition-colors">Alerts &amp; Announcements</a>
+                                                <a href="/admin/support" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-navy transition-colors">Tickets</a>
+                                                <a href="/admin/announcements" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-navy transition-colors">Alerts &amp; Announcements</a>
                                             </div>
                                         </div>
 
-                                        <a href="/admin/announcements" class="{{ request()->is('admin/announcements') ? 'text-cyan-600 border-b-2 border-cyan-600' : 'text-slate-600 hover:text-cyan-600' }} h-16 inline-flex items-center px-4 rounded-lg font-semibold">Announcements</a>
-                                        <a href="/admin/resellers" class="{{ request()->is('admin/resellers') ? 'text-cyan-600 border-b-2 border-cyan-600' : 'text-slate-600 hover:text-cyan-600' }} h-16 inline-flex items-center px-4 rounded-lg font-semibold">Resellers</a>
-                                        <a href="/admin/settings" class="{{ request()->is('admin/settings') ? 'text-cyan-600 border-b-2 border-cyan-600' : 'text-slate-600 hover:text-cyan-600' }} h-16 inline-flex items-center px-4 rounded-lg font-semibold">Settings</a>
+                                        <a href="/admin/announcements" class="{{ request()->is('admin/announcements') ? 'text-brand-navy border-b-2 border-brand-yellow' : 'text-slate-600 hover:text-brand-navy' }} h-16 inline-flex items-center px-4 rounded-lg font-semibold">Announcements</a>
+                                        <a href="/admin/resellers" class="{{ request()->is('admin/resellers') ? 'text-brand-navy border-b-2 border-brand-yellow' : 'text-slate-600 hover:text-brand-navy' }} h-16 inline-flex items-center px-4 rounded-lg font-semibold">Resellers</a>
+                                        <a href="/admin/settings" class="{{ request()->is('admin/settings') ? 'text-brand-navy border-b-2 border-brand-yellow' : 'text-slate-600 hover:text-brand-navy' }} h-16 inline-flex items-center px-4 rounded-lg font-semibold">Settings</a>
                                     </div>
                                 </template>
                                 
                                 <div class="flex items-center space-x-2 ml-6 pl-6 border-l border-slate-200">
                                     <!-- Notification Bell -->
-                                    <a href="/notifications" class="relative p-2.5 rounded-lg text-slate-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors">
+                                    <a href="/notifications" class="relative p-2.5 rounded-lg text-slate-500 hover:text-brand-navy hover:bg-surface-muted transition-colors">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                                         <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                                     </a>
@@ -305,7 +306,7 @@
                                     <!-- Profile Dropdown -->
                                     <div class="relative">
                                         <button @click="profileOpen = !profileOpen" @click.outside="profileOpen = false" class="flex items-center space-x-2 p-1.5 rounded-xl hover:bg-slate-50 transition-all outline-none">
-                                            <div class="avatar-ring rounded-full w-9 h-9 flex items-center justify-center text-sm font-bold text-white transition-shadow" :class="profileOpen ? 'open bg-cyan-600' : 'bg-cyan-500'" x-text="$store.auth.user.full_name ? $store.auth.user.full_name.charAt(0) : 'U'"></div>
+                                            <div class="avatar-ring rounded-full w-9 h-9 flex items-center justify-center text-sm font-bold text-white transition-shadow" :class="profileOpen ? 'open bg-cyan-600' : 'bg-surface-muted0'" x-text="$store.auth.user.full_name ? $store.auth.user.full_name.charAt(0) : 'U'"></div>
                                             <svg class="w-4 h-4 text-slate-400 transition-transform" :class="profileOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                         </button>
 
@@ -320,11 +321,11 @@
                                                 <p class="text-sm font-bold text-slate-900 truncate" x-text="$store.auth.user.full_name || 'User'"></p>
                                             </div>
                                             
-                                            <a href="/profile" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-cyan-600 transition-colors">My Profile</a>
-                                            <a href="/dashboard" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-cyan-600 transition-colors">User Dashboard</a>
+                                            <a href="/profile" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-navy transition-colors">My Profile</a>
+                                            <a href="/dashboard" class="block px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-navy transition-colors">User Dashboard</a>
 
                                             <template x-if="$store.auth.user.role === 'admin'">
-                                                <a href="/admin/dashboard" class="block px-4 py-2.5 text-sm font-semibold text-cyan-600 bg-cyan-50 hover:bg-cyan-100 transition-colors border-t border-slate-100 mt-2 pt-2">Admin Console</a>
+                                                <a href="/admin/dashboard" class="block px-4 py-2.5 text-sm font-semibold text-brand-navy bg-surface-muted hover:bg-line transition-colors border-t border-slate-100 mt-2 pt-2">Admin Console</a>
                                             </template>
 
                                             <div class="border-t border-slate-100 mt-2 pt-2">
@@ -339,7 +340,7 @@
 
                     <!-- Mobile Menu Button -->
                     <div class="md:hidden flex items-center">
-                        <button @click="window.location.pathname.startsWith('/admin') ? (adminDrawerOpen = true) : (drawerOpen = true)" class="p-2.5 rounded-xl text-slate-600 hover:text-cyan-600 hover:bg-slate-50 transition-colors">
+                        <button @click="window.location.pathname.startsWith('/admin') ? (adminDrawerOpen = true) : (drawerOpen = true)" class="p-2.5 rounded-xl text-slate-600 hover:text-brand-navy hover:bg-slate-50 transition-colors">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
@@ -372,15 +373,15 @@
                  class="fixed left-0 top-0 bottom-0 w-72 max-w-[85vw] bg-white shadow-xl z-[91] flex flex-col border-r border-slate-200">
                 <div class="p-5 border-b border-slate-200 flex items-center justify-between">
                     <img src="{{ $siteLogoUrl }}" alt="{{ $siteName }}" class="h-10 w-auto object-contain">
-                    <button @click="drawerOpen = false" class="p-2.5 rounded-lg text-slate-500 hover:text-cyan-600 hover:bg-slate-100">
+                    <button @click="drawerOpen = false" class="p-2.5 rounded-lg text-slate-500 hover:text-brand-navy hover:bg-slate-100">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
                 <div class="flex-1 overflow-y-auto py-4">
                     <template x-if="!$store.auth.token">
                         <div class="px-3 space-y-0.5">
-                            <a href="/bundles" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-cyan-600">Bundles</a>
-                            <a href="/support" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-cyan-600">Support</a>
+                            <a href="/bundles" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-brand-navy">Bundles</a>
+                            <a href="/support" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-brand-navy">Support</a>
                             <div class="pt-4 mt-4 border-t border-slate-200 space-y-2 px-2">
                                 <a href="/login" @click="drawerOpen = false" class="block px-4 py-3 rounded-xl border border-slate-200 text-center font-semibold text-slate-700">Login</a>
                                 <a href="/signup" @click="drawerOpen = false" class="block px-4 py-3 rounded-xl btn-cta text-center font-semibold">Sign Up</a>
@@ -393,17 +394,17 @@
                                 <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Account</p>
                                 <p class="font-bold text-slate-900 truncate" x-text="$store.auth.user.full_name || 'User'"></p>
                             </div>
-                            <a href="/dashboard" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-cyan-600">Dashboard</a>
-                            <a href="/bundles" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-cyan-600">Buy Data</a>
-                            <a href="/orders" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-cyan-600">Orders</a>
-                            <a href="/topup" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-cyan-600">Top Up</a>
-                            <a href="/reseller" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-cyan-600">Reseller</a>
-                            <a href="/referral" @click="drawerOpen = false" x-show="$store.auth.user && $store.auth.user.affiliate_system_enabled" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-cyan-600">Referral</a>
-                            <a href="/support" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-cyan-600">Support</a>
-                            <a href="/notifications" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-cyan-600">Notifications</a>
-                            <a href="/profile" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-cyan-600">Profile</a>
+                            <a href="/dashboard" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-brand-navy">Dashboard</a>
+                            <a href="/bundles" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-brand-navy">Buy Data</a>
+                            <a href="/orders" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-brand-navy">Orders</a>
+                            <a href="/topup" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-brand-navy">Top Up</a>
+                            <a href="/reseller" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-brand-navy">Reseller</a>
+                            <a href="/referral" @click="drawerOpen = false" x-show="$store.auth.user && $store.auth.user.affiliate_system_enabled" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-brand-navy">Referral</a>
+                            <a href="/support" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-brand-navy">Support</a>
+                            <a href="/notifications" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-brand-navy">Notifications</a>
+                            <a href="/profile" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-semibold hover:bg-slate-50 hover:text-brand-navy">Profile</a>
                             <template x-if="$store.auth.user.role === 'admin'">
-                                <a href="/admin/dashboard" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-cyan-600 font-semibold bg-cyan-50">Admin Console</a>
+                                <a href="/admin/dashboard" @click="drawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-brand-navy font-semibold bg-surface-muted">Admin Console</a>
                             </template>
                             <div class="pt-4 mt-4 border-t border-slate-200">
                                 <button @click="drawerOpen = false; showLogoutModal = true" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 font-semibold hover:bg-red-50">Logout</button>
@@ -436,7 +437,7 @@
                  x-transition:leave-end="-translate-x-full"
                  class="fixed left-0 top-0 bottom-0 w-72 max-w-[85vw] bg-white shadow-2xl z-[91] flex flex-col">
                 <div class="p-6 border-b border-slate-100 flex items-center justify-between">
-                    <span class="text-lg font-black text-cyan-600">Admin</span>
+                    <span class="text-lg font-black text-brand-navy">Admin</span>
                     <button @click="adminDrawerOpen = false" class="p-2 -m-2 text-slate-500 hover:text-slate-700">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
@@ -448,6 +449,7 @@
                         <p class="px-4 pt-3 pb-1 text-[10px] font-black text-slate-400 uppercase tracking-wider">Inventory</p>
                         <a href="/admin/packages" @click="adminDrawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-bold hover:bg-slate-50 ml-2">Packages</a>
                         <a href="/admin/orders" @click="adminDrawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-bold hover:bg-slate-50 ml-2">Orders</a>
+                        <a href="/admin/shop" @click="adminDrawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-bold hover:bg-slate-50 ml-2">Shop</a>
                         <p class="px-4 pt-3 pb-1 text-[10px] font-black text-slate-400 uppercase tracking-wider">Finance</p>
                         <a href="/admin/statistics" @click="adminDrawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-bold hover:bg-slate-50 ml-2">Statistics</a>
                         <a href="/admin/topups" @click="adminDrawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-bold hover:bg-slate-50 ml-2">Topups</a>
@@ -458,7 +460,7 @@
                         <a href="/admin/announcements" @click="adminDrawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-bold hover:bg-slate-50 ml-2">Announcements</a>
                         <a href="/admin/resellers" @click="adminDrawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 font-bold hover:bg-slate-50 ml-2">Resellers</a>
                         <div class="border-t border-slate-100 mt-4 pt-4">
-                            <a href="/admin/settings" @click="adminDrawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-cyan-600 font-bold bg-cyan-50">Settings</a>
+                            <a href="/admin/settings" @click="adminDrawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-brand-navy font-bold bg-surface-muted">Settings</a>
                             <a href="/dashboard" @click="adminDrawerOpen = false" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 font-bold hover:bg-slate-50 mt-1">User Dashboard</a>
                             <button @click="adminDrawerOpen = false; showLogoutModal = true" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 font-bold hover:bg-red-50 mt-1">Logout</button>
                         </div>
@@ -476,23 +478,23 @@
         <!-- Bottom Navigation (user pages, mobile only) -->
         <nav class="nav-app md:hidden fixed bottom-0 left-0 right-0 z-[80] bg-white border-t border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] mobile-bottom-nav">
             <div class="flex items-stretch justify-around min-h-[56px]">
-                <a href="/dashboard" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 transition-colors {{ request()->is('dashboard') ? 'text-cyan-600' : '' }}">
+                <a href="/dashboard" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 transition-colors {{ request()->is('dashboard') ? 'text-brand-navy' : '' }}">
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                     <span class="text-[10px] font-semibold mt-1">Home</span>
                 </a>
-                <a href="/bundles" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 transition-colors {{ request()->is('bundles') ? 'text-cyan-600' : '' }}">
+                <a href="/bundles" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 transition-colors {{ request()->is('bundles') ? 'text-brand-navy' : '' }}">
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8 4-8-4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                     <span class="text-[10px] font-semibold mt-1">Buy</span>
                 </a>
-                <a href="/orders" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 transition-colors {{ request()->is('orders') ? 'text-cyan-600' : '' }}">
+                <a href="/orders" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 transition-colors {{ request()->is('orders') ? 'text-brand-navy' : '' }}">
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
                     <span class="text-[10px] font-semibold mt-1">Orders</span>
                 </a>
-                <a href="/topup" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 transition-colors {{ request()->is('topup') ? 'text-cyan-600' : '' }}">
+                <a href="/topup" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 transition-colors {{ request()->is('topup') ? 'text-brand-navy' : '' }}">
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <span class="text-[10px] font-semibold mt-1">Top Up</span>
                 </a>
-                <button type="button" @click="drawerOpen = true" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 hover:text-cyan-600 transition-colors touch-manipulation">
+                <button type="button" @click="drawerOpen = true" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 hover:text-brand-navy transition-colors touch-manipulation">
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     <span class="text-[10px] font-semibold mt-1">More</span>
                 </button>
@@ -504,19 +506,19 @@
         <!-- Admin Bottom Navigation (mobile only) -->
         <nav class="md:hidden fixed bottom-0 left-0 right-0 z-[80] bg-white/95 backdrop-blur-sm border-t border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] mobile-bottom-nav">
             <div class="flex items-stretch justify-around min-h-[56px]">
-                <a href="/admin/dashboard" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 transition-colors {{ request()->is('admin/dashboard') ? 'text-cyan-600' : '' }}">
+                <a href="/admin/dashboard" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 transition-colors {{ request()->is('admin/dashboard') ? 'text-brand-navy' : '' }}">
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                     <span class="text-[10px] font-bold mt-1">Home</span>
                 </a>
-                <a href="/admin/users" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 transition-colors {{ request()->is('admin/users') ? 'text-cyan-600' : '' }}">
+                <a href="/admin/users" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 transition-colors {{ request()->is('admin/users') ? 'text-brand-navy' : '' }}">
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     <span class="text-[10px] font-bold mt-1">Users</span>
                 </a>
-                <a href="/admin/orders" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 transition-colors {{ request()->is('admin/orders') ? 'text-cyan-600' : '' }}">
+                <a href="/admin/orders" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 transition-colors {{ request()->is('admin/orders') ? 'text-brand-navy' : '' }}">
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
                     <span class="text-[10px] font-bold mt-1">Orders</span>
                 </a>
-                <a href="/admin/topups" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 transition-colors {{ request()->is('admin/topups') ? 'text-cyan-600' : '' }}">
+                <a href="/admin/topups" class="flex flex-col items-center justify-center flex-1 min-h-[56px] py-2 text-slate-500 active:bg-slate-50 transition-colors {{ request()->is('admin/topups') ? 'text-brand-navy' : '' }}">
                     <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <span class="text-[10px] font-bold mt-1">Topups</span>
                 </a>

@@ -184,6 +184,10 @@ Route::prefix('admin')->group(function () {
         return view('admin.orders');
     })->name('admin.orders');
 
+    Route::get('/shop', function () {
+        return view('admin.shop');
+    })->name('admin.shop');
+
     Route::get('/topups', function () {
         return view('admin.topups');
     })->name('admin.topups');

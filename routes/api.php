@@ -81,8 +81,20 @@ Route::group([
     Route::get('/packages', [\App\Http\Controllers\AdminController::class, 'getPackages']);
     Route::post('/packages/sync', [\App\Http\Controllers\AdminController::class, 'syncPackages']);
     Route::match(['put', 'patch'], '/packages/{id}', [\App\Http\Controllers\AdminController::class, 'updatePackage']);
-    Route::get('/topups', [\App\Http\Controllers\AdminController::class, 'getTopups']);
-    Route::post('/topups/{id}/approve', [\App\Http\Controllers\AdminController::class, 'approveTopup']);
+
+    // Shop catalog and shop orders
+    Route::get('/shop/categories', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'categories']);
+    Route::post('/shop/categories', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'storeCategory']);
+    Route::put('/shop/categories/{category}', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'updateCategory']);
+    Route::delete('/shop/categories/{category}', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'destroyCategory']);
+    Route::get('/shop/products', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'products']);
+    Route::post('/shop/products', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'storeProduct']);
+    Route::put('/shop/products/{product}', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'updateProduct']);
+    Route::delete('/shop/products/{product}', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'destroyProduct']);
+    Route::post('/shop/products/{product}/stock', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'adjustStock']);
+    Route::get('/shop/orders', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'orders']);
+    Route::put('/shop/orders/{order}/status', [\App\Http\Controllers\Shop\AdminCatalogController::class, 'updateOrderStatus']);
+    Route::get('/topups', [\App\Http\Controllers\AdminController::class, 'getTopups']);    Route::post('/topups/{id}/approve', [\App\Http\Controllers\AdminController::class, 'approveTopup']);
     Route::post('/payments/{reference}/verify-paystack', [\App\Http\Controllers\AdminController::class, 'verifyPaystackPayment']);
     Route::get('/payments', [\App\Http\Controllers\AdminController::class, 'getPayments']);
     Route::get('/tickets', [\App\Http\Controllers\AdminController::class, 'getTickets']);
