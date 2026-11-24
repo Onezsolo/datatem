@@ -10,6 +10,9 @@
         "build": "vite build",
         "dev": "vite"
     },
+    "dependencies": {
+        "canvas-confetti": "^1.9.3"
+    },
     "devDependencies": {
         "@fontsource-variable/instrument-sans": "^5.0.0",
         "@tailwindcss/vite": "^4.0.0",

@@ -1,41 +1,51 @@
-@extends('layouts.app')
+<x-layouts.public title="Reseller stores" description="Visit a reseller store and buy data bundles without an account.">
+    <div class="bg-surface-muted py-10 sm:py-14">
+        <div class="container-page">
+            <div class="mx-auto max-w-lg">
+                <div class="rounded-card border border-line bg-surface p-6 sm:p-8" x-data="storeLanding()">
+                    <p class="text-xs font-bold uppercase tracking-wide text-muted">Reseller stores</p>
+                    <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy">Visit a store</h1>
+                    <p class="mt-2 text-sm text-muted">Enter the store code your reseller shared with you. No account needed.</p>
 
-@section('content')
-<div class="min-h-screen bg-slate-50 py-16 flex items-center justify-center px-4" x-data="storeLanding()">
-    <div class="max-w-lg w-full">
-        <div class="text-center mb-10">
-            <h1 class="text-4xl font-black text-slate-900 tracking-tight">Visit a <span class="gradient-text">store</span></h1>
-            <p class="mt-3 text-slate-500 font-medium">Enter your store code to buy data bundles. No account needed.</p>
-        </div>
-        <div class="bg-white rounded-[32px] shadow-xl border border-slate-200/50 p-8">
-            <label class="block text-sm font-bold text-slate-600 mb-2">Store code</label>
-            <p class="text-xs text-slate-500 mb-3">Your reseller gave you a link like yourdomain.com/store/<strong>iksoft</strong> — enter the part after /store/ (e.g. iksoft).</p>
-            <input type="text" x-model="storeCode" placeholder="e.g. r5" @keydown.enter="go()"
-                   class="w-full px-6 py-4 rounded-2xl border border-slate-200 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 outline-none font-bold text-slate-900 placeholder-slate-400">
-            <p x-show="errorMsg" class="mt-2 text-sm font-bold text-red-600" x-text="errorMsg"></p>
-            <button type="button" @click="go()"
-                    class="mt-6 w-full py-4 rounded-2xl font-black bg-primary-600 text-white hover:bg-primary-700 transition-all">
-                Go to store
-            </button>
+                    <form @submit.prevent="go()" class="mt-5">
+                        <label for="store-code" class="block text-sm font-bold text-brand-navy">Store code</label>
+                        <p class="mt-1 text-xs text-muted">From a link like <span class="font-semibold text-brand-navy">/store/iksoft</span>, enter the part after /store/.</p>
+                        <input
+                            id="store-code"
+                            type="text"
+                            x-model="storeCode"
+                            placeholder="e.g. r5"
+                            class="mt-2 h-11 w-full rounded-control border border-line px-3 text-sm font-semibold text-ink placeholder:text-muted"
+                        >
+                        <p x-show="errorMsg" x-cloak class="mt-2 text-sm font-bold text-brand-red-strong" x-text="errorMsg"></p>
+                        <button type="submit" class="mt-5 min-h-11 w-full rounded-control bg-brand-yellow px-4 text-sm font-bold text-brand-navy hover:bg-brand-yellow-strong">Go to store</button>
+                    </form>
+                </div>
+
+                <div class="mt-4 rounded-card border border-line bg-surface p-5">
+                    <h2 class="text-sm font-bold text-brand-navy">Own a store?</h2>
+                    <p class="mt-1 text-sm text-muted">Reseller stores sell data bundles with your own name and WhatsApp contact.</p>
+                    <a href="{{ route('reseller') }}" class="mt-2 inline-block text-sm font-bold text-brand-navy underline underline-offset-4">Open reseller settings</a>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-function storeLanding() {
-    return {
-        storeCode: '',
-        errorMsg: '',
-        go() {
-            this.errorMsg = '';
-            const slug = (this.storeCode || '').trim().replace(/^\/+|\/+$/g, '');
-            if (!slug) {
-                this.errorMsg = 'Please enter a store code.';
-                return;
-            }
-            window.location.href = '/store/' + encodeURIComponent(slug);
+    <script>
+        function storeLanding() {
+            return {
+                storeCode: '',
+                errorMsg: '',
+                go() {
+                    this.errorMsg = '';
+                    const slug = (this.storeCode || '').trim().replace(/^\/+|\/+$/g, '');
+                    if (!slug) {
+                        this.errorMsg = 'Please enter a store code.';
+                        return;
+                    }
+                    window.location.href = '/store/' + encodeURIComponent(slug);
+                }
+            };
         }
-    };
-}
-</script>
-@endsection
+    </script>
+</x-layouts.public>

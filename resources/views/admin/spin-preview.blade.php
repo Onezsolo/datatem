@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GHS Spin Master – Admin Preview</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap" rel="stylesheet">
+    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+        @vite(['resources/css/app.css', 'resources/js/spin.js'])
+    @endif
     <style>
         :root {
-            --gh-gold: #fcc419;
-            --gh-red: #ef4444;
-            --gh-green: #22c55e;
-            --dark-surface: #111827;
+            --gh-gold: #FFCC00;
+            --gh-red: #E63946;
+            --gh-green: #E6B800;
+            --dark-surface: #001534;
         }
 
         body {
-            background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
-            font-family: 'Inter', sans-serif;
+            background: var(--color-brand-navy);
+            font-family: inherit;
             perspective: 1500px;
             overflow-x: hidden;
             min-height: 100vh;
@@ -26,7 +26,6 @@
         .wheel-container {
             transform: rotateX(10deg);
             transform-style: preserve-3d;
-            filter: drop-shadow(0 30px 50px rgba(0,0,0,0.8));
         }
 
         #wheel {
@@ -38,27 +37,23 @@
             outline: 6px solid var(--gh-gold);
             /* 7 segments: thin light divider then color; last segment = red gradient */
             background:
-                linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 50%),
                 conic-gradient(
                     rgba(255,255,255,0.5) 0deg 0.5deg,
-                    #f59e0b 0.5deg 51.43deg,
+                    #FFCC00 0.5deg 51.43deg,
                     rgba(255,255,255,0.5) 51.43deg 51.93deg,
-                    #10b981 51.93deg 102.86deg,
+                    #E63946 51.93deg 102.86deg,
                     rgba(255,255,255,0.5) 102.86deg 103.36deg,
-                    #0ea5e9 103.36deg 154.29deg,
+                    #0B2550 103.36deg 154.29deg,
                     rgba(255,255,255,0.5) 154.29deg 154.79deg,
-                    #8b5cf6 154.79deg 205.72deg,
+                    #FFCC00 154.79deg 205.72deg,
                     rgba(255,255,255,0.5) 205.72deg 206.22deg,
-                    #ec4899 206.22deg 257.14deg,
+                    #E63946 206.22deg 257.14deg,
                     rgba(255,255,255,0.5) 257.14deg 257.64deg,
-                    #14b8a6 257.64deg 308.57deg,
+                    #0B2550 257.64deg 308.57deg,
                     rgba(255,255,255,0.5) 308.57deg 308.97deg,
-                    #dc2626 308.97deg 360deg
+                    #FFCC00 308.97deg 360deg
                 );
-            box-shadow:
-                inset 0 4px 24px rgba(255,255,255,0.15),
-                inset 0 -8px 32px rgba(0,0,0,0.35),
-                inset 0 0 0 1px rgba(255,255,255,0.08);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
             transition: transform 6s cubic-bezier(0.2, 0, 0.1, 1);
             transform-style: preserve-3d;
         }
@@ -115,7 +110,7 @@
             position: absolute;
             inset: 0;
             border-radius: 50%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 40%, transparent 60%);
+            background: transparent;
             pointer-events: none;
         }
 
@@ -165,9 +160,9 @@
             <div class="wheel-shine"></div>
 
             <!-- Each label rotated to center of its ~51.43° slice (7 segments) -->
-            <div class="prize-segment" style="transform: rotate(26deg)"><span>₵1</span></div>
-            <div class="prize-segment" style="transform: rotate(77deg)"><span>₵5</span></div>
-            <div class="prize-segment" style="transform: rotate(129deg)"><span>₵10</span></div>
+            <div class="prize-segment" style="transform: rotate(26deg)"><span>GHS 1</span></div>
+            <div class="prize-segment" style="transform: rotate(77deg)"><span>GHS 5</span></div>
+            <div class="prize-segment" style="transform: rotate(129deg)"><span>GHS 10</span></div>
             <div class="prize-segment" style="transform: rotate(180deg)"><span>1GB</span></div>
             <div class="prize-segment" style="transform: rotate(231deg)"><span>5GB</span></div>
             <div class="prize-segment prize-off" style="transform: rotate(283deg)"><span><span class="off-pct block">20%</span><span class="off-word block">off</span></span></div>
@@ -190,9 +185,9 @@
         let spinning = false;
 
         const prizes = [
-            "₵1",
-            "₵5",
-            "₵10",
+            "GHS 1",
+            "GHS 5",
+            "GHS 10",
             "1GB",
             "5GB",
             "20% off",

@@ -2,6 +2,7 @@
     'title' => null,
     'description' => null,
     'cartCount' => 0,
+    'brand' => null,
 ])
 
 @php
@@ -37,6 +38,7 @@
         :navigation="$navigation"
         :cart-count="$cartCount"
         :cart-url="$cartUrl"
+        :brand="$brand"
     />
 
     @if (session('status'))
