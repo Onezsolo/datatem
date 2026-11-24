@@ -1,13 +1,21 @@
 <x-layouts.shop title="Utility bills">
     <div class="space-y-6">
-        <header class="flex flex-wrap items-end justify-between gap-3">
-            <div>
-                <p class="text-xs font-bold uppercase tracking-wide text-muted">Services / Utility</p>
-                <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-brand-navy">Utility bills</h1>
-                <p class="mt-1 text-sm text-muted">Wallet balance: <span class="font-bold text-brand-navy">GHS {{ number_format($wallet, 2) }}</span>. Fees are added at checkout.</p>
+        <div>
+            <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-muted hover:text-brand-navy">
+                <x-ui.icon name="chevron-left" :size="16" />
+                All services
+            </a>
+            <div class="mt-3 flex flex-wrap items-end justify-between gap-3">
+                <div>
+                    <h1 class="text-2xl font-extrabold tracking-tight text-brand-navy">Utility bills</h1>
+                    <p class="mt-1 text-sm text-muted">Pay prepaid electricity and water.</p>
+                </div>
+                <div class="flex items-center gap-3 text-sm">
+                    <span class="text-muted">Wallet <span class="font-bold text-brand-navy">GHS {{ number_format($wallet, 2) }}</span></span>
+                    <a href="{{ route('topup') }}" class="font-bold text-brand-navy underline underline-offset-4">Top up</a>
+                </div>
             </div>
-            <a href="{{ route('services.index') }}" class="inline-flex min-h-11 items-center rounded-control border border-line bg-surface px-4 text-sm font-bold text-brand-navy hover:bg-surface-muted">All services</a>
-        </header>
+        </div>
 
         @include('partials.guest-purchase-note')
 

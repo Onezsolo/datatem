@@ -714,3 +714,5 @@ git commit -m "feat: unify legacy layout with compiled design system"
 - Kept the design system palette/components; screenshots at 1280 and 390 reviewed.
 
 - AFA page trimmed per feedback: removed editorial checklist, steps and FAQ; now a compact form, fee summary, refund/reference notes and support link only.
+
+- All service pages now use the compact pattern: back link, short title and one-line description, wallet/top-up actions, no uppercase eyebrows or blog sections.
