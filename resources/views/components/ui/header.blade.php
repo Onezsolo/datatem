@@ -80,8 +80,10 @@
                     type="button"
                     x-data
                     @click="$store.auth.logout()"
-                    class="hidden min-h-11 items-center rounded-control px-2.5 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white sm:inline-flex"
-                >Sign out</button>
+                    class="hidden h-11 w-11 items-center justify-center rounded-control text-nav-muted hover:bg-white/10 hover:text-white sm:inline-flex"
+                    aria-label="Sign out"
+                    title="Sign out"
+                ><x-ui.icon name="logout" :size="18" /></button>
             @else
                 <a
                     href="{{ route('login') }}"
@@ -155,7 +157,7 @@
             <div class="border-t border-white/15 px-3 py-3">
                 @auth
                     <a href="{{ url('/dashboard') }}" class="flex min-h-11 items-center rounded-control px-2 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white">Account</a>
-                    <button type="button" x-data @click="$store.auth.logout()" class="flex min-h-11 w-full items-center rounded-control px-2 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white">Sign out</button>
+                    <button type="button" x-data @click="$store.auth.logout()" class="flex min-h-11 w-full items-center justify-center rounded-control px-2 text-nav-muted hover:bg-white/10 hover:text-white" aria-label="Sign out" title="Sign out"><x-ui.icon name="logout" :size="20" /></button>
                 @else
                     <a href="{{ route('login') }}" class="flex min-h-11 items-center rounded-control px-2 text-sm font-semibold text-nav-muted hover:bg-white/10 hover:text-white">Sign in</a>
                 @endauth

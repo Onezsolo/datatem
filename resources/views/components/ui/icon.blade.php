@@ -88,7 +88,11 @@
             <path d="M9.5 9.5a2.5 2.5 0 1 1 4.2 1.9c-.8.7-1.7 1.2-1.7 2.6"></path>
             <path d="M12 17h.01"></path>
             @break
-        @case('more')
+        @case('logout')
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <path d="M16 17l5-5-5-5"></path>
+            <path d="M21 12H9"></path>
+            @break        @case('more')
             <circle cx="5" cy="12" r="1.5"></circle>
             <circle cx="12" cy="12" r="1.5"></circle>
             <circle cx="19" cy="12" r="1.5"></circle>

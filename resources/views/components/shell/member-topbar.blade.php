@@ -55,11 +55,13 @@
 
             <button
                 type="button"
-                class="inline-flex min-h-10 items-center gap-1.5 rounded-control border border-line px-3 text-sm font-semibold text-brand-navy hover:bg-surface-muted"
+                class="inline-flex h-10 w-10 items-center justify-center rounded-control border border-line text-brand-navy hover:bg-surface-muted"
                 x-data
                 @click="if (confirm('Sign out of this account?')) $store.auth.logout()"
+                aria-label="Sign out"
+                title="Sign out"
             >
-                Sign out
+                <x-ui.icon name="logout" :size="18" />
             </button>
         </div>
     </div>
